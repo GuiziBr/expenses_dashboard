@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Expenses Dashboard
 
-## Getting Started
+A modern, high-performance expenses management portal built with Next.js 15, React 19, and Tailwind CSS. This project focuses on visual excellence, accessibility, and a robust isomorphic authentication architecture.
 
-First, run the development server:
+## 🚀 Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Modern Tech Stack**: Leverages Next.js App Router, React Server Components, and Zod validation.
+- **Premium Design**: Custom dark-themed UI with "Roboto Slab" typography, smooth animations, and refined micro-interactions.
+- **Isomorphic Authentication**: A robust, cookie-based auth system that works seamlessly across Client and Server components, replacing legacy `sessionStorage` patterns.
+- **Centralized Route Protection**: Global middleware handles unauthenticated redirects and protects sensitive dashboard routes at the edge.
+- **Accessibility (A11y)**: Semantic HTML5 structure with comprehensive ARIA support and optimized screen-reader announcements.
+- **SEO & Performance**: Optimized image handling via Next.js `Image` (using static imports and proper `sizes`), semantic meta tags, and fast page loads.
+- **Enhanced UX**: Includes custom error tooltips (the "red bubble" pattern), dark-mode-first styling, and handled browser autofill overrides.
+
+## 🛠 Tech Stack
+
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Library**: [React 19](https://react.dev/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Form Management**: `react-hook-form`
+- **Validation**: `zod`
+- **Icons**: `lucide-react`
+- **Notifications**: `sonner`
+- **Fonts**: `next/font/google` (Roboto Slab)
+
+## 📁 Project Structure
+
+```text
+src/
+├── app/            # Next.js App Router (pages & layouts)
+├── components/     # Reusable UI & Layout components
+├── contexts/       # React Contexts (Auth, etc.)
+├── lib/            # Utilities, API Client, and Auth Helpers
+└── assets/         # Static assets (images, logos)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🏗 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 24+ 
+- npm / yarn / pnpm
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create a `.env` file in the root directory and add your API URL:
+   ```env
+   NEXT_PUBLIC_API_URL=https://your-api-url.com
+   ```
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔐 Authentication Architecture
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The project uses an isomorphic cookie-based approach:
+- **Client Side**: `AuthContext` manages the global user state and provides `signIn`/`signOut` methods.
+- **Server Side**: `middleware.ts` reads the `auth_token` directly from cookies to handle redirects before the page even renders.
+- **Isomorphic Helpers**: `auth-helpers.ts` provides consistent access to tokens and user data on both the client and server.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built with ❤️ for a premium expense management experience.

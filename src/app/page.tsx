@@ -1,65 +1,117 @@
-import Image from "next/image";
+"use client"
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Lock, Mail } from "lucide-react"
+import Image from "next/image"
+import { FormProvider, useForm } from "react-hook-form"
+import { toast } from "sonner"
+import * as z from "zod"
+import { LoginInput } from "@/components/LoginInput"
+import { Button } from "@/components/ui/button"
+import { useAuth } from "@/contexts/auth-context"
+import logo from "../../public/assets/images/logo.svg"
+import background from "../../public/assets/images/sign-in-background.jpg"
+
+// Validation Schema
+const signInSchema = z.object({
+	email: z.email("E-mail is required").min(1, "E-mail is required"),
+	password: z.string().min(1, "Password is required")
+})
+
+type SignInFormData = z.infer<typeof signInSchema>
 
 export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+	const { signIn, isLoading } = useAuth()
+	const methods = useForm<SignInFormData>({
+		resolver: zodResolver(signInSchema)
+	})
+
+	if (isLoading) {
+		return null // Or a more elaborate loading spinner if desired
+	}
+
+	const {
+		handleSubmit,
+		formState: { isSubmitting }
+	} = methods
+
+	const handleSignIn = async (data: SignInFormData) => {
+		try {
+			await signIn(data)
+			toast.success("Successfully logged in!")
+		} catch {
+			toast.error("Invalid email or password. Please try again.")
+		}
+	}
+
+	return (
+		<main className="min-h-screen flex items-stretch">
+			{/* Content Section */}
+			<section className="flex flex-col justify-center items-center w-full max-w-[700px] bg-background p-8">
+				<div className="flex flex-col items-center animate-in fade-in slide-in-from-left-8 duration-500 w-full max-w-[340px]">
+					<header className="mb-12">
+						<Image
+							src={logo}
+							alt="Expenses Logo"
+							width={180}
+							height={40}
+							priority
+						/>
+					</header>
+
+					<FormProvider {...methods}>
+						<form
+							onSubmit={handleSubmit(handleSignIn)}
+							className="flex flex-col gap-2 w-full text-center"
+						>
+							<h1 className="mb-6 text-[2em] font-semibold">Expenses Portal</h1>
+
+							<LoginInput
+								name="email"
+								icon={Mail}
+								placeholder="E-mail"
+								autoComplete="email"
+							/>
+
+							<LoginInput
+								name="password"
+								icon={Lock}
+								type="password"
+								placeholder="Password"
+								autoComplete="current-password"
+							/>
+
+							<Button
+								type="submit"
+								className="w-full h-14 mt-4 bg-light-orange hover:bg-light-orange hover:brightness-75 transition-[filter] duration-200 text-background font-medium rounded-[0.3rem] border-0"
+								disabled={isSubmitting}
+							>
+								{isSubmitting ? "Signing in..." : "Sign In"}
+							</Button>
+						</form>
+					</FormProvider>
+				</div>
+			</section>
+
+			{/* Background Image Section */}
+			<div
+				className="hidden lg:flex flex-1 relative bg-background"
+				aria-hidden="true"
+			>
+				{/* Background Image */}
+				<div className="absolute inset-0">
+					<Image
+						src={background}
+						alt=""
+						fill
+						sizes="(min-width: 1024px) 50vw, 0vw"
+						className="object-cover"
+						priority
+					/>
+					{/* Overlay */}
+					<div className="absolute inset-0 backdrop-blur-[2px]" />
+				</div>
+			</div>
+		</main>
+	)
 }
