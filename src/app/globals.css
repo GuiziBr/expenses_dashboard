@@ -2,74 +2,26 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme inline {
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
-	--font-sans: var(--font-roboto-slab);
-	--color-sidebar-ring: var(--sidebar-ring);
-	--color-sidebar-border: var(--sidebar-border);
-	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-	--color-sidebar-accent: var(--sidebar-accent);
-	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-	--color-sidebar-primary: var(--sidebar-primary);
-	--color-sidebar-foreground: var(--sidebar-foreground);
-	--color-sidebar: var(--sidebar);
-	--color-chart-5: var(--chart-5);
-	--color-chart-4: var(--chart-4);
-	--color-chart-3: var(--chart-3);
-	--color-chart-2: var(--chart-2);
-	--color-chart-1: var(--chart-1);
-	--color-ring: var(--ring);
-	--color-input: var(--input);
-	--color-border: var(--border);
-	--color-destructive: var(--destructive);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-accent: var(--accent);
-	--color-muted-foreground: var(--muted-foreground);
-	--color-muted: var(--muted);
-	--color-secondary-foreground: var(--secondary-foreground);
-	--color-secondary: var(--secondary);
-	--color-primary-foreground: var(--primary-foreground);
-	--color-primary: var(--primary);
-	--color-popover-foreground: var(--popover-foreground);
-	--color-popover: var(--popover);
-	--color-card-foreground: var(--card-foreground);
-	--color-card: var(--card);
-	--radius-sm: calc(var(--radius) - 4px);
-	--radius-md: calc(var(--radius) - 2px);
-	--radius-lg: var(--radius);
-	--radius-xl: calc(var(--radius) + 4px);
-	--radius-2xl: calc(var(--radius) + 8px);
-	--radius-3xl: calc(var(--radius) + 12px);
-	--radius-4xl: calc(var(--radius) + 16px);
-
-	/* Legacy Colors mapping */
-	--color-container-background: var(--container-background);
-	--color-input-text: var(--input-text);
-	--color-light-orange: var(--light-orange);
-	--color-iron-gray: var(--iron-gray);
-	--color-red: var(--red);
-	--color-light-blue: var(--light-blue);
-	--color-orange: var(--orange);
-	--color-very-light-blue: var(--very-light-blue);
-	--color-blue-sky: var(--blue-sky);
-	--color-cleared-blue: var(--cleared-blue);
-	--color-green-blue: var(--green-blue);
-	--color-light-pink: var(--light-pink);
-	--color-light-gray: var(--light-gray);
-	--color-blue-wood: var(--blue-wood);
-	--color-green: var(--green);
-	--color-pink: var(--pink);
-}
-
 :root {
 	--radius: 0.625rem;
+	--orange: #ff9000;
 	--light-orange: #ff9000;
 	--container-background: #232129;
 	--input-text: #f4ede8;
 	--iron-gray: #666360;
 	--red: #c53030;
 	--white: #ffffff;
+	--light-blue: #28262e;
+	--very-light-blue: #3e3b47;
+	--blue-sky: #ebf8ff;
+	--cleared-blue: #3172b7;
+	--green-blue: #e6fffa;
+	--light-pink: #fdf2f2;
+	--light-gray: #f4ede8;
+	--blue-wood: #312e38;
+	--green: #2e656a;
+	--pink: #c53030;
+
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.145 0 0);
 	--card: oklch(1 0 0);
@@ -103,9 +55,68 @@
 	--sidebar-ring: oklch(0.708 0 0);
 }
 
+@theme {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--font-sans: var(--font-roboto-slab);
+	--color-sidebar-ring: var(--sidebar-ring);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar: var(--sidebar);
+	--color-chart-5: var(--chart-5);
+	--color-chart-4: var(--chart-4);
+	--color-chart-3: var(--chart-3);
+	--color-chart-2: var(--chart-2);
+	--color-chart-1: var(--chart-1);
+	--color-ring: var(--ring);
+	--color-input: var(--input);
+	--color-border: var(--border);
+	--color-destructive: var(--destructive);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-accent: var(--accent);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-muted: var(--muted);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-secondary: var(--secondary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-primary: var(--primary);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-popover: var(--popover);
+	--color-card-foreground: var(--card-foreground);
+	--color-card: var(--card);
+
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+	--radius-2xl: calc(var(--radius) + 8px);
+	--radius-3xl: calc(var(--radius) + 12px);
+	--radius-4xl: calc(var(--radius) + 16px);
+
+	/* Custom Project Colors - Using explicit values to avoid build issues */
+	--color-orange: #ff9000;
+	--color-light-orange: #ff9000;
+	--color-light-blue: #28262e;
+	--color-very-light-blue: #3e3b47;
+	--color-container-background: #232129;
+	--color-input-text: #f4ede8;
+	--color-iron-gray: #666360;
+	--color-red: #c53030;
+	--color-blue-sky: #ebf8ff;
+	--color-cleared-blue: #3172b7;
+	--color-green-blue: #e6fffa;
+	--color-light-pink: #fdf2f2;
+	--color-light-gray: #f4ede8;
+	--color-blue-wood: #312e38;
+	--color-green: #2e656a;
+	--color-pink: #c53030;
+}
+
 .dark {
-	/* For this project, the legacy theme is already dark-oriented. 
-     Keeping it simple for now as the base is dark. */
 	--background: #312e38;
 	--foreground: #f4ede8;
 }

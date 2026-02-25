@@ -24,7 +24,7 @@ export default function RootLayout({
 			<body className={`${robotoSlab.variable} font-sans antialiased`}>
 				<AuthProvider>
 					{children}
-					<Toaster position="top-right" expand={true} richColors />
+					<Toaster position="top-center" expand={true} richColors />
 				</AuthProvider>
 			</body>
 		</html>
