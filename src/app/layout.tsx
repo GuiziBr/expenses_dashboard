@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Roboto_Slab } from "next/font/google"
 import { Toaster } from "@/components/ui/sonner"
 import { AuthProvider } from "@/contexts/auth-context"
+import { QueryProvider } from "@/providers/query-provider"
 import "./globals.css"
 
 const robotoSlab = Roboto_Slab({
@@ -22,10 +23,12 @@ export default function RootLayout({
 	return (
 		<html lang="en" className="dark">
 			<body className={`${robotoSlab.variable} font-sans antialiased`}>
-				<AuthProvider>
-					{children}
-					<Toaster position="top-center" expand={true} richColors />
-				</AuthProvider>
+				<QueryProvider>
+					<AuthProvider>
+						{children}
+						<Toaster position="top-center" expand={true} richColors />
+					</AuthProvider>
+				</QueryProvider>
 			</body>
 		</html>
 	)

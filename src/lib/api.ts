@@ -7,37 +7,51 @@ interface FetchOptions extends RequestInit {
 	data?: unknown
 }
 
+export interface PaginatedResponse<T> {
+	data: T
+	totalCount: number
+}
+
 class ApiClient {
+	private buildConfig(
+		method: HttpMethod,
+		options: FetchOptions = {}
+	): { config: RequestInit; token: Promise<string | undefined> } {
+		const { data, headers, ...customConfig } = options
+		const token = getAuthToken()
+
+		return {
+			token,
+			config: {
+				method,
+				headers: {
+					"Content-Type": "application/json",
+					...headers
+				},
+				...(data ? { body: JSON.stringify(data) } : {}),
+				...customConfig
+			}
+		}
+	}
+
 	private async request<T>(
 		endpoint: string,
 		method: HttpMethod,
 		options: FetchOptions = {}
 	): Promise<T> {
-		const { data, headers, ...customConfig } = options
+		const { config, token } = this.buildConfig(method, options)
+		const resolvedToken = await token
 
-		const token = await getAuthToken()
-
-		const config: RequestInit = {
-			method,
-			headers: {
-				"Content-Type": "application/json",
-				...(token ? { Authorization: `Bearer ${token}` } : {}),
-				...headers
-			},
-			...customConfig
-		}
-
-		if (data) {
-			config.body = JSON.stringify(data)
+		if (resolvedToken) {
+			;(config.headers as Record<string, string>).Authorization =
+				`Bearer ${resolvedToken}`
 		}
 
 		const response = await fetch(`${API_BASE_URL}/${endpoint}`, config)
 
 		if (!response.ok) {
-			// Handle 401 Unauthorized globally if needed
 			if (response.status === 401) {
 				// Optional: Redirect to login or clear token
-				// window.location.href = '/login' (only on client)
 			}
 
 			const errorData = await response.json().catch(() => ({}))
@@ -54,6 +68,35 @@ class ApiClient {
 
 	get<T>(endpoint: string, options?: FetchOptions) {
 		return this.request<T>(endpoint, "GET", options)
+	}
+
+	/**
+	 * GET request that also returns the `x-total-count` header.
+	 * Use this for paginated list endpoints.
+	 */
+	async getWithHeaders<T>(
+		endpoint: string,
+		options?: FetchOptions
+	): Promise<PaginatedResponse<T>> {
+		const { config, token } = this.buildConfig("GET", options)
+		const resolvedToken = await token
+
+		if (resolvedToken) {
+			;(config.headers as Record<string, string>).Authorization =
+				`Bearer ${resolvedToken}`
+		}
+
+		const response = await fetch(`${API_BASE_URL}/${endpoint}`, config)
+
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({}))
+			throw new Error(errorData.message || `API Error: ${response.status}`)
+		}
+
+		const data: T = await response.json()
+		const totalCount = Number(response.headers.get("x-total-count") ?? "0")
+
+		return { data, totalCount }
 	}
 
 	post<T>(endpoint: string, data?: unknown, options?: FetchOptions) {
