@@ -1,4 +1,5 @@
 import Cookies from "js-cookie"
+import { AUTH_COOKIE_OPTIONS, COOKIE_NAME } from "./constants"
 
 /**
  * Get the auth token from cookies.
@@ -7,14 +8,14 @@ import Cookies from "js-cookie"
 export async function getAuthToken(): Promise<string | undefined> {
 	// Client-side
 	if (typeof window !== "undefined") {
-		return Cookies.get("auth_token")
+		return Cookies.get(COOKIE_NAME)
 	}
 
 	// Server-side
 	try {
 		const { cookies } = await import("next/headers")
 		const cookieStore = await cookies()
-		return cookieStore.get("auth_token")?.value
+		return cookieStore.get(COOKIE_NAME)?.value
 	} catch (error) {
 		console.error("Failed to get auth token on server:", error)
 		return undefined
@@ -46,12 +47,7 @@ export async function getUser<T>(): Promise<T | undefined> {
  */
 export function setAuthToken(token: string) {
 	if (typeof window !== "undefined") {
-		Cookies.set("auth_token", token, {
-			expires: 7, // 7 days
-			path: "/",
-			secure: process.env.NODE_ENV === "production",
-			sameSite: "lax"
-		})
+		Cookies.set(COOKIE_NAME, token, AUTH_COOKIE_OPTIONS)
 	}
 }
 
@@ -60,12 +56,7 @@ export function setAuthToken(token: string) {
  */
 export function setUser(user: unknown) {
 	if (typeof window !== "undefined") {
-		Cookies.set("user", JSON.stringify(user), {
-			expires: 7,
-			path: "/",
-			secure: process.env.NODE_ENV === "production",
-			sameSite: "lax"
-		})
+		Cookies.set("user", JSON.stringify(user), AUTH_COOKIE_OPTIONS)
 	}
 }
 
@@ -74,7 +65,7 @@ export function setUser(user: unknown) {
  */
 export function removeAuthToken() {
 	if (typeof window !== "undefined") {
-		Cookies.remove("auth_token", { path: "/" })
-		Cookies.remove("user", { path: "/" })
+		Cookies.remove(COOKIE_NAME, { path: AUTH_COOKIE_OPTIONS.path })
+		Cookies.remove("user", { path: AUTH_COOKIE_OPTIONS.path })
 	}
 }

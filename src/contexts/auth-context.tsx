@@ -78,9 +78,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 				// Update state
 				setUser(user)
-
-				// Redirect to dashboard
-				// router.push("/sharedDashboard")
 			} catch (error) {
 				console.error("Sign in failed", error)
 				throw error

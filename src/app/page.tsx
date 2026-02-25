@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Lock, Mail } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import * as z from "zod"
@@ -21,6 +22,7 @@ const signInSchema = z.object({
 type SignInFormData = z.infer<typeof signInSchema>
 
 export default function Home() {
+	const router = useRouter()
 	const { signIn, isLoading } = useAuth()
 	const methods = useForm<SignInFormData>({
 		resolver: zodResolver(signInSchema)
@@ -38,7 +40,10 @@ export default function Home() {
 	const handleSignIn = async (data: SignInFormData) => {
 		try {
 			await signIn(data)
-			toast.success("Successfully logged in!")
+			toast.success("Successfully logged in!", {
+				duration: 800
+			})
+			router.replace("/personalDashboard")
 		} catch {
 			toast.error("Invalid email or password. Please try again.")
 		}
@@ -95,7 +100,7 @@ export default function Home() {
 
 			{/* Background Image Section */}
 			<div
-				className="hidden lg:flex flex-1 relative bg-background"
+				className="hidden min-[701px]:flex flex-1 relative bg-background"
 				aria-hidden="true"
 			>
 				{/* Background Image */}
@@ -104,7 +109,7 @@ export default function Home() {
 						src={background}
 						alt=""
 						fill
-						sizes="(min-width: 1024px) 50vw, 0vw"
+						sizes="(min-width: 701px) 50vw, 0px"
 						className="object-cover"
 						priority
 					/>
