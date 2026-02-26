@@ -15,6 +15,12 @@ import {
 import { useAuth } from "@/contexts/auth-context"
 import { cn } from "@/lib/utils"
 
+const PAGE_TITLES: Record<string, string> = {
+	"/sharedDashboard": "Shared Dashboard",
+	"/personalDashboard": "Personal Dashboard",
+	"/consolidatedBalance": "Shared Balance"
+}
+
 export function Header() {
 	const [isManagementOpen, setIsManagementOpen] = useState(false)
 	const pathname = usePathname()
@@ -22,6 +28,11 @@ export function Header() {
 
 	const getClassName = (path: string) =>
 		pathname === path ? "text-orange" : "text-white hover:text-orange/60"
+
+	const getPageTitle = () => {
+		if (pathname?.startsWith("/management")) return "Management"
+		return PAGE_TITLES[pathname] ?? "Dashboard"
+	}
 
 	return (
 		<div className="bg-[var(--light-blue)] py-8">
@@ -148,7 +159,7 @@ export function Header() {
 									getClassName("/sharedDashboard")
 								)}
 							>
-								Shared
+								Shared Dashboard
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem
@@ -162,7 +173,7 @@ export function Header() {
 									getClassName("/personalDashboard")
 								)}
 							>
-								Personal
+								Personal Dashboard
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem
@@ -176,7 +187,7 @@ export function Header() {
 									getClassName("/consolidatedBalance")
 								)}
 							>
-								Balance
+								Shared Balance
 							</Link>
 						</DropdownMenuItem>
 
@@ -222,9 +233,9 @@ export function Header() {
 					</DropdownMenuContent>
 				</DropdownMenu>
 
-				{/* Mobile Logo */}
+				{/* Mobile Logo / Page Title */}
 				<div className="md:hidden font-bold text-white text-lg">
-					Expenses Dashboard
+					{getPageTitle()}
 				</div>
 
 				{/* Mobile Logout (Icon only) */}
