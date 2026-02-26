@@ -24,7 +24,7 @@ export function Header() {
 		pathname === path ? "text-orange" : "text-white hover:text-orange/60"
 
 	return (
-		<div className="bg-light-blue py-8">
+		<div className="bg-[var(--light-blue)] py-8">
 			<header className="max-w-[1120px] mx-auto px-5 flex items-center justify-between relative">
 				{/* Desktop Navigation */}
 				<nav className="hidden md:flex items-center gap-8">
@@ -81,7 +81,7 @@ export function Header() {
 						</DropdownMenuTrigger>
 						<DropdownMenuContent
 							align="end"
-							className="bg-light-blue border-none text-white min-w-[160px]"
+							className="bg-[var(--light-blue)] border-none text-white min-w-[160px]"
 						>
 							<DropdownMenuItem
 								asChild
@@ -135,7 +135,7 @@ export function Header() {
 					</DropdownMenuTrigger>
 					<DropdownMenuContent
 						align="start"
-						className="w-[calc(100vw-40px)] md:hidden bg-light-blue border-none text-white p-2 shadow-xl mt-2 z-50"
+						className="w-[calc(100vw-40px)] md:hidden bg-[var(--light-blue)] border-none text-white p-2 shadow-xl mt-2 z-50"
 					>
 						<DropdownMenuItem
 							asChild
@@ -233,7 +233,7 @@ export function Header() {
 					size="icon"
 					type="button"
 					onClick={() => signOut()}
-					className="md:hidden text-orange hover:bg-transparent"
+					className="md:hidden hover:text-orange"
 				>
 					<LogOut className="w-6 h-6" />
 				</Button>
