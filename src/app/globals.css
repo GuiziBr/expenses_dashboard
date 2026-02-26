@@ -4,55 +4,59 @@
 
 :root {
 	--radius: 0.625rem;
-	--orange: #ff9000;
-	--light-orange: #ff9000;
+	--background: #312e38;
 	--container-background: #232129;
 	--input-text: #f4ede8;
+
+	--light-orange: #ff9000;
 	--iron-gray: #666360;
 	--red: #c53030;
 	--white: #ffffff;
-	--light-blue: #28262e;
-	--very-light-blue: #3e3b47;
-	--blue-sky: #ebf8ff;
-	--cleared-blue: #3172b7;
-	--green-blue: #e6fffa;
-	--light-pink: #fdf2f2;
-	--light-gray: #f4ede8;
-	--blue-wood: #312e38;
-	--green: #2e656a;
-	--pink: #c53030;
+	--light-blue: #5636d3;
+	--orange: #ff872c;
+	--very-light-blue: #ebf8ff;
+	--blue-sky: #3172b7;
+	--cleared-blue: #e6fffa;
 
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.145 0 0);
-	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.145 0 0);
-	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(0.205 0 0);
-	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.97 0 0);
-	--secondary-foreground: oklch(0.205 0 0);
-	--muted: oklch(0.97 0 0);
-	--muted-foreground: oklch(0.556 0 0);
-	--accent: oklch(0.97 0 0);
-	--accent-foreground: oklch(0.205 0 0);
-	--destructive: oklch(0.577 0.245 27.325);
-	--border: oklch(0.922 0 0);
-	--input: oklch(0.922 0 0);
-	--ring: oklch(0.708 0 0);
+	--green-blue: #2e656a;
+	--light-pink: #fddede;
+	--light-gray: #969cb3;
+	--blue-wood: #363f5f;
+	--green: #12a454;
+	--pink: #e83f5b;
+
+	/* shadcn/ui variables adjusted for default dark background */
+	--foreground: #f4ede8;
+	--card: #232129;
+	--card-foreground: #f4ede8;
+	--popover: #232129;
+	--popover-foreground: #f4ede8;
+	--primary: #ff872c;
+	--primary-foreground: #ffffff;
+	--secondary: #3e3b47;
+	--secondary-foreground: #f4ede8;
+	--muted: #3e3b47;
+	--muted-foreground: #969cb3;
+	--accent: #3e3b47;
+	--accent-foreground: #f4ede8;
+	--destructive: #e83f5b;
+	--destructive-foreground: #ffffff;
+	--border: #3e3b47;
+	--input: #232129;
+	--ring: #ff872c;
 	--chart-1: oklch(0.646 0.222 41.116);
 	--chart-2: oklch(0.6 0.118 184.704);
 	--chart-3: oklch(0.398 0.07 227.392);
 	--chart-4: oklch(0.828 0.189 84.429);
 	--chart-5: oklch(0.769 0.188 70.08);
-	--sidebar: oklch(0.985 0 0);
-	--sidebar-foreground: oklch(0.145 0 0);
-	--sidebar-primary: oklch(0.205 0 0);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
-	--sidebar-accent: oklch(0.97 0 0);
-	--sidebar-accent-foreground: oklch(0.205 0 0);
-	--sidebar-border: oklch(0.922 0 0);
-	--sidebar-ring: oklch(0.708 0 0);
+	--sidebar: #28262e;
+	--sidebar-foreground: #f4ede8;
+	--sidebar-primary: #ff872c;
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: #3e3b47;
+	--sidebar-accent-foreground: #f4ede8;
+	--sidebar-border: #3e3b47;
+	--sidebar-ring: #ff872c;
 }
 
 @theme {
@@ -97,28 +101,23 @@
 	--radius-3xl: calc(var(--radius) + 12px);
 	--radius-4xl: calc(var(--radius) + 16px);
 
-	/* Custom Project Colors - Using explicit values to avoid build issues */
-	--color-orange: #ff9000;
-	--color-light-orange: #ff9000;
-	--color-light-blue: #28262e;
-	--color-very-light-blue: #3e3b47;
-	--color-container-background: #232129;
-	--color-input-text: #f4ede8;
-	--color-iron-gray: #666360;
-	--color-red: #c53030;
-	--color-blue-sky: #ebf8ff;
-	--color-cleared-blue: #3172b7;
-	--color-green-blue: #e6fffa;
-	--color-light-pink: #fdf2f2;
-	--color-light-gray: #f4ede8;
-	--color-blue-wood: #312e38;
-	--color-green: #2e656a;
-	--color-pink: #c53030;
-}
-
-.dark {
-	--background: #312e38;
-	--foreground: #f4ede8;
+	/* Custom Project Colors - Using variables as source of truth */
+	--color-orange: var(--orange);
+	--color-light-orange: var(--light-orange);
+	--color-light-blue: var(--light-blue);
+	--color-very-light-blue: var(--very-light-blue);
+	--color-container-background: var(--container-background);
+	--color-input-text: var(--input-text);
+	--color-iron-gray: var(--iron-gray);
+	--color-red: var(--red);
+	--color-blue-sky: var(--blue-sky);
+	--color-cleared-blue: var(--cleared-blue);
+	--color-green-blue: var(--green-blue);
+	--color-light-pink: var(--light-pink);
+	--color-light-gray: var(--light-gray);
+	--color-blue-wood: var(--blue-wood);
+	--color-green: var(--green);
+	--color-pink: var(--pink);
 }
 
 @layer base {
