@@ -88,7 +88,7 @@ export default function Home() {
 
 							<Button
 								type="submit"
-								className="w-full h-14 mt-4 bg-light-orange hover:bg-light-orange hover:brightness-75 transition-[filter] duration-200 text-background font-medium rounded-[0.3rem] border-0"
+								className="w-full h-14 mt-4 bg-light-orange hover:bg-light-orange hover:brightness-75 transition-[filter] duration-200 text-background font-medium rounded-[0.3rem] border-0 text-base"
 								disabled={isSubmitting}
 							>
 								{isSubmitting ? "Signing in..." : "Sign In"}
