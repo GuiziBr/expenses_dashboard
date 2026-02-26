@@ -58,3 +58,25 @@ export interface ExpenseQueryParams extends ExpenseFilters, ExpenseOrderBy {
 	offset: number
 	limit: number
 }
+
+// ── Balance Types ────────────────────────────────────────────────────
+
+export type BalanceFilterKey = "categories" | "paymentType" | "banks" | "stores"
+
+export interface BalanceFilters {
+	startDate?: string
+	endDate?: string
+	filterBy?: BalanceFilterKey
+	filterValue?: string
+}
+
+export interface SharedBalance {
+	paying: number
+	payed: number
+	total: number
+}
+
+export interface GetBalanceResponse {
+	personalBalance: number
+	sharedBalance: SharedBalance
+}
