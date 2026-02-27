@@ -10,7 +10,10 @@ import type { SharedReport } from "@/types/expenses"
  * @param year   The year to fetch (e.g., 2026)
  * @param month  The month number (1 for January, ..., 12 for December)
  */
-export function useConsolidatedBalance(year: number, month: number) {
+export function useConsolidatedBalance(
+	year: number | null,
+	month: number | null
+) {
 	return useQuery<SharedReport>({
 		queryKey: ["consolidated-balance", year, month],
 		queryFn: async () => {
