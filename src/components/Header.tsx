@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils"
 const PAGE_TITLES: Record<string, string> = {
 	"/sharedDashboard": "Shared Dashboard",
 	"/personalDashboard": "Personal Dashboard",
-	"/consolidatedBalance": "Shared Balance"
+	"/consolidatedBalance": "Consolidated Balance"
 }
 
 export function Header() {
@@ -64,7 +64,7 @@ export function Header() {
 							getClassName("/consolidatedBalance")
 						)}
 					>
-						Shared Balance
+						Consolidated Balance
 					</Link>
 				</nav>
 
@@ -187,7 +187,7 @@ export function Header() {
 									getClassName("/consolidatedBalance")
 								)}
 							>
-								Shared Balance
+								Consolidated Balance
 							</Link>
 						</DropdownMenuItem>
 
