@@ -21,19 +21,23 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 		return (
 			<div
 				className={cn(
-					"flex h-11 w-full items-center rounded-md bg-[#232129] border-2 border-[#232129] px-3 text-sm shadow-sm transition-colors focus-within:border-orange text-[#f4ede8]",
+					"flex h-11 w-full items-center rounded-md bg-container-background border-2 border-container-background px-3 text-sm shadow-sm transition-colors focus-within:border-orange text-input-text",
 					error && "border-red text-red",
 					className
 				)}
 			>
-				{Icon && <Icon className="mr-2 h-5 w-5 text-[#666360]" />}
+				{Icon && <Icon className="mr-2 h-5 w-5 text-iron-gray" />}
 				<select
 					className="h-full w-full bg-transparent p-0 outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 appearance-none"
 					ref={ref}
 					{...props}
 				>
 					{placeholder && (
-						<option value="" disabled className="bg-[#232129] text-[#666360]">
+						<option
+							value=""
+							disabled
+							className="bg-container-background text-iron-gray"
+						>
 							{placeholder}
 						</option>
 					)}
@@ -41,7 +45,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 						<option
 							key={option.id}
 							value={option.id}
-							className="bg-[#232129] text-[#f4ede8]"
+							className="bg-container-background text-input-text"
 						>
 							{option.description || option.name}
 						</option>
