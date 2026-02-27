@@ -80,3 +80,43 @@ export interface GetBalanceResponse {
 	personalBalance: number
 	sharedBalance: SharedBalance
 }
+
+// ── Consolidated Balance Types ───────────────────────────────────────
+
+export interface ReportBank {
+	id: string
+	name: string
+	total: number
+}
+
+export interface ReportPayment {
+	id: string
+	description: string
+	banks: Array<ReportBank>
+	total: number
+}
+
+export interface ReportCategory {
+	id: string
+	description: string
+	total: number
+}
+
+export interface ConsolidatedReport {
+	id: string
+	name?: string
+	payments?: Array<ReportPayment>
+	categories?: Array<ReportCategory>
+	total: number
+}
+
+export interface SharedReport {
+	requester: ConsolidatedReport
+	partner?: ConsolidatedReport
+	balance: number
+}
+
+export interface ConsolidatedBalanceFilters {
+	year: number
+	month: number
+}
