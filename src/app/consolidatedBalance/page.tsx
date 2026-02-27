@@ -2,9 +2,11 @@
 
 import { CircleArrowDown, CircleArrowUp, DollarSign } from "lucide-react"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 import { BalanceCard } from "@/components/BalanceCard"
 import { ConsolidatedFilters } from "@/components/ConsolidatedFilters"
 import { Header } from "@/components/Header"
+import { ReportTables } from "@/components/ReportTables"
 import { useConsolidatedBalance } from "@/hooks/use-consolidated-balance"
 import { formatCurrency } from "@/lib/format-currency"
 
@@ -13,13 +15,14 @@ export default function ConsolidatedBalance() {
 		null
 	)
 
+	const [balanceType, setBalanceType] = useState("")
+
 	const { data, isLoading, error } = useConsolidatedBalance(
 		params?.year ?? null,
 		params?.month ?? null
 	)
 
-	const handleSearch = (filters: { balanceType: string; date: string }) => {
-		console.log("Searching with filters:", filters)
+	const handleSearch = (filters: { date: string }) => {
 		if (filters.date) {
 			const [year, month] = filters.date.split("-").map(Number)
 			setParams({ year, month })
@@ -27,13 +30,10 @@ export default function ConsolidatedBalance() {
 	}
 
 	useEffect(() => {
-		if (data) {
-			console.log("Consolidated Report Data:", data)
-		}
 		if (error) {
-			console.error("Error fetching consolidated balance:", error)
+			toast.error("Error loading consolidated balance. Please try again.")
 		}
-	}, [data, error])
+	}, [error])
 
 	return (
 		<div className="min-h-screen bg-background pb-12">
@@ -48,13 +48,13 @@ export default function ConsolidatedBalance() {
 							label={data?.requester?.name || "Requester"}
 							value={formatCurrency(data?.requester?.total ?? 0)}
 							icon={CircleArrowUp}
-							iconClassName="text-green-500"
+							iconClassName="text-green"
 						/>
 						<BalanceCard
 							label={data?.partner?.name || "Partner"}
 							value={formatCurrency(data?.partner?.total ?? 0)}
 							icon={CircleArrowDown}
-							iconClassName="text-red-500"
+							iconClassName="text-red"
 						/>
 					</div>
 					<BalanceCard
@@ -65,13 +65,14 @@ export default function ConsolidatedBalance() {
 					/>
 				</section>
 
-				<ConsolidatedFilters onSearch={handleSearch} isLoading={isLoading} />
+				<ConsolidatedFilters
+					onSearch={handleSearch}
+					balanceType={balanceType}
+					onBalanceTypeChange={setBalanceType}
+					isLoading={isLoading}
+				/>
 
-				{error && (
-					<div className="mt-8 p-4 bg-red-50 text-red-600 rounded-md text-center">
-						<p>Error loading consolidated balance. Please try again.</p>
-					</div>
-				)}
+				<ReportTables data={data} shareType={balanceType} />
 			</main>
 		</div>
 	)

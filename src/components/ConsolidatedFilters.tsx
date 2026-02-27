@@ -6,19 +6,22 @@ import { SHARED_BALANCE_TYPES } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 
 interface ConsolidatedFiltersProps {
-	onSearch: (filters: { balanceType: string; date: string }) => void
+	onSearch: (filters: { date: string }) => void
+	balanceType: string
+	onBalanceTypeChange: (type: string) => void
 	isLoading?: boolean
 }
 
 export function ConsolidatedFilters({
 	onSearch,
+	balanceType,
+	onBalanceTypeChange,
 	isLoading
 }: ConsolidatedFiltersProps) {
-	const [balanceType, setBalanceType] = React.useState("")
 	const [date, setDate] = React.useState("")
 	const [errors, setErrors] = React.useState<{ [key: string]: string }>({})
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = (e: React.SubmitEvent) => {
 		e.preventDefault()
 
 		const newErrors: { [key: string]: string } = {}
@@ -31,7 +34,7 @@ export function ConsolidatedFilters({
 		}
 
 		setErrors({})
-		onSearch({ balanceType, date })
+		onSearch({ date })
 	}
 
 	return (
@@ -52,23 +55,23 @@ export function ConsolidatedFilters({
 							placeholder="Select type"
 							value={balanceType}
 							onChange={(e) => {
-								setBalanceType(e.target.value)
+								onBalanceTypeChange(e.target.value)
 								if (errors.balanceType)
 									setErrors((prev) => ({ ...prev, balanceType: "" }))
 							}}
 							error={errors.balanceType}
-							className="px-2 md:px-4 text-[#f4ede8] text-xs md:text-sm border-[#232129]"
+							className="px-2 md:px-4 text-input-text text-xs md:text-sm border-container-background"
 						/>
 					</div>
 
 					{/* Input Container */}
 					<div
 						className={cn(
-							"flex-1 md:w-[14rem] relative flex items-center h-11 rounded-md bg-[#232129] border-2 border-[#232129] px-3 transition-colors focus-within:border-orange",
+							"flex-1 md:w-[14rem] relative flex items-center h-11 rounded-md bg-container-background border-2 border-container-background px-3 transition-colors focus-within:border-orange",
 							errors.date && "border-red text-red"
 						)}
 					>
-						<div className="text-[#666360]">
+						<div className="text-iron-gray">
 							<Calendar
 								className={cn(
 									"h-4 w-4 md:h-5 md:w-5",
@@ -84,7 +87,7 @@ export function ConsolidatedFilters({
 								setDate(e.target.value)
 								if (errors.date) setErrors((prev) => ({ ...prev, date: "" }))
 							}}
-							className="h-full w-full bg-transparent pl-2 pr-2 pt-1 text-xs md:text-sm text-[#f4ede8] shadow-sm outline-none appearance-none"
+							className="h-full w-full bg-transparent pl-2 pr-2 pt-1 text-xs md:text-sm text-input-text shadow-sm outline-none appearance-none"
 						/>
 						{errors.date && (
 							<div className="relative flex items-center group h-5">
@@ -105,7 +108,7 @@ export function ConsolidatedFilters({
 				<Button
 					type="submit"
 					disabled={isLoading}
-					className="h-10 w-full md:w-[5.5rem] bg-orange text-[#312e38] text-xs md:text-sm font-medium hover:brightness-90 transition-all rounded-[0.3rem] border-none"
+					className="h-10 w-full md:w-[5.5rem] bg-orange text-background text-xs md:text-sm font-medium hover:brightness-90 transition-all rounded-[0.3rem] border-none"
 				>
 					{isLoading ? "..." : "Search"}
 				</Button>
