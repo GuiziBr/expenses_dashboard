@@ -39,6 +39,17 @@ export default function ConsolidatedBalance() {
 			</div>
 
 			<main className="max-w-[1120px] mx-auto px-5 -mt-24">
+				<section className="flex justify-end mb-8">
+					<Button
+						onClick={handleLoadReport}
+						className="bg-white text-blue-wood hover:bg-gray-100 flex items-center gap-2 px-6 py-2 h-auto"
+						disabled={isLoading}
+					>
+						<Play className="w-4 h-4" />
+						{isLoading ? "Loading..." : "Load Current Report"}
+					</Button>
+				</section>
+
 				<section className="grid grid-cols-1 md:grid-cols-3 gap-8">
 					<div className="hidden md:contents">
 						<BalanceCard
