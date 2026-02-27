@@ -8,3 +8,8 @@ export const AUTH_COOKIE_OPTIONS = {
 	secure: process.env.NODE_ENV === "production",
 	sameSite: "lax" as const
 }
+
+export const SHARED_BALANCE_TYPES = [
+	{ id: "categories", description: "Category" },
+	{ id: "payments", description: "Payment Type" }
+]
