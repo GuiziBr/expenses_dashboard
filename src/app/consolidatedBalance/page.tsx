@@ -1,6 +1,6 @@
 "use client"
 
-import { DollarSign, User, Users } from "lucide-react"
+import { CircleArrowDown, CircleArrowUp, DollarSign } from "lucide-react"
 import { useEffect, useState } from "react"
 import { BalanceCard } from "@/components/BalanceCard"
 import { ConsolidatedFilters } from "@/components/ConsolidatedFilters"
@@ -47,14 +47,14 @@ export default function ConsolidatedBalance() {
 						<BalanceCard
 							label={data?.requester?.name || "Requester"}
 							value={formatCurrency(data?.requester?.total ?? 0)}
-							icon={User}
-							iconClassName="text-blue-500"
+							icon={CircleArrowUp}
+							iconClassName="text-green-500"
 						/>
 						<BalanceCard
 							label={data?.partner?.name || "Partner"}
 							value={formatCurrency(data?.partner?.total ?? 0)}
-							icon={Users}
-							iconClassName="text-purple-500"
+							icon={CircleArrowDown}
+							iconClassName="text-red-500"
 						/>
 					</div>
 					<BalanceCard
