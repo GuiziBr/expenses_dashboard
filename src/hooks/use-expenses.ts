@@ -1,6 +1,6 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { api } from "@/lib/api"
 import { formatExpense } from "@/lib/format-expense"
 import type {
@@ -25,8 +25,7 @@ function buildSearchParams(params: ExpenseQueryParams): string {
 	if (params.filterBy) entries.push(["filterBy", params.filterBy])
 	if (params.filterValue) entries.push(["filterValue", params.filterValue])
 	if (params.orderBy) entries.push(["orderBy", params.orderBy])
-	if (params.orderDirection)
-		entries.push(["orderDirection", params.orderDirection])
+	if (params.orderType) entries.push(["orderType", params.orderType])
 
 	entries.push(["offset", String(params.offset)])
 	entries.push(["limit", String(params.limit)])
@@ -69,6 +68,7 @@ export function useExpenses(
 				totalCount
 			}
 		},
+		placeholderData: keepPreviousData,
 		staleTime: 30_000 // 30 seconds — tab switching reuses cache
 	})
 }

@@ -1,32 +1,59 @@
 "use client"
 
 import { DollarSign } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BalanceCard } from "@/components/BalanceCard"
+import { ExpenseTable } from "@/components/ExpenseTable"
 import { Header } from "@/components/Header"
+import { Pagination } from "@/components/Pagination"
+import { Loader } from "@/components/ui/loader"
 import { useBalance } from "@/hooks/use-balance"
 import { useExpenses } from "@/hooks/use-expenses"
+import { useSortParams } from "@/hooks/use-sort-params"
 import { getFirstDayOfMonth, getLastDayOfMonth } from "@/lib/date-utils"
 import { formatCurrency } from "@/lib/format-currency"
 import type { ExpenseQueryParams } from "@/types/expenses"
 
-const DEFAULT_LIMIT = 10
+const DEFAULT_LIMIT = 8
 
 export default function PersonalDashboard() {
-	const [params] = useState<ExpenseQueryParams>({
+	const { orderBy, orderType, toggleSort, getSortIndicator } = useSortParams()
+
+	const [params, setParams] = useState<ExpenseQueryParams>({
 		offset: 0,
 		limit: DEFAULT_LIMIT,
 		startDate: getFirstDayOfMonth(),
 		endDate: getLastDayOfMonth()
 	})
 
-	const { data: balance } = useBalance({ startDate: getFirstDayOfMonth() })
+	// React to sort changes
+	useEffect(() => {
+		setParams((prev) => ({
+			...prev,
+			orderBy,
+			orderType,
+			offset: 0 // Reset to first page on sort
+		}))
+	}, [orderBy, orderType])
+
 	const { data, isLoading, error } = useExpenses("personal", params)
+	const { data: balance } = useBalance({ startDate: params.startDate })
 
 	const total = formatCurrency(balance?.personalBalance ?? 0)
 
+	const handlePageChange = (page: number) => {
+		setParams((prev) => ({
+			...prev,
+			offset: (page - 1) * prev.limit
+		}))
+	}
+
+	const totalPages = data ? Math.ceil(data.totalCount / params.limit) : 0
+	const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
+	const currentPage = Math.floor(params.offset / params.limit) + 1
+
 	return (
-		<div className="min-h-screen bg-background">
+		<div className="min-h-screen bg-background pb-20">
 			<div className="bg-[var(--light-blue)] pb-32">
 				<Header />
 			</div>
@@ -43,10 +70,10 @@ export default function PersonalDashboard() {
 					</div>
 				</section>
 
-				{isLoading && (
-					<p className="text-center text-muted-foreground">
-						Loading expenses...
-					</p>
+				{isLoading && !data && (
+					<div className="flex items-center justify-center min-h-[400px]">
+						<Loader size={48} />
+					</div>
 				)}
 
 				{error && (
@@ -55,14 +82,26 @@ export default function PersonalDashboard() {
 					</p>
 				)}
 
-				{data && (
-					<div>
-						<p className="text-muted-foreground text-sm mb-4">
-							{data.totalCount} expense
-							{data.totalCount !== 1 ? "s" : ""} found
-						</p>
-						{/* Expense table/list will be rendered here */}
+				{data && data.expenses.length > 0 && (
+					<div className="animate-in fade-in duration-500">
+						<ExpenseTable
+							expenses={data.expenses}
+							onSort={toggleSort}
+							getSortIndicator={getSortIndicator}
+						/>
+
+						<Pagination
+							currentPage={currentPage}
+							setCurrentPage={handlePageChange}
+							pages={pages}
+						/>
 					</div>
+				)}
+
+				{data && data.expenses.length === 0 && !isLoading && (
+					<p className="text-center text-muted-foreground mt-12 py-12 px-4 bg-white/5 rounded-lg border border-dashed border-white/10">
+						No expenses found for this period.
+					</p>
 				)}
 			</main>
 		</div>

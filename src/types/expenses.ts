@@ -51,7 +51,7 @@ export interface ExpenseFilters {
 
 export interface ExpenseOrderBy {
 	orderBy?: string
-	orderDirection?: "asc" | "desc"
+	orderType?: "asc" | "desc"
 }
 
 export interface ExpenseQueryParams extends ExpenseFilters, ExpenseOrderBy {
