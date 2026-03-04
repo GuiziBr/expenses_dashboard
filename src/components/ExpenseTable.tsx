@@ -122,7 +122,11 @@ export function ExpenseTable({
 							<td className="bg-white py-5 px-1 md:px-2 text-light-gray hidden md:table-cell text-xs md:text-base">
 								{expense.category}
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-green font-medium whitespace-nowrap text-xs md:text-base">
+							<td
+								className={`bg-white py-5 px-1 md:px-2 font-normal whitespace-nowrap text-xs md:text-base ${
+									expense.type === "outcome" ? "text-pink" : "text-green"
+								}`}
+							>
 								{expense.formattedAmount}
 							</td>
 							<td
