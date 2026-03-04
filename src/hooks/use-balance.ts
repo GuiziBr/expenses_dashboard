@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { api } from "@/lib/api"
-import { getTodayString } from "@/lib/date-utils"
+import { getLastDayOfMonth } from "@/lib/date-utils"
 import type { BalanceFilters, GetBalanceResponse } from "@/types/expenses"
 
 const FILTER_VALUES: Record<string, string> = {
@@ -13,11 +13,11 @@ const FILTER_VALUES: Record<string, string> = {
 }
 
 function buildBalanceParams(filters: BalanceFilters): string {
-	const today = getTodayString()
+	const lastDayOfMonth = getLastDayOfMonth()
 	const params = new URLSearchParams()
 
 	if (filters.startDate) params.set("startDate", filters.startDate)
-	params.set("endDate", filters.endDate ?? today)
+	params.set("endDate", filters.endDate ?? lastDayOfMonth)
 
 	if (filters.filterBy) {
 		params.set("filterBy", FILTER_VALUES[filters.filterBy] ?? filters.filterBy)
