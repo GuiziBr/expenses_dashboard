@@ -20,6 +20,20 @@ export const EXPENSE_COLUMNS = {
 	store: "store"
 } as const
 
+export const COLUMN_FILTERS = [
+	{ id: "categories", description: "Category" },
+	{ id: "paymentType", description: "Method" },
+	{ id: "banks", description: "Bank" },
+	{ id: "stores", description: "Store" }
+] as const
+
+export const FILTER_VALUE_MAPPING: Record<string, string> = {
+	categories: "category",
+	paymentType: "payment_type",
+	banks: "bank",
+	stores: "store"
+}
+
 export const SHARED_BALANCE_TYPES = [
 	{ id: "categories", description: "Category" },
 	{ id: "payments", description: "Payment Type" }

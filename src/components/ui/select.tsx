@@ -1,6 +1,6 @@
-import { AlertCircle, LucideIcon } from "lucide-react"
-import * as React from "react"
 import { cn } from "@/lib/utils"
+import { AlertCircle } from "lucide-react"
+import * as React from "react"
 
 export interface SelectOption {
 	id: string
@@ -10,7 +10,7 @@ export interface SelectOption {
 
 export interface SelectProps
 	extends React.SelectHTMLAttributes<HTMLSelectElement> {
-	icon?: LucideIcon
+	icon?: React.ElementType
 	options: SelectOption[]
 	placeholder?: string
 	error?: string

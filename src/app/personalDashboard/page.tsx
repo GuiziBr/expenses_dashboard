@@ -4,15 +4,21 @@ import { DollarSign } from "lucide-react"
 import { useEffect, useState } from "react"
 import { BalanceCard } from "@/components/BalanceCard"
 import { ExpenseTable } from "@/components/ExpenseTable"
+import { FilterForm } from "@/components/FilterForm"
 import { Header } from "@/components/Header"
 import { Pagination } from "@/components/Pagination"
 import { Loader } from "@/components/ui/loader"
 import { useBalance } from "@/hooks/use-balance"
 import { useExpenses } from "@/hooks/use-expenses"
 import { useSortParams } from "@/hooks/use-sort-params"
+import { FILTER_VALUE_MAPPING } from "@/lib/constants"
 import { getFirstDayOfMonth, getLastDayOfMonth } from "@/lib/date-utils"
 import { formatCurrency } from "@/lib/format-currency"
-import type { ExpenseQueryParams } from "@/types/expenses"
+import type {
+	BalanceFilterKey,
+	ExpenseFilters,
+	ExpenseQueryParams
+} from "@/types/expenses"
 
 const DEFAULT_LIMIT = 8
 
@@ -38,10 +44,25 @@ export default function PersonalDashboard() {
 
 	const { data, isLoading, error } = useExpenses("personal", params)
 	const { data: balance } = useBalance({
-		startDate: params.startDate
+		startDate: params.startDate,
+		endDate: params.endDate,
+		filterBy: params.filterBy as BalanceFilterKey,
+		filterValue: params.filterValue
 	})
 
 	const total = formatCurrency(balance?.personalBalance ?? 0)
+
+	const handleSearch = (filters: ExpenseFilters) => {
+		setParams((prev) => ({
+			...prev,
+			...filters,
+			// Map the UI filter ID to the API field name
+			filterBy: filters.filterBy
+				? FILTER_VALUE_MAPPING[filters.filterBy]
+				: undefined,
+			offset: 0 // Reset to first page on search
+		}))
+	}
 
 	const handlePageChange = (page: number) => {
 		setParams((prev) => ({
@@ -71,6 +92,8 @@ export default function PersonalDashboard() {
 						/>
 					</div>
 				</section>
+
+				<FilterForm onSubmit={handleSearch} initialFilters={params} />
 
 				{isLoading && !data && (
 					<div className="flex items-center justify-center min-h-[400px]">
@@ -102,7 +125,7 @@ export default function PersonalDashboard() {
 
 				{data && data.expenses.length === 0 && !isLoading && (
 					<p className="text-center text-muted-foreground mt-12 py-12 px-4 bg-white/5 rounded-lg border border-dashed border-white/10">
-						No expenses found for this period.
+						No expenses found for this criteria.
 					</p>
 				)}
 			</main>
