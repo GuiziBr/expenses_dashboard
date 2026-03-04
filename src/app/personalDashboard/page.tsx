@@ -37,7 +37,9 @@ export default function PersonalDashboard() {
 	}, [orderBy, orderType])
 
 	const { data, isLoading, error } = useExpenses("personal", params)
-	const { data: balance } = useBalance({ startDate: params.startDate })
+	const { data: balance } = useBalance({
+		startDate: params.startDate
+	})
 
 	const total = formatCurrency(balance?.personalBalance ?? 0)
 
@@ -53,7 +55,7 @@ export default function PersonalDashboard() {
 	const currentPage = Math.floor(params.offset / params.limit) + 1
 
 	return (
-		<div className="min-h-screen bg-background pb-20">
+		<div className="min-h-screen bg-background">
 			<div className="bg-[var(--light-blue)] pb-32">
 				<Header />
 			</div>

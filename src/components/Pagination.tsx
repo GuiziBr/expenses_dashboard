@@ -35,7 +35,7 @@ export function Pagination({
 	}
 
 	return (
-		<div className="mb-8 flex w-full justify-center md:mt-0">
+		<div className="mb-8 flex w-full justify-center md:mt-4">
 			<div className="flex gap-2">
 				<button
 					type="button"

@@ -20,7 +20,7 @@ export function ExpenseTable({
 				<thead>
 					<tr>
 						<th
-							className="text-left py-4 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all pl-2 w-[35%] md:w-[30%] lg:w-[25%] xl:w-[20%]"
+							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all pl-2 w-[35%] md:w-[30%] lg:w-[25%] xl:w-[20%]"
 							onClick={() => onSort(EXPENSE_COLUMNS.description)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
@@ -31,7 +31,7 @@ export function ExpenseTable({
 							</div>
 						</th>
 						<th
-							className="text-left py-4 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all hidden md:table-cell md:w-[20%] lg:w-[15%] xl:w-[12%]"
+							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all hidden md:table-cell md:w-[20%] lg:w-[15%] xl:w-[12%]"
 							onClick={() => onSort(EXPENSE_COLUMNS.category)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
@@ -42,7 +42,7 @@ export function ExpenseTable({
 							</div>
 						</th>
 						<th
-							className="text-left py-4 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all w-[20%] md:w-[15%] lg:w-[12%] xl:w-[10%]"
+							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all w-[20%] md:w-[15%] lg:w-[12%] xl:w-[10%]"
 							onClick={() => onSort(EXPENSE_COLUMNS.amount)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
@@ -53,7 +53,7 @@ export function ExpenseTable({
 							</div>
 						</th>
 						<th
-							className="text-left py-4 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all hidden lg:table-cell lg:w-[14%] xl:w-[10%]"
+							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all hidden lg:table-cell lg:w-[14%] xl:w-[10%]"
 							onClick={() => onSort(EXPENSE_COLUMNS.paymentType)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
@@ -64,7 +64,7 @@ export function ExpenseTable({
 							</div>
 						</th>
 						<th
-							className="text-left py-4 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all w-[22%] md:w-[17%] lg:w-[17%] xl:w-[14%]"
+							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all w-[22%] md:w-[17%] lg:w-[17%] xl:w-[14%]"
 							onClick={() => onSort(EXPENSE_COLUMNS.dueDate)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
@@ -76,7 +76,7 @@ export function ExpenseTable({
 							</div>
 						</th>
 						<th
-							className="text-left py-4 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all w-[23%] md:w-[18%] lg:w-[17%] xl:w-[14%]"
+							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all w-[23%] md:w-[18%] lg:w-[17%] xl:w-[14%]"
 							onClick={() => onSort(EXPENSE_COLUMNS.date)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
@@ -87,7 +87,7 @@ export function ExpenseTable({
 							</div>
 						</th>
 						<th
-							className="text-left py-4 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all hidden xl:table-cell xl:w-[10%]"
+							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all hidden xl:table-cell xl:w-[10%]"
 							onClick={() => onSort(EXPENSE_COLUMNS.bank)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
@@ -98,7 +98,7 @@ export function ExpenseTable({
 							</div>
 						</th>
 						<th
-							className="text-left py-4 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all hidden xl:table-cell pr-2 xl:w-[10%]"
+							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all hidden xl:table-cell pr-2 xl:w-[10%]"
 							onClick={() => onSort(EXPENSE_COLUMNS.store)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
