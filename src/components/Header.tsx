@@ -12,13 +12,14 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
+import { translations } from "@/constants/translations"
 import { useAuth } from "@/contexts/auth-context"
 import { cn } from "@/lib/utils"
 
 const PAGE_TITLES: Record<string, string> = {
-	"/sharedDashboard": "Shared Dashboard",
-	"/personalDashboard": "Personal Dashboard",
-	"/consolidatedBalance": "Consolidated Balance"
+	"/sharedDashboard": translations.dashboards.shared.title,
+	"/personalDashboard": translations.dashboards.personal.title,
+	"/consolidatedBalance": translations.dashboards.consolidated.title
 }
 
 export function Header() {
@@ -30,7 +31,8 @@ export function Header() {
 		pathname === path ? "text-orange" : "text-white hover:text-orange/60"
 
 	const getPageTitle = () => {
-		if (pathname?.startsWith("/management")) return "Management"
+		if (pathname?.startsWith("/management"))
+			return translations.common.management
 		return PAGE_TITLES[pathname] ?? "Dashboard"
 	}
 
@@ -46,7 +48,7 @@ export function Header() {
 							getClassName("/sharedDashboard")
 						)}
 					>
-						Shared Dashboard
+						{translations.dashboards.shared.title}
 					</Link>
 					<Link
 						href="/personalDashboard"
@@ -55,7 +57,7 @@ export function Header() {
 							getClassName("/personalDashboard")
 						)}
 					>
-						Personal Dashboard
+						{translations.dashboards.personal.title}
 					</Link>
 					<Link
 						href="/consolidatedBalance"
@@ -64,7 +66,7 @@ export function Header() {
 							getClassName("/consolidatedBalance")
 						)}
 					>
-						Consolidated Balance
+						{translations.dashboards.consolidated.title}
 					</Link>
 				</nav>
 
@@ -82,7 +84,7 @@ export function Header() {
 										: "text-white hover:text-orange/60"
 								)}
 							>
-								Management
+								{translations.common.management}
 								{isManagementOpen ? (
 									<ChevronUp className="w-4 h-4" />
 								) : (
@@ -99,7 +101,7 @@ export function Header() {
 								className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
 							>
 								<Link href="/management/users" className="w-full">
-									Users
+									{translations.management.users}
 								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuItem
@@ -107,7 +109,7 @@ export function Header() {
 								className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
 							>
 								<Link href="/management/categories" className="w-full">
-									Categories
+									{translations.management.categories}
 								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuItem
@@ -115,7 +117,7 @@ export function Header() {
 								className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
 							>
 								<Link href="/management/settings" className="w-full">
-									Settings
+									{translations.management.settings}
 								</Link>
 							</DropdownMenuItem>
 						</DropdownMenuContent>
@@ -127,7 +129,7 @@ export function Header() {
 						onClick={() => signOut()}
 						className="bg-transparent border-none outline-none text-white hover:text-orange/60 transition-colors duration-200 text-base font-medium flex items-center gap-2 px-0 hover:bg-transparent"
 					>
-						Logout
+						{translations.common.logout}
 						<LogOut className="w-4 h-4" />
 					</Button>
 				</nav>
@@ -159,7 +161,7 @@ export function Header() {
 									getClassName("/sharedDashboard")
 								)}
 							>
-								Shared Dashboard
+								{translations.dashboards.shared.title}
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem
@@ -173,7 +175,7 @@ export function Header() {
 									getClassName("/personalDashboard")
 								)}
 							>
-								Personal Dashboard
+								{translations.dashboards.personal.title}
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem
@@ -187,21 +189,21 @@ export function Header() {
 									getClassName("/consolidatedBalance")
 								)}
 							>
-								Consolidated Balance
+								{translations.dashboards.consolidated.title}
 							</Link>
 						</DropdownMenuItem>
 
 						<DropdownMenuSeparator className="bg-white/10 my-2" />
 
 						<div className="px-4 pt-2 pb-1 text-white/40 text-xs uppercase tracking-wider font-bold">
-							Management
+							{translations.common.management}
 						</div>
 						<DropdownMenuItem
 							asChild
 							className="focus:bg-white/10 focus:text-white cursor-pointer px-6 py-2"
 						>
 							<Link href="/management/users" className="w-full">
-								Users
+								{translations.management.users}
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem
@@ -209,7 +211,7 @@ export function Header() {
 							className="focus:bg-white/10 focus:text-white cursor-pointer px-6 py-2"
 						>
 							<Link href="/management/categories" className="w-full">
-								Categories
+								{translations.management.categories}
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem
@@ -217,7 +219,7 @@ export function Header() {
 							className="focus:bg-white/10 focus:text-white cursor-pointer px-6 py-2"
 						>
 							<Link href="/management/settings" className="w-full">
-								Settings
+								{translations.management.settings}
 							</Link>
 						</DropdownMenuItem>
 
@@ -227,7 +229,7 @@ export function Header() {
 							onClick={() => signOut()}
 							className="focus:bg-white/10 focus:text-orange text-orange font-bold cursor-pointer px-4 py-3 flex items-center justify-between"
 						>
-							Logout
+							{translations.common.logout}
 							<LogOut className="w-5 h-5" />
 						</DropdownMenuItem>
 					</DropdownMenuContent>

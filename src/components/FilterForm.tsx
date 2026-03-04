@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { HiOutlineSelector } from "react-icons/hi"
+import { translations } from "@/constants/translations"
 import { useFilterValues } from "@/hooks/use-filter-values"
 import { COLUMN_FILTERS } from "@/lib/constants"
 import type { ExpenseFilters } from "@/types/expenses"
@@ -57,7 +58,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 						icon={HiOutlineSelector}
 						name="filterBy"
 						options={COLUMN_FILTERS as unknown as SelectOption[]}
-						placeholder="Filter by"
+						placeholder={translations.filters.filterBy}
 						className="md:w-36"
 						value={filterBy}
 						onChange={handleFilterByChange}
@@ -66,7 +67,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 						icon={HiOutlineSelector}
 						name="filterValue"
 						options={filterOptions}
-						placeholder="Filter value"
+						placeholder={translations.filters.filterValue}
 						className="md:w-44"
 						disabled={!filterBy || isLoadingOptions}
 						value={filterValue}
@@ -110,7 +111,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 					type="submit"
 					className="w-full md:w-36 h-11 font-bold text-base"
 				>
-					Search
+					{translations.common.search}
 				</Button>
 			</form>
 		</section>

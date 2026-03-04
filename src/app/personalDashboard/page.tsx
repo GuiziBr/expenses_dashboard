@@ -8,6 +8,7 @@ import { FilterForm } from "@/components/FilterForm"
 import { Header } from "@/components/Header"
 import { Pagination } from "@/components/Pagination"
 import { Loader } from "@/components/ui/loader"
+import { translations } from "@/constants/translations"
 import { useBalance } from "@/hooks/use-balance"
 import { useExpenses } from "@/hooks/use-expenses"
 import { useSortParams } from "@/hooks/use-sort-params"
@@ -85,7 +86,7 @@ export default function PersonalDashboard() {
 				<section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
 					<div className="md:col-start-2">
 						<BalanceCard
-							label="Balance"
+							label={translations.common.balance}
 							value={total}
 							icon={DollarSign}
 							variant="total"
@@ -103,7 +104,7 @@ export default function PersonalDashboard() {
 
 				{error && (
 					<p className="text-center text-red">
-						Failed to load expenses. Please try again.
+						{translations.common.errorLoading}
 					</p>
 				)}
 
@@ -125,7 +126,7 @@ export default function PersonalDashboard() {
 
 				{data && data.expenses.length === 0 && !isLoading && (
 					<p className="text-center text-muted-foreground mt-12 py-12 px-4 bg-white/5 rounded-lg border border-dashed border-white/10">
-						No expenses found for this criteria.
+						{translations.common.noExpensesFound}
 					</p>
 				)}
 			</main>

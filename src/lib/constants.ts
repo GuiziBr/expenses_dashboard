@@ -1,3 +1,5 @@
+import { translations } from "@/constants/translations"
+
 export const COOKIE_NAME = "auth_token"
 export const API_BASE_URL =
 	process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"
@@ -21,10 +23,10 @@ export const EXPENSE_COLUMNS = {
 } as const
 
 export const COLUMN_FILTERS = [
-	{ id: "categories", description: "Category" },
-	{ id: "paymentType", description: "Method" },
-	{ id: "banks", description: "Bank" },
-	{ id: "stores", description: "Store" }
+	{ id: "categories", description: translations.filters.categories },
+	{ id: "paymentType", description: translations.filters.method },
+	{ id: "banks", description: translations.filters.bank },
+	{ id: "stores", description: translations.filters.store }
 ] as const
 
 export const FILTER_VALUE_MAPPING: Record<string, string> = {
@@ -35,6 +37,6 @@ export const FILTER_VALUE_MAPPING: Record<string, string> = {
 }
 
 export const SHARED_BALANCE_TYPES = [
-	{ id: "categories", description: "Category" },
-	{ id: "payments", description: "Payment Type" }
+	{ id: "categories", description: translations.filters.categories },
+	{ id: "payments", description: translations.filters.paymentType }
 ]

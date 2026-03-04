@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { translations } from "@/constants/translations"
 import { cn } from "@/lib/utils"
 
 interface PaginationProps {
@@ -45,7 +46,7 @@ export function Pagination({
 						"px-3 py-1 cursor-pointer hover:brightness-75 transition-all text-light-gray disabled:opacity-50 disabled:pointer-events-none"
 					)}
 				>
-					Previous
+					{translations.common.previous}
 				</button>
 
 				{pages.map((page) => {
@@ -78,7 +79,7 @@ export function Pagination({
 						"px-3 py-1 cursor-pointer hover:brightness-75 transition-all text-light-gray disabled:opacity-50 disabled:pointer-events-none"
 					)}
 				>
-					Next
+					{translations.common.next}
 				</button>
 			</div>
 		</div>

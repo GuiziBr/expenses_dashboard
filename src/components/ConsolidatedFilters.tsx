@@ -2,6 +2,7 @@ import { AlertCircle, Calendar, ChevronDown } from "lucide-react"
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Select } from "@/components/ui/select"
+import { translations } from "@/constants/translations"
 import { SHARED_BALANCE_TYPES } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 
@@ -25,8 +26,10 @@ export function ConsolidatedFilters({
 		e.preventDefault()
 
 		const newErrors: { [key: string]: string } = {}
-		if (!balanceType) newErrors.balanceType = "Balance type is required"
-		if (!date) newErrors.date = "Month is required"
+		if (!balanceType)
+			newErrors.balanceType = translations.dashboards.consolidated.typeRequired
+		if (!date)
+			newErrors.date = translations.dashboards.consolidated.monthRequired
 
 		if (Object.keys(newErrors).length > 0) {
 			setErrors(newErrors)
@@ -52,7 +55,7 @@ export function ConsolidatedFilters({
 							icon={ChevronDown}
 							name="balanceType"
 							options={SHARED_BALANCE_TYPES}
-							placeholder="Select type"
+							placeholder={translations.dashboards.consolidated.selectType}
 							value={balanceType}
 							onChange={(e) => {
 								onBalanceTypeChange(e.target.value)
@@ -110,7 +113,7 @@ export function ConsolidatedFilters({
 					disabled={isLoading}
 					className="h-10 w-full md:w-[5.5rem] bg-orange text-background text-xs md:text-sm font-medium hover:brightness-90 transition-all rounded-[0.3rem] border-none"
 				>
-					{isLoading ? "..." : "Search"}
+					{isLoading ? translations.common.loading : translations.common.search}
 				</Button>
 			</form>
 		</section>

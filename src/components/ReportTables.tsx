@@ -1,4 +1,5 @@
 import { Fragment } from "react"
+import { translations } from "@/constants/translations"
 import { formatCurrency } from "@/lib/format-currency"
 import { cn } from "@/lib/utils"
 import type {
@@ -49,7 +50,8 @@ const PaymentsList = ({
 						)}
 						colSpan={2}
 					>
-						Total - {formatCurrency(payment.total)}
+						{translations.dashboards.consolidated.totalPrefix}
+						{formatCurrency(payment.total)}
 					</td>
 				</tr>
 			</Fragment>
@@ -77,7 +79,8 @@ const CategoriesList = ({
 							className
 						)}
 					>
-						Total - {formatCurrency(category.total)}
+						{translations.dashboards.consolidated.totalPrefix}
+						{formatCurrency(category.total)}
 					</td>
 				</tr>
 			</Fragment>

@@ -1,5 +1,5 @@
 "use client"
-
+import { translations } from "@/constants/translations"
 import { EXPENSE_COLUMNS } from "@/lib/constants"
 import type { FormattedExpense } from "@/types/expenses"
 
@@ -24,7 +24,7 @@ export function ExpenseTable({
 							onClick={() => onSort(EXPENSE_COLUMNS.description)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								Expense{" "}
+								{translations.table.expense}{" "}
 								<span className="text-[0.6em] opacity-70 ml-1">
 									{getSortIndicator(EXPENSE_COLUMNS.description)}
 								</span>
@@ -35,7 +35,7 @@ export function ExpenseTable({
 							onClick={() => onSort(EXPENSE_COLUMNS.category)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								Category{" "}
+								{translations.table.category}{" "}
 								<span className="text-[0.6em] opacity-70 ml-1">
 									{getSortIndicator(EXPENSE_COLUMNS.category)}
 								</span>
@@ -46,7 +46,7 @@ export function ExpenseTable({
 							onClick={() => onSort(EXPENSE_COLUMNS.amount)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								Amount{" "}
+								{translations.table.amount}{" "}
 								<span className="text-[0.6em] opacity-70 ml-1">
 									{getSortIndicator(EXPENSE_COLUMNS.amount)}
 								</span>
@@ -57,7 +57,7 @@ export function ExpenseTable({
 							onClick={() => onSort(EXPENSE_COLUMNS.paymentType)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								Method{" "}
+								{translations.table.method}{" "}
 								<span className="text-[0.6em] opacity-70 ml-1">
 									{getSortIndicator(EXPENSE_COLUMNS.paymentType)}
 								</span>
@@ -68,8 +68,10 @@ export function ExpenseTable({
 							onClick={() => onSort(EXPENSE_COLUMNS.dueDate)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								<span className="md:hidden">Due</span>
-								<span className="hidden md:inline">Due Date</span>
+								<span className="md:hidden">{translations.table.due}</span>
+								<span className="hidden md:inline">
+									{translations.table.dueDate}
+								</span>
 								<span className="text-[0.6em] opacity-70 ml-1">
 									{getSortIndicator(EXPENSE_COLUMNS.dueDate)}
 								</span>
@@ -80,7 +82,7 @@ export function ExpenseTable({
 							onClick={() => onSort(EXPENSE_COLUMNS.date)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								Purchase{" "}
+								{translations.table.purchase}{" "}
 								<span className="text-[0.6em] opacity-70 ml-1">
 									{getSortIndicator(EXPENSE_COLUMNS.date)}
 								</span>
@@ -91,7 +93,7 @@ export function ExpenseTable({
 							onClick={() => onSort(EXPENSE_COLUMNS.bank)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								Bank{" "}
+								{translations.table.bank}{" "}
 								<span className="text-[0.6em] opacity-70 ml-1">
 									{getSortIndicator(EXPENSE_COLUMNS.bank)}
 								</span>
@@ -102,7 +104,7 @@ export function ExpenseTable({
 							onClick={() => onSort(EXPENSE_COLUMNS.store)}
 						>
 							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								Store{" "}
+								{translations.table.store}{" "}
 								<span className="text-[0.6em] opacity-70 ml-1">
 									{getSortIndicator(EXPENSE_COLUMNS.store)}
 								</span>
