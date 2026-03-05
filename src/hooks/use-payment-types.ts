@@ -56,9 +56,9 @@ export function useCreatePaymentType() {
 			description: string
 			hasStatement: boolean
 		}) => {
-			return api.post("paymentTypes", {
+			return api.post("paymentType", {
 				description,
-				has_statement: hasStatement
+				hasStatement
 			})
 		},
 		onSuccess: () => {
@@ -81,9 +81,9 @@ export function useUpdatePaymentType() {
 			description: string
 			hasStatement: boolean
 		}) => {
-			return api.patch(`paymentTypes/${id}`, {
+			return api.patch(`paymentType/${id}`, {
 				description,
-				has_statement: hasStatement
+				hasStatement
 			})
 		},
 		onSuccess: () => {
@@ -98,7 +98,7 @@ export function useDeletePaymentType() {
 
 	return useMutation({
 		mutationFn: async (id: string) => {
-			return api.delete(`paymentTypes/${id}`)
+			return api.delete(`paymentType/${id}`)
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["paymentTypes"] })
