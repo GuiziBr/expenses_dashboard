@@ -1,12 +1,18 @@
 "use client"
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import {
+	keepPreviousData,
+	useMutation,
+	useQuery,
+	useQueryClient
+} from "@tanstack/react-query"
 import { api } from "@/lib/api"
 import { formatExpense } from "@/lib/format-expense"
 import type {
 	Expense,
 	ExpenseQueryParams,
-	FormattedExpense
+	FormattedExpense,
+	NewExpensePayload
 } from "@/types/expenses"
 
 interface UseExpensesResult {
@@ -70,5 +76,19 @@ export function useExpenses(
 		},
 		placeholderData: keepPreviousData,
 		staleTime: 30_000 // 30 seconds — tab switching reuses cache
+	})
+}
+
+export function useCreateExpense() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: async (payload: NewExpensePayload) => {
+			return api.post("expenses", payload)
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["expenses"] })
+			queryClient.invalidateQueries({ queryKey: ["balance"] })
+		}
 	})
 }

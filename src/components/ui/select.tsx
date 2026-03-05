@@ -6,6 +6,7 @@ export interface SelectOption {
 	id: string
 	description?: string
 	name?: string
+	has_statement?: boolean
 }
 
 export interface SelectProps

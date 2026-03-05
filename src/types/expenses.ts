@@ -20,6 +20,18 @@ export interface Expense {
 	due_date?: string // ISO date string, nullable
 }
 
+export interface NewExpensePayload {
+	description: string
+	category_id: string
+	payment_type_id: string
+	date: string
+	amount: number
+	personal: boolean
+	split: boolean
+	bank_id?: string
+	store_id?: string
+}
+
 // ── UI-Ready Types ──────────────────────────────────────────────────
 
 export interface FormattedExpense {

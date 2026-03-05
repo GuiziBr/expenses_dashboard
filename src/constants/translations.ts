@@ -54,6 +54,24 @@ export const translations = {
 		users: "Users",
 		categories: "Categories",
 		settings: "Settings"
+	},
+	createExpense: {
+		title: "Create Expense",
+		description: "Expense description",
+		category: "Select category",
+		paymentType: "Select payment type",
+		bank: "Select bank",
+		store: "Select store",
+		date: "Date",
+		amount: "99.99",
+		save: "Save",
+		success: "Expense created successfully!",
+		error: "Failed to create expense.",
+		bankRequired: "Bank is required for this payment type",
+		personalLabel: "Personal",
+		splitLabel: "Split",
+		personalMobileLabel: "P",
+		splitMobileLabel: "S"
 	}
 } as const
 

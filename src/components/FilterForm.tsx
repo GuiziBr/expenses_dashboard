@@ -1,11 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { HiOutlineSelector } from "react-icons/hi"
+import { HiOutlineSelector, HiPlus } from "react-icons/hi"
 import { translations } from "@/constants/translations"
 import { useFilterValues } from "@/hooks/use-filter-values"
 import { COLUMN_FILTERS } from "@/lib/constants"
 import type { ExpenseFilters } from "@/types/expenses"
+import { NewExpenseModal } from "./NewExpenseModal"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { Select, type SelectOption } from "./ui/select"
@@ -22,6 +23,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 		initialFilters.startDate || ""
 	)
 	const [endDate, setEndDate] = useState<string>(initialFilters.endDate || "")
+	const [isModalOpen, setIsModalOpen] = useState(false)
 
 	// Date constraints logic
 	const [minEndDate, setMinEndDate] = useState<string>("")
@@ -47,19 +49,28 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 	}
 
 	return (
-		<section className="mt-6 w-full flex flex-col md:flex-row justify-between items-center gap-4">
+		<section className="mt-6 w-full flex flex-col lg:flex-row justify-between items-center gap-4">
+			<Button
+				type="button"
+				onClick={() => setIsModalOpen(true)}
+				className="h-10 w-full lg:w-auto px-4 bg-orange text-background text-sm md:text-base font-medium hover:brightness-90 transition-all rounded-[0.3rem] border-none flex items-center justify-center gap-2"
+			>
+				<HiPlus className="size-5" />
+				<span>{translations.createExpense.title}</span>
+			</Button>
+
 			<form
 				onSubmit={handleSubmit}
-				className="flex flex-col md:flex-row items-center justify-end gap-3 w-full md:w-auto ml-auto"
+				className="flex flex-col lg:flex-row items-center justify-end gap-3 w-full lg:w-auto ml-auto"
 			>
 				{/* Filters Group */}
-				<div className="flex gap-2 w-full md:w-auto">
+				<div className="flex gap-2 w-full lg:w-auto">
 					<Select
 						icon={HiOutlineSelector}
 						name="filterBy"
 						options={COLUMN_FILTERS as unknown as SelectOption[]}
 						placeholder={translations.filters.filterBy}
-						className="flex-1 md:w-36 text-sm md:text-base"
+						className="flex-1 lg:w-36 text-sm md:text-base"
 						value={filterBy}
 						onChange={handleFilterByChange}
 					/>
@@ -68,7 +79,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 						name="filterValue"
 						options={filterOptions}
 						placeholder={translations.filters.filterValue}
-						className="flex-1 md:w-44 text-sm md:text-base"
+						className="flex-1 lg:w-44 text-sm md:text-base"
 						disabled={!filterBy || isLoadingOptions}
 						value={filterValue}
 						onChange={(e) => setFilterValue(e.target.value)}
@@ -76,8 +87,8 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 				</div>
 
 				{/* Inputs Group */}
-				<div className="flex gap-2 w-full md:w-auto">
-					<div className="relative flex-1 md:w-44 h-11 flex items-center bg-container-background rounded-md border-2 border-container-background px-3 transition-colors focus-within:border-orange">
+				<div className="flex gap-2 w-full lg:w-auto">
+					<div className="relative flex-1 lg:w-44 h-11 flex items-center bg-container-background rounded-md border-2 border-container-background px-3 transition-colors focus-within:border-orange">
 						<Input
 							type="date"
 							name="startDate"
@@ -90,7 +101,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 							}}
 						/>
 					</div>
-					<div className="relative flex-1 md:w-44 h-11 flex items-center bg-container-background rounded-md border-2 border-container-background px-3 transition-colors focus-within:border-orange">
+					<div className="relative flex-1 lg:w-44 h-11 flex items-center bg-container-background rounded-md border-2 border-container-background px-3 transition-colors focus-within:border-orange">
 						<Input
 							type="date"
 							name="endDate"
@@ -107,11 +118,16 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 
 				<Button
 					type="submit"
-					className="h-10 w-full md:w-[5.5rem] bg-orange text-background text-sm md:text-base font-medium hover:brightness-90 transition-all rounded-[0.3rem] border-none"
+					className="h-10 w-full lg:w-[5.5rem] bg-orange text-background text-sm md:text-base font-medium hover:brightness-90 transition-all rounded-[0.3rem] border-none"
 				>
 					{translations.common.search}
 				</Button>
 			</form>
+
+			<NewExpenseModal
+				isOpen={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+			/>
 		</section>
 	)
 }
