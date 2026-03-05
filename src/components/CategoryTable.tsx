@@ -3,8 +3,8 @@
 import { MoreVertical, Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
-import { CategoryEditModal } from "@/components/CategoryEditModal"
 import { ConfirmDeleteModal } from "@/components/ConfirmDeleteModal"
+import { EditModal } from "@/components/EditModal"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -12,7 +12,7 @@ import {
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { translations } from "@/constants/translations"
-import { useDeleteCategory } from "@/hooks/use-categories"
+import { useDeleteCategory, useUpdateCategory } from "@/hooks/use-categories"
 import type { FormattedCategory } from "@/types/expenses"
 
 interface CategoryTableProps {
@@ -25,12 +25,32 @@ export function CategoryTable({ categories }: CategoryTableProps) {
 	const [deletingCategory, setDeletingCategory] =
 		useState<FormattedCategory | null>(null)
 
-	const { mutate, isPending } = useDeleteCategory()
+	const { mutate: deleteCategory, isPending: isDeleting } = useDeleteCategory()
+	const { mutate: updateCategory, isPending: isUpdating } = useUpdateCategory()
+
+	const handleEdit = (description: string) => {
+		if (!editingCategory) return
+
+		updateCategory(
+			{ id: editingCategory.id, description },
+			{
+				onSuccess: () => {
+					toast.success(translations.management.categoryUpdateSuccess)
+					setEditingCategory(null)
+				},
+				onError: (error) => {
+					toast.error(
+						error.message || translations.management.categoryUpdateError
+					)
+				}
+			}
+		)
+	}
 
 	const handleDelete = () => {
 		if (!deletingCategory) return
 
-		mutate(deletingCategory.id, {
+		deleteCategory(deletingCategory.id, {
 			onSuccess: () => {
 				toast.success(translations.management.categoryDeleteSuccess)
 				setDeletingCategory(null)
@@ -105,10 +125,14 @@ export function CategoryTable({ categories }: CategoryTableProps) {
 				</tbody>
 			</table>
 
-			<CategoryEditModal
-				category={editingCategory}
+			<EditModal
+				title={translations.management.editCategoryTitle}
+				placeholder={translations.management.categoryPlaceholder}
+				initialValue={editingCategory?.description ?? ""}
 				isOpen={!!editingCategory}
 				onClose={() => setEditingCategory(null)}
+				onSubmit={handleEdit}
+				isPending={isUpdating}
 			/>
 
 			<ConfirmDeleteModal
@@ -118,7 +142,7 @@ export function CategoryTable({ categories }: CategoryTableProps) {
 				isOpen={!!deletingCategory}
 				onClose={() => setDeletingCategory(null)}
 				onConfirm={handleDelete}
-				isPending={isPending}
+				isPending={isDeleting}
 			/>
 		</div>
 	)

@@ -1,8 +1,5 @@
-"use client"
-
 import { Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
 	Dialog,
@@ -13,66 +10,52 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { translations } from "@/constants/translations"
-import { useUpdateCategory } from "@/hooks/use-categories"
-import type { FormattedCategory } from "@/types/expenses"
 
-interface CategoryEditModalProps {
-	category: FormattedCategory | null
+interface EditModalProps {
 	isOpen: boolean
 	onClose: () => void
+	onSubmit: (value: string) => void
+	title: string
+	initialValue: string
+	placeholder: string
+	isPending?: boolean
 }
 
-export function CategoryEditModal({
-	category,
+export function EditModal({
 	isOpen,
-	onClose
-}: CategoryEditModalProps) {
-	const [description, setDescription] = useState("")
-	const { mutate, isPending } = useUpdateCategory()
+	onClose,
+	onSubmit,
+	title,
+	initialValue,
+	placeholder,
+	isPending = false
+}: EditModalProps) {
+	const [value, setValue] = useState("")
 
 	useEffect(() => {
-		if (category) {
-			setDescription(category.description)
+		if (isOpen) {
+			setValue(initialValue)
 		}
-	}, [category])
+	}, [isOpen, initialValue])
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault()
-		if (!category || !description.trim()) return
-
-		mutate(
-			{ id: category.id, description: description.trim() },
-			{
-				onSuccess: () => {
-					toast.success(translations.management.categoryUpdateSuccess)
-					onClose()
-				},
-				onError: (error) => {
-					toast.error(
-						error.message || translations.management.categoryUpdateError
-					)
-				}
-			}
-		)
+		if (!value.trim() || isPending || value === initialValue) return
+		onSubmit(value.trim())
 	}
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
 			<DialogContent className="sm:max-w-[425px] bg-background border-white/10">
 				<DialogHeader>
-					<DialogTitle className="text-white">
-						{translations.management.editCategoryTitle}
-					</DialogTitle>
+					<DialogTitle className="text-white">{title}</DialogTitle>
 				</DialogHeader>
 				<form onSubmit={handleSubmit} className="space-y-4 pt-4">
 					<Input
-						id="edit-category-description"
-						name="edit-category-description"
-						value={description}
-						onChange={(e) => setDescription(e.target.value)}
-						placeholder={translations.management.categoryPlaceholder}
+						value={value}
+						onChange={(e) => setValue(e.target.value)}
+						placeholder={placeholder}
 						autoFocus
-						className="h-12"
 					/>
 					<DialogFooter>
 						<Button
@@ -86,11 +69,7 @@ export function CategoryEditModal({
 						</Button>
 						<Button
 							type="submit"
-							disabled={
-								!description.trim() ||
-								isPending ||
-								description === category?.description
-							}
+							disabled={!value.trim() || isPending || value === initialValue}
 							className="bg-orange text-background hover:brightness-95"
 						>
 							{isPending ? (

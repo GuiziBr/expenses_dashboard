@@ -1,8 +1,8 @@
 import { MoreVertical, Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
-import { BankEditModal } from "@/components/BankEditModal"
 import { ConfirmDeleteModal } from "@/components/ConfirmDeleteModal"
+import { EditModal } from "@/components/EditModal"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -10,7 +10,7 @@ import {
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { translations } from "@/constants/translations"
-import { useDeleteBank } from "@/hooks/use-banks"
+import { useDeleteBank, useUpdateBank } from "@/hooks/use-banks"
 import type { FormattedBank } from "@/types/expenses"
 
 interface BankTableProps {
@@ -21,12 +21,30 @@ export function BankTable({ banks }: BankTableProps) {
 	const [editingBank, setEditingBank] = useState<FormattedBank | null>(null)
 	const [deletingBank, setDeletingBank] = useState<FormattedBank | null>(null)
 
-	const { mutate, isPending } = useDeleteBank()
+	const { mutate: deleteBank, isPending: isDeleting } = useDeleteBank()
+	const { mutate: updateBank, isPending: isUpdating } = useUpdateBank()
+
+	const handleEdit = (name: string) => {
+		if (!editingBank) return
+
+		updateBank(
+			{ id: editingBank.id, name },
+			{
+				onSuccess: () => {
+					toast.success(translations.management.updateSuccess)
+					setEditingBank(null)
+				},
+				onError: (error) => {
+					toast.error(error.message || translations.management.bankUpdateError)
+				}
+			}
+		)
+	}
 
 	const handleDelete = () => {
 		if (!deletingBank) return
 
-		mutate(deletingBank.id, {
+		deleteBank(deletingBank.id, {
 			onSuccess: () => {
 				toast.success(translations.management.deleteSuccess)
 				setDeletingBank(null)
@@ -99,10 +117,14 @@ export function BankTable({ banks }: BankTableProps) {
 				</tbody>
 			</table>
 
-			<BankEditModal
-				bank={editingBank}
+			<EditModal
+				title={translations.management.editBankTitle}
+				placeholder={translations.management.bankPlaceholder}
+				initialValue={editingBank?.name ?? ""}
 				isOpen={!!editingBank}
 				onClose={() => setEditingBank(null)}
+				onSubmit={handleEdit}
+				isPending={isUpdating}
 			/>
 
 			<ConfirmDeleteModal
@@ -112,7 +134,7 @@ export function BankTable({ banks }: BankTableProps) {
 				isOpen={!!deletingBank}
 				onClose={() => setDeletingBank(null)}
 				onConfirm={handleDelete}
-				isPending={isPending}
+				isPending={isDeleting}
 			/>
 		</div>
 	)
