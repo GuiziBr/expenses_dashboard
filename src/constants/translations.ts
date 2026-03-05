@@ -81,7 +81,21 @@ export const translations = {
 		confirmDeleteCategoryDescription:
 			"Are you sure you want to delete this category?",
 		editBankTitle: "Edit Bank",
-		editCategoryTitle: "Edit Category"
+		editCategoryTitle: "Edit Category",
+		paymentTypePlaceholder: "Payment type description",
+		hasStatementLabel: "Has statement",
+		paymentTypeColumn: "Payment Type",
+		hasStatementColumn: "Has Statement",
+		paymentTypeCreateSuccess: "Payment type created successfully!",
+		paymentTypeUpdateSuccess: "Payment type updated successfully!",
+		paymentTypeDeleteSuccess: "Payment type deleted successfully!",
+		paymentTypeCreateError: "Failed to create payment type.",
+		paymentTypeUpdateError: "Failed to update payment type.",
+		paymentTypeDeleteError: "Failed to delete payment type.",
+		confirmDeletePaymentTypeTitle: "Delete Payment Type",
+		confirmDeletePaymentTypeDescription:
+			"Are you sure you want to delete this payment type?",
+		editPaymentTypeTitle: "Edit Payment Type"
 	},
 	createExpense: {
 		title: "Create Expense",

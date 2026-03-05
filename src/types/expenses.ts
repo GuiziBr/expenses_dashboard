@@ -178,3 +178,28 @@ export interface CategoryQueryParams {
 	offset: number
 	limit: number
 }
+
+// ── Payment Type Types ──────────────────────────────────────────────
+
+export interface PaymentType {
+	id: string
+	description: string
+	has_statement: boolean
+	created_at: string
+	updated_at: string | null
+}
+
+export interface FormattedPaymentType {
+	id: string
+	description: string
+	hasStatement: boolean
+	createdAt: string
+	updatedAt: string | null
+	formattedCreatedAt: string
+	formattedUpdatedAt: string
+}
+
+export interface PaymentTypeQueryParams {
+	offset: number
+	limit: number
+}

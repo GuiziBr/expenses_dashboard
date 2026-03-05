@@ -4,7 +4,9 @@ import type {
 	Expense,
 	FormattedBank,
 	FormattedCategory,
-	FormattedExpense
+	FormattedExpense,
+	FormattedPaymentType,
+	PaymentType
 } from "@/types/expenses"
 
 // ── Cached Intl formatters (created once, reused on every call) ─────
@@ -116,5 +118,20 @@ export function formatCategory(category: Category): FormattedCategory {
 		updatedAt: category.updated_at,
 		formattedCreatedAt: formatDate(category.created_at, "full"),
 		formattedUpdatedAt: formatDate(category.updated_at, "full")
+	}
+}
+
+/**
+ * Transform a raw API payment type into a UI-ready formatted payment type.
+ */
+export function formatPaymentType(pt: PaymentType): FormattedPaymentType {
+	return {
+		id: pt.id,
+		description: pt.description,
+		hasStatement: pt.has_statement,
+		createdAt: pt.created_at,
+		updatedAt: pt.updated_at,
+		formattedCreatedAt: formatDate(pt.created_at, "full"),
+		formattedUpdatedAt: formatDate(pt.updated_at, "full")
 	}
 }

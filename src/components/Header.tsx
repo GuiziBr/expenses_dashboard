@@ -116,7 +116,7 @@ export function Header() {
 								asChild
 								className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
 							>
-								<Link href="/management/settings" className="w-full">
+								<Link href="/management/paymentTypes" className="w-full">
 									{translations.management.paymentTypes}
 								</Link>
 							</DropdownMenuItem>
@@ -226,7 +226,7 @@ export function Header() {
 							asChild
 							className="focus:bg-white/10 focus:text-white cursor-pointer px-6 py-2"
 						>
-							<Link href="/management/settings" className="w-full">
+							<Link href="/management/paymentTypes" className="w-full">
 								{translations.management.paymentTypes}
 							</Link>
 						</DropdownMenuItem>
