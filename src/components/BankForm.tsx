@@ -33,16 +33,18 @@ export function BankForm() {
 			className="flex flex-col md:flex-row items-center gap-4 w-full"
 		>
 			<Input
+				id="bank-name"
+				name="bank-name"
 				icon={Landmark}
 				placeholder={translations.management.bankPlaceholder}
 				value={name}
 				onChange={(e) => setName(e.target.value)}
-				className="flex-1"
+				className="w-full md:flex-1 h-12"
 			/>
 			<Button
 				type="submit"
 				disabled={!name.trim() || isPending}
-				className="h-11 w-full md:w-32 bg-orange text-background font-medium hover:brightness-95 transition-all"
+				className="h-12 w-full md:w-32 bg-orange text-background font-medium hover:brightness-95 transition-all"
 			>
 				{isPending ? (
 					<Loader2 className="h-5 w-5 animate-spin" />

@@ -53,3 +53,29 @@ export function useCreateBank() {
 		}
 	})
 }
+
+export function useUpdateBank() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: async ({ id, name }: { id: string; name: string }) => {
+			return api.patch(`banks/${id}`, { name })
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["banks"] })
+		}
+	})
+}
+
+export function useDeleteBank() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: async (id: string) => {
+			return api.delete(`banks/${id}`)
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["banks"] })
+		}
+	})
+}

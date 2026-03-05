@@ -57,9 +57,18 @@ export const translations = {
 		stores: "Stores",
 		bankPlaceholder: "Bank name",
 		createSuccess: "Bank created successfully!",
+		updateSuccess: "Bank updated successfully!",
+		deleteSuccess: "Bank deleted successfully!",
+		updateError: "Failed to update bank.",
+		deleteError: "Failed to delete bank.",
 		bankColumn: "Bank",
-		createdColumn: "Created",
-		updatedColumn: "Updated"
+		createdColumn: "Created At",
+		updatedColumn: "Updated At",
+		edit: "Edit",
+		delete: "Delete",
+		confirmDeleteTitle: "Delete Bank",
+		confirmDeleteDescription: "Are you sure you want to delete this bank?",
+		editBankTitle: "Edit Bank"
 	},
 	createExpense: {
 		title: "Create Expense",

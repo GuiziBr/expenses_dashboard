@@ -63,7 +63,7 @@ export function ConsolidatedFilters({
 									setErrors((prev) => ({ ...prev, balanceType: "" }))
 							}}
 							error={errors.balanceType}
-							className="px-2 md:px-4 text-input-text text-xs md:text-sm border-container-background"
+							className="px-2 md:px-4 text-input-text text-xs md:text-base border-container-background"
 						/>
 					</div>
 
@@ -90,7 +90,7 @@ export function ConsolidatedFilters({
 								setDate(e.target.value)
 								if (errors.date) setErrors((prev) => ({ ...prev, date: "" }))
 							}}
-							className="h-full w-full bg-transparent pl-2 pr-2 pt-1 text-xs md:text-sm text-input-text shadow-sm outline-none appearance-none"
+							className="h-full w-full bg-transparent pl-2 pr-2 pt-1 text-xs md:text-base text-input-text shadow-sm outline-none appearance-none"
 						/>
 						{errors.date && (
 							<div className="relative flex items-center group h-5">
@@ -111,7 +111,7 @@ export function ConsolidatedFilters({
 				<Button
 					type="submit"
 					disabled={isLoading}
-					className="h-10 w-full md:w-[5.5rem] bg-orange text-background text-xs md:text-sm font-medium hover:brightness-90 transition-all rounded-[0.3rem] border-none"
+					className="h-10 w-full md:w-[5.5rem] bg-orange text-background text-xs md:text-base font-medium hover:brightness-90 transition-all rounded-[0.3rem] border-none"
 				>
 					{isLoading ? (
 						<Loader2 className="h-4 w-4 animate-spin" />
