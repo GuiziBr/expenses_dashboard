@@ -116,28 +116,28 @@ export function ExpenseTable({
 					{expenses.map((expense) => (
 						<tr key={expense.id} className="group">
 							<td
-								className="bg-white py-5 px-1 md:px-2 text-blue-wood first:rounded-l-lg pl-2 truncate max-w-[80px] md:max-w-[200px] text-xs md:text-base"
+								className="bg-white py-5 px-1 md:px-2 text-blue-wood first:rounded-l-lg pl-2 truncate max-w-[80px] md:max-w-[200px] md:text-base"
 								title={expense.description}
 							>
 								{expense.description}
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray hidden md:table-cell text-xs md:text-base">
+							<td className="bg-white py-5 px-1 md:px-2 text-light-gray hidden md:table-cell md:text-base">
 								{expense.category}
 							</td>
 							<td
-								className={`bg-white py-5 px-1 md:px-2 font-normal whitespace-nowrap text-xs md:text-base ${
+								className={`bg-white py-5 px-1 md:px-2 font-normal whitespace-nowrap md:text-base ${
 									expense.type === "outcome" ? "text-pink" : "text-green"
 								}`}
 							>
 								{expense.formattedAmount}
 							</td>
 							<td
-								className="bg-white py-5 px-1 md:px-2 text-light-gray hidden lg:table-cell truncate max-w-[120px] text-xs md:text-base"
+								className="bg-white py-5 px-1 md:px-2 text-light-gray hidden lg:table-cell truncate max-w-[120px] md:text-base"
 								title={expense.paymentType}
 							>
 								{expense.paymentType}
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray whitespace-nowrap text-xs md:text-base">
+							<td className="bg-white py-5 px-1 md:px-2 text-light-gray whitespace-nowrap md:text-base">
 								<span className="md:hidden">
 									{expense.mobileFormattedDueDate || "—"}
 								</span>
@@ -145,13 +145,13 @@ export function ExpenseTable({
 									{expense.formattedDueDate || "—"}
 								</span>
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray whitespace-nowrap text-xs md:text-base rounded-r-lg xl:rounded-r-none">
+							<td className="bg-white py-5 px-1 md:px-2 text-light-gray whitespace-nowrap md:text-base rounded-r-lg xl:rounded-r-none">
 								<span className="md:hidden">{expense.mobileFormattedDate}</span>
 								<span className="hidden md:inline">
 									{expense.formattedDate}
 								</span>
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray hidden xl:table-cell text-xs md:text-base">
+							<td className="bg-white py-5 px-1 md:px-2 text-light-gray hidden xl:table-cell md:text-base">
 								{expense.bank || "—"}
 							</td>
 							<td
