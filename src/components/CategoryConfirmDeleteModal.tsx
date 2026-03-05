@@ -12,33 +12,35 @@ import {
 	DialogTitle
 } from "@/components/ui/dialog"
 import { translations } from "@/constants/translations"
-import { useDeleteBank } from "@/hooks/use-banks"
+import { useDeleteCategory } from "@/hooks/use-categories"
 
-interface ConfirmDeleteModalProps {
-	bankId: string | null
-	bankName: string | null
+interface CategoryConfirmDeleteModalProps {
+	categoryId: string | null
+	categoryName: string | null
 	isOpen: boolean
 	onClose: () => void
 }
 
-export function ConfirmDeleteModal({
-	bankId,
-	bankName,
+export function CategoryConfirmDeleteModal({
+	categoryId,
+	categoryName,
 	isOpen,
 	onClose
-}: ConfirmDeleteModalProps) {
-	const { mutate, isPending } = useDeleteBank()
+}: CategoryConfirmDeleteModalProps) {
+	const { mutate, isPending } = useDeleteCategory()
 
 	const handleDelete = () => {
-		if (!bankId) return
+		if (!categoryId) return
 
-		mutate(bankId, {
+		mutate(categoryId, {
 			onSuccess: () => {
-				toast.success(translations.management.deleteSuccess)
+				toast.success(translations.management.categoryDeleteSuccess)
 				onClose()
 			},
 			onError: (error) => {
-				toast.error(error.message || translations.management.bankDeleteEror)
+				toast.error(
+					error.message || translations.management.categoryDeleteError
+				)
 			}
 		})
 	}
@@ -48,13 +50,13 @@ export function ConfirmDeleteModal({
 			<DialogContent className="sm:max-w-[425px] bg-background border-white/10">
 				<DialogHeader>
 					<DialogTitle className="text-white">
-						{translations.management.confirmDeleteTitle}
+						{translations.management.confirmDeleteCategoryTitle}
 					</DialogTitle>
 					<DialogDescription className="text-light-gray pt-2">
-						{translations.management.confirmDeleteDescription}
-						{bankName && (
+						{translations.management.confirmDeleteCategoryDescription}
+						{categoryName && (
 							<span className="block mt-2 font-medium text-white italic">
-								"{bankName}"
+								"{categoryName}"
 							</span>
 						)}
 					</DialogDescription>
@@ -74,7 +76,7 @@ export function ConfirmDeleteModal({
 						variant="destructive"
 						onClick={handleDelete}
 						disabled={isPending}
-						className="bg-pink hover:bg-red/90"
+						className="bg-red hover:bg-red/90"
 					>
 						{isPending ? (
 							<Loader2 className="h-4 w-4 animate-spin" />

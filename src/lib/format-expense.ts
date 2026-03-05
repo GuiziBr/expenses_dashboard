@@ -1,7 +1,9 @@
 import type {
 	Bank,
+	Category,
 	Expense,
 	FormattedBank,
+	FormattedCategory,
 	FormattedExpense
 } from "@/types/expenses"
 
@@ -42,9 +44,10 @@ export function formatAmount(valueInCents = 0): string {
  * @example formatDate("2024-03-15", "short") → "03/15"
  */
 export function formatDate(
-	date: string | Date,
+	date: string | Date | null | undefined,
 	format: "full" | "short" = "full"
 ): string {
+	if (!date) return ""
 	const formatter = format === "full" ? fullDateFormatter : shortDateFormatter
 	return formatter.format(new Date(date))
 }
@@ -99,5 +102,19 @@ export function formatBank(bank: Bank): FormattedBank {
 		updatedAt: bank.updated_at,
 		formattedCreatedAt: formatDate(bank.created_at, "full"),
 		formattedUpdatedAt: formatDate(bank.updated_at, "full")
+	}
+}
+
+/**
+ * Transform a raw API category into a UI-ready formatted category.
+ */
+export function formatCategory(category: Category): FormattedCategory {
+	return {
+		id: category.id,
+		description: category.description,
+		createdAt: category.created_at,
+		updatedAt: category.updated_at,
+		formattedCreatedAt: formatDate(category.created_at, "full"),
+		formattedUpdatedAt: formatDate(category.updated_at, "full")
 	}
 }

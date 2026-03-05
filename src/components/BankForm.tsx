@@ -22,7 +22,7 @@ export function BankForm() {
 				setName("")
 			},
 			onError: (error) => {
-				toast.error(error.message)
+				toast.error(error.message || translations.management.bankCreateError)
 			}
 		})
 	}

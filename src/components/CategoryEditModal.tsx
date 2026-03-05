@@ -13,38 +13,44 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { translations } from "@/constants/translations"
-import { useUpdateBank } from "@/hooks/use-banks"
-import type { FormattedBank } from "@/types/expenses"
+import { useUpdateCategory } from "@/hooks/use-categories"
+import type { FormattedCategory } from "@/types/expenses"
 
-interface BankEditModalProps {
-	bank: FormattedBank | null
+interface CategoryEditModalProps {
+	category: FormattedCategory | null
 	isOpen: boolean
 	onClose: () => void
 }
 
-export function BankEditModal({ bank, isOpen, onClose }: BankEditModalProps) {
-	const [name, setName] = useState("")
-	const { mutate, isPending } = useUpdateBank()
+export function CategoryEditModal({
+	category,
+	isOpen,
+	onClose
+}: CategoryEditModalProps) {
+	const [description, setDescription] = useState("")
+	const { mutate, isPending } = useUpdateCategory()
 
 	useEffect(() => {
-		if (bank) {
-			setName(bank.name)
+		if (category) {
+			setDescription(category.description)
 		}
-	}, [bank])
+	}, [category])
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault()
-		if (!bank || !name.trim()) return
+		if (!category || !description.trim()) return
 
 		mutate(
-			{ id: bank.id, name: name.trim() },
+			{ id: category.id, description: description.trim() },
 			{
 				onSuccess: () => {
-					toast.success(translations.management.updateSuccess)
+					toast.success(translations.management.categoryUpdateSuccess)
 					onClose()
 				},
 				onError: (error) => {
-					toast.error(error.message || translations.management.bankUpdateError)
+					toast.error(
+						error.message || translations.management.categoryUpdateError
+					)
 				}
 			}
 		)
@@ -55,17 +61,18 @@ export function BankEditModal({ bank, isOpen, onClose }: BankEditModalProps) {
 			<DialogContent className="sm:max-w-[425px] bg-background border-white/10">
 				<DialogHeader>
 					<DialogTitle className="text-white">
-						{translations.management.editBankTitle}
+						{translations.management.editCategoryTitle}
 					</DialogTitle>
 				</DialogHeader>
 				<form onSubmit={handleSubmit} className="space-y-4 pt-4">
 					<Input
-						id="edit-bank-name"
-						name="edit-bank-name"
-						value={name}
-						onChange={(e) => setName(e.target.value)}
-						placeholder={translations.management.bankPlaceholder}
+						id="edit-category-description"
+						name="edit-category-description"
+						value={description}
+						onChange={(e) => setDescription(e.target.value)}
+						placeholder={translations.management.categoryPlaceholder}
 						autoFocus
+						className="h-12"
 					/>
 					<DialogFooter>
 						<Button
@@ -79,7 +86,11 @@ export function BankEditModal({ bank, isOpen, onClose }: BankEditModalProps) {
 						</Button>
 						<Button
 							type="submit"
-							disabled={!name.trim() || isPending || name === bank?.name}
+							disabled={
+								!description.trim() ||
+								isPending ||
+								description === category?.description
+							}
 							className="bg-orange text-background hover:brightness-95"
 						>
 							{isPending ? (

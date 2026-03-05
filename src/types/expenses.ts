@@ -139,19 +139,42 @@ export interface Bank {
 	id: string
 	name: string
 	created_at: string
-	updated_at: string
+	updated_at: string | null
 }
 
 export interface FormattedBank {
 	id: string
 	name: string
 	createdAt: string
-	updatedAt: string
+	updatedAt: string | null
 	formattedCreatedAt: string
 	formattedUpdatedAt: string
 }
 
 export interface BankQueryParams {
+	offset: number
+	limit: number
+}
+
+// ── Category Types ──────────────────────────────────────────────────
+
+export interface Category {
+	id: string
+	description: string
+	created_at: string
+	updated_at: string | null
+}
+
+export interface FormattedCategory {
+	id: string
+	description: string
+	createdAt: string
+	updatedAt: string | null
+	formattedCreatedAt: string
+	formattedUpdatedAt: string
+}
+
+export interface CategoryQueryParams {
 	offset: number
 	limit: number
 }
