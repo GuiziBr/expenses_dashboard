@@ -50,7 +50,7 @@ export function BankTable({ banks }: BankTableProps) {
 				setDeletingBank(null)
 			},
 			onError: (error) => {
-				toast.error(error.message || translations.management.bankDeleteEror)
+				toast.error(error.message || translations.management.bankDeleteError)
 			}
 		})
 	}

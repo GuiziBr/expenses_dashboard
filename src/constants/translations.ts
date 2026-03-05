@@ -61,7 +61,7 @@ export const translations = {
 		deleteSuccess: "Bank deleted successfully!",
 		bankCreateError: "Failed to create bank.",
 		bankUpdateError: "Failed to update bank.",
-		bankDeleteEror: "Failed to delete bank.",
+		bankDeleteError: "Failed to delete bank.",
 		bankColumn: "Bank",
 		categoryColumn: "Category",
 		categoryPlaceholder: "Category description",
