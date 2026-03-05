@@ -1,4 +1,4 @@
-import { AlertCircle, Calendar, ChevronDown } from "lucide-react"
+import { AlertCircle, Calendar, ChevronDown, Loader2 } from "lucide-react"
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Select } from "@/components/ui/select"
@@ -113,7 +113,11 @@ export function ConsolidatedFilters({
 					disabled={isLoading}
 					className="h-10 w-full md:w-[5.5rem] bg-orange text-background text-xs md:text-sm font-medium hover:brightness-90 transition-all rounded-[0.3rem] border-none"
 				>
-					{isLoading ? translations.common.loading : translations.common.search}
+					{isLoading ? (
+						<Loader2 className="h-4 w-4 animate-spin" />
+					) : (
+						translations.common.search
+					)}
 				</Button>
 			</form>
 		</section>

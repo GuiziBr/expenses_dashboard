@@ -1,6 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Loader2 } from "lucide-react"
 import * as React from "react"
 import { useForm } from "react-hook-form"
 import { HiOutlineCurrencyDollar, HiOutlineSelector } from "react-icons/hi"
@@ -99,8 +100,8 @@ export function NewExpenseModal({ isOpen, onClose }: NewExpenseModalProps) {
 				form.reset()
 				onClose()
 			},
-			onError: () => {
-				toast.error(translations.createExpense.error)
+			onError: (error) => {
+				toast.error(error.message)
 			}
 		})
 	}
@@ -210,9 +211,11 @@ export function NewExpenseModal({ isOpen, onClose }: NewExpenseModalProps) {
 						className="w-full h-12 bg-orange text-background font-bold text-[18px] hover:brightness-95 transition-all mt-4"
 						disabled={isPending}
 					>
-						{isPending
-							? translations.common.loading
-							: translations.createExpense.save}
+						{isPending ? (
+							<Loader2 className="h-5 w-5 animate-spin" />
+						) : (
+							translations.createExpense.save
+						)}
 					</Button>
 				</form>
 			</DialogContent>
