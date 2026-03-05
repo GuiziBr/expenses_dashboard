@@ -1,0 +1,86 @@
+"use client"
+
+import { useState } from "react"
+import { Header } from "@/components/Header"
+import { Pagination } from "@/components/Pagination"
+import { StoreForm } from "@/components/StoreForm"
+import { StoreTable } from "@/components/StoreTable"
+import { Loader } from "@/components/ui/loader"
+import { translations } from "@/constants/translations"
+import { useStores } from "@/hooks/use-stores"
+
+const DEFAULT_LIMIT = 8
+
+export default function StoresManagementPage() {
+	const [params, setParams] = useState({
+		offset: 0,
+		limit: DEFAULT_LIMIT
+	})
+
+	const { data, isLoading, error } = useStores(params)
+
+	const handlePageChange = (page: number) => {
+		setParams((prev) => ({
+			...prev,
+			offset: (page - 1) * prev.limit
+		}))
+	}
+
+	const totalPages = data ? Math.ceil(data.totalCount / params.limit) : 0
+	const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
+	const currentPage = Math.floor(params.offset / params.limit) + 1
+
+	return (
+		<div className="min-h-screen bg-background">
+			<div className="bg-[var(--light-blue)] pb-32">
+				<Header />
+			</div>
+
+			<main className="max-w-[1120px] mx-auto px-5 -mt-24">
+				<section className="bg-white/5 rounded-lg border border-white/10 p-6 mb-8 backdrop-blur-sm shadow-xl">
+					<h2 className="text-2xl font-bold text-white mb-6">
+						{translations.management.stores}
+					</h2>
+					<StoreForm />
+				</section>
+
+				{isLoading && !data && (
+					<div className="flex items-center justify-center min-h-[300px]">
+						<Loader size={48} />
+					</div>
+				)}
+
+				{error && (
+					<p className="text-center text-red py-12">
+						{translations.common.errorLoading}
+					</p>
+				)}
+
+				{data && (
+					<div className="animate-in fade-in duration-500">
+						{data.stores.length > 0 ? (
+							<>
+								<StoreTable stores={data.stores} />
+								{totalPages > 1 && (
+									<div className="mt-4">
+										<Pagination
+											currentPage={currentPage}
+											setCurrentPage={handlePageChange}
+											pages={pages}
+										/>
+									</div>
+								)}
+							</>
+						) : (
+							!isLoading && (
+								<p className="text-center text-muted-foreground mt-12 py-12 px-4 bg-white/5 rounded-lg border border-dashed border-white/10">
+									No stores found.
+								</p>
+							)
+						)}
+					</div>
+				)}
+			</main>
+		</div>
+	)
+}

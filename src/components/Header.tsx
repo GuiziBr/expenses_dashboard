@@ -124,7 +124,7 @@ export function Header() {
 								asChild
 								className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
 							>
-								<Link href="/management/settings" className="w-full">
+								<Link href="/management/stores" className="w-full">
 									{translations.management.stores}
 								</Link>
 							</DropdownMenuItem>

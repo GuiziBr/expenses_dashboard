@@ -203,3 +203,26 @@ export interface PaymentTypeQueryParams {
 	offset: number
 	limit: number
 }
+
+// ── Store Types ─────────────────────────────────────────────────────
+
+export interface Store {
+	id: string
+	name: string
+	created_at: string
+	updated_at: string | null
+}
+
+export interface FormattedStore {
+	id: string
+	name: string
+	createdAt: string
+	updatedAt: string | null
+	formattedCreatedAt: string
+	formattedUpdatedAt: string
+}
+
+export interface StoreQueryParams {
+	offset: number
+	limit: number
+}

@@ -6,7 +6,9 @@ import type {
 	FormattedCategory,
 	FormattedExpense,
 	FormattedPaymentType,
-	PaymentType
+	FormattedStore,
+	PaymentType,
+	Store
 } from "@/types/expenses"
 
 // ── Cached Intl formatters (created once, reused on every call) ─────
@@ -133,5 +135,19 @@ export function formatPaymentType(pt: PaymentType): FormattedPaymentType {
 		updatedAt: pt.updated_at,
 		formattedCreatedAt: formatDate(pt.created_at, "full"),
 		formattedUpdatedAt: formatDate(pt.updated_at, "full")
+	}
+}
+
+/**
+ * Transform a raw API store into a UI-ready formatted store.
+ */
+export function formatStore(store: Store): FormattedStore {
+	return {
+		id: store.id,
+		name: store.name,
+		createdAt: store.created_at,
+		updatedAt: store.updated_at,
+		formattedCreatedAt: formatDate(store.created_at, "full"),
+		formattedUpdatedAt: formatDate(store.updated_at, "full")
 	}
 }

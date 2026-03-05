@@ -95,7 +95,19 @@ export const translations = {
 		confirmDeletePaymentTypeTitle: "Delete Payment Type",
 		confirmDeletePaymentTypeDescription:
 			"Are you sure you want to delete this payment type?",
-		editPaymentTypeTitle: "Edit Payment Type"
+		editPaymentTypeTitle: "Edit Payment Type",
+		storePlaceholder: "Store name",
+		storeColumn: "Store",
+		storeCreateSuccess: "Store created successfully!",
+		storeUpdateSuccess: "Store updated successfully!",
+		storeDeleteSuccess: "Store deleted successfully!",
+		storeCreateError: "Failed to create store.",
+		storeUpdateError: "Failed to update store.",
+		storeDeleteError: "Failed to delete store.",
+		confirmDeleteStoreTitle: "Delete Store",
+		confirmDeleteStoreDescription:
+			"Are you sure you want to delete this store?",
+		editStoreTitle: "Edit Store"
 	},
 	createExpense: {
 		title: "Create Expense",
