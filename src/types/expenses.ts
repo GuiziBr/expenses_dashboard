@@ -132,3 +132,26 @@ export interface ConsolidatedBalanceFilters {
 	year: number
 	month: number
 }
+
+// ── Management Types ───────────────────────────────────────────────
+
+export interface Bank {
+	id: string
+	name: string
+	created_at: string
+	updated_at: string
+}
+
+export interface FormattedBank {
+	id: string
+	name: string
+	createdAt: string
+	updatedAt: string
+	formattedCreatedAt: string
+	formattedUpdatedAt: string
+}
+
+export interface BankQueryParams {
+	offset: number
+	limit: number
+}

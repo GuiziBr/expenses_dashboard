@@ -51,9 +51,15 @@ export const translations = {
 		store: "Store"
 	},
 	management: {
-		users: "Users",
+		banks: "Banks",
 		categories: "Categories",
-		settings: "Settings"
+		paymentTypes: "Payment Types",
+		stores: "Stores",
+		bankPlaceholder: "Bank name",
+		createSuccess: "Bank created successfully!",
+		bankColumn: "Bank",
+		createdColumn: "Created",
+		updatedColumn: "Updated"
 	},
 	createExpense: {
 		title: "Create Expense",

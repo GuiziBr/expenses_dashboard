@@ -100,8 +100,8 @@ export function Header() {
 								asChild
 								className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
 							>
-								<Link href="/management/users" className="w-full">
-									{translations.management.users}
+								<Link href="/management/banks" className="w-full">
+									{translations.management.banks}
 								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuItem
@@ -117,7 +117,15 @@ export function Header() {
 								className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
 							>
 								<Link href="/management/settings" className="w-full">
-									{translations.management.settings}
+									{translations.management.paymentTypes}
+								</Link>
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								asChild
+								className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
+							>
+								<Link href="/management/settings" className="w-full">
+									{translations.management.stores}
 								</Link>
 							</DropdownMenuItem>
 						</DropdownMenuContent>
@@ -202,8 +210,8 @@ export function Header() {
 							asChild
 							className="focus:bg-white/10 focus:text-white cursor-pointer px-6 py-2"
 						>
-							<Link href="/management/users" className="w-full">
-								{translations.management.users}
+							<Link href="/management/banks" className="w-full">
+								{translations.management.banks}
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem
@@ -219,7 +227,7 @@ export function Header() {
 							className="focus:bg-white/10 focus:text-white cursor-pointer px-6 py-2"
 						>
 							<Link href="/management/settings" className="w-full">
-								{translations.management.settings}
+								{translations.management.paymentTypes}
 							</Link>
 						</DropdownMenuItem>
 

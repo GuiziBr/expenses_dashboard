@@ -1,4 +1,9 @@
-import type { Expense, FormattedExpense } from "@/types/expenses"
+import type {
+	Bank,
+	Expense,
+	FormattedBank,
+	FormattedExpense
+} from "@/types/expenses"
 
 // ── Cached Intl formatters (created once, reused on every call) ─────
 
@@ -78,5 +83,21 @@ export function formatExpense(
 			formattedDueDate: formatDate(expense.due_date, "full"),
 			mobileFormattedDueDate: formatDate(expense.due_date, "short")
 		})
+	}
+}
+
+// ── Bank Formatter ──────────────────────────────────────────────────
+
+/**
+ * Transform a raw API bank into a UI-ready formatted bank.
+ */
+export function formatBank(bank: Bank): FormattedBank {
+	return {
+		id: bank.id,
+		name: bank.name,
+		createdAt: bank.created_at,
+		updatedAt: bank.updated_at,
+		formattedCreatedAt: formatDate(bank.created_at, "full"),
+		formattedUpdatedAt: formatDate(bank.updated_at, "full")
 	}
 }
