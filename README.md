@@ -102,3 +102,5 @@ The project uses an isomorphic cookie-based approach:
 On login, the API returns a token and user object that are stored in cookies (7-day expiry). On logout, cookies are cleared and the user is redirected to `/`.
 
 ---
+
+Built with love
