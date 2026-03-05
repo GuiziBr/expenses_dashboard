@@ -2,8 +2,9 @@
 
 import { MoreVertical, Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
-import { CategoryConfirmDeleteModal } from "@/components/CategoryConfirmDeleteModal"
+import { toast } from "sonner"
 import { CategoryEditModal } from "@/components/CategoryEditModal"
+import { ConfirmDeleteModal } from "@/components/ConfirmDeleteModal"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -11,6 +12,7 @@ import {
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { translations } from "@/constants/translations"
+import { useDeleteCategory } from "@/hooks/use-categories"
 import type { FormattedCategory } from "@/types/expenses"
 
 interface CategoryTableProps {
@@ -22,6 +24,24 @@ export function CategoryTable({ categories }: CategoryTableProps) {
 		useState<FormattedCategory | null>(null)
 	const [deletingCategory, setDeletingCategory] =
 		useState<FormattedCategory | null>(null)
+
+	const { mutate, isPending } = useDeleteCategory()
+
+	const handleDelete = () => {
+		if (!deletingCategory) return
+
+		mutate(deletingCategory.id, {
+			onSuccess: () => {
+				toast.success(translations.management.categoryDeleteSuccess)
+				setDeletingCategory(null)
+			},
+			onError: (error) => {
+				toast.error(
+					error.message || translations.management.categoryDeleteError
+				)
+			}
+		})
+	}
 
 	return (
 		<div className="mt-8 w-full min-h-[20rem]">
@@ -91,11 +111,14 @@ export function CategoryTable({ categories }: CategoryTableProps) {
 				onClose={() => setEditingCategory(null)}
 			/>
 
-			<CategoryConfirmDeleteModal
-				categoryId={deletingCategory?.id || null}
-				categoryName={deletingCategory?.description || null}
+			<ConfirmDeleteModal
+				title={translations.management.confirmDeleteCategoryTitle}
+				description={translations.management.confirmDeleteCategoryDescription}
+				resourceName={deletingCategory?.description}
 				isOpen={!!deletingCategory}
 				onClose={() => setDeletingCategory(null)}
+				onConfirm={handleDelete}
+				isPending={isPending}
 			/>
 		</div>
 	)

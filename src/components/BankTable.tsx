@@ -1,5 +1,6 @@
 import { MoreVertical, Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
+import { toast } from "sonner"
 import { BankEditModal } from "@/components/BankEditModal"
 import { ConfirmDeleteModal } from "@/components/ConfirmDeleteModal"
 import {
@@ -9,6 +10,7 @@ import {
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { translations } from "@/constants/translations"
+import { useDeleteBank } from "@/hooks/use-banks"
 import type { FormattedBank } from "@/types/expenses"
 
 interface BankTableProps {
@@ -18,6 +20,22 @@ interface BankTableProps {
 export function BankTable({ banks }: BankTableProps) {
 	const [editingBank, setEditingBank] = useState<FormattedBank | null>(null)
 	const [deletingBank, setDeletingBank] = useState<FormattedBank | null>(null)
+
+	const { mutate, isPending } = useDeleteBank()
+
+	const handleDelete = () => {
+		if (!deletingBank) return
+
+		mutate(deletingBank.id, {
+			onSuccess: () => {
+				toast.success(translations.management.deleteSuccess)
+				setDeletingBank(null)
+			},
+			onError: (error) => {
+				toast.error(error.message || translations.management.bankDeleteEror)
+			}
+		})
+	}
 
 	return (
 		<div className="mt-8 w-full min-h-[20rem]">
@@ -88,10 +106,13 @@ export function BankTable({ banks }: BankTableProps) {
 			/>
 
 			<ConfirmDeleteModal
-				bankId={deletingBank?.id || null}
-				bankName={deletingBank?.name || null}
+				title={translations.management.confirmDeleteTitle}
+				description={translations.management.confirmDeleteDescription}
+				resourceName={deletingBank?.name}
 				isOpen={!!deletingBank}
 				onClose={() => setDeletingBank(null)}
+				onConfirm={handleDelete}
+				isPending={isPending}
 			/>
 		</div>
 	)
