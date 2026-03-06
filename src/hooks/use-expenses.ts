@@ -23,7 +23,7 @@ interface UseExpensesResult {
 /**
  * Build a query-string from the expense params, omitting undefined values.
  */
-function buildSearchParams(params: ExpenseQueryParams): string {
+export function buildSearchParams(params: ExpenseQueryParams): string {
 	const entries: [string, string][] = []
 
 	if (params.startDate) entries.push(["startDate", params.startDate])
