@@ -12,7 +12,7 @@ const FILTER_VALUES: Record<string, string> = {
 	stores: "store"
 }
 
-function buildBalanceParams(filters: BalanceFilters): string {
+export function buildBalanceParams(filters: BalanceFilters): string {
 	const lastDayOfMonth = getLastDayOfMonth()
 	const params = new URLSearchParams()
 
