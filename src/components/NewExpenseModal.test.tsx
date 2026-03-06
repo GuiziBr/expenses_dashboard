@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 // Simplify Dialog so the form is always in the DOM when isOpen=true
 vi.mock("@/components/ui/dialog", () => ({
 	Dialog: ({ children, open }: { children: React.ReactNode; open: boolean }) =>
-		open ? <>{children}</> : null,
+		open ? children : null,
 	DialogContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 	DialogHeader: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 	DialogTitle: ({ children }: { children: React.ReactNode }) => <h2>{children}</h2>
@@ -76,9 +76,10 @@ async function fillBaseFields(container: HTMLElement, paymentTypeId: string) {
 }
 
 describe("NewExpenseModal — bank required rule", () => {
-	const mockMutate = vi.fn()
+	let mockMutate: ReturnType<typeof vi.fn>
 
 	beforeEach(() => {
+		mockMutate = vi.fn()
 		vi.mocked(useCreateExpense).mockReturnValue({
 			mutate: mockMutate,
 			isPending: false
