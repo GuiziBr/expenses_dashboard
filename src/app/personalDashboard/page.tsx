@@ -31,8 +31,6 @@ export default function PersonalDashboard() {
 	const { orderBy, orderType, toggleSort, getSortIndicator } = useSortParams()
 	const { user } = useAuth()
 
-	console.log("USER", user)
-
 	const [params, setParams] = useState<ExpenseQueryParams>({
 		offset: 0,
 		limit: DEFAULT_LIMIT,
@@ -71,6 +69,14 @@ export default function PersonalDashboard() {
 			onSuccess: () => {
 				toast.success(translations.management.expenseDeleteSuccess)
 				setDeletingExpense(null)
+
+				// If we just deleted the last row on a non-first page, step back
+				if (data?.expenses.length === 1 && params.offset > 0) {
+					setParams((prev) => ({
+						...prev,
+						offset: Math.max(0, prev.offset - prev.limit)
+					}))
+				}
 			},
 			onError: (error) => {
 				toast.error(error.message || translations.management.expenseDeleteError)
