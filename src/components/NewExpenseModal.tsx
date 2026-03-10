@@ -79,15 +79,12 @@ export function NewExpenseModal({ isOpen, onClose }: NewExpenseModalProps) {
 	}, [isOpen, form.reset])
 
 	const onSubmit = (values: NewExpenseFormValues) => {
-		// Convert string amount to number (cents)
-		const amountInCents = Math.round(parseFloat(values.amount) * 100)
-
 		const payload = {
 			description: values.description,
 			category_id: values.category,
 			payment_type_id: values.paymentType,
 			date: values.date,
-			amount: amountInCents,
+			amount: parseFloat(values.amount.replace(/,/g, "")),
 			personal: values.options.includes("personal"),
 			split: values.options.includes("split"),
 			bank_id: values.bank || undefined,
@@ -190,6 +187,7 @@ export function NewExpenseModal({ isOpen, onClose }: NewExpenseModalProps) {
 
 						{/* Amount */}
 						<Input
+							isCurrency
 							icon={HiOutlineCurrencyDollar}
 							{...register("amount")}
 							placeholder={translations.createExpense.amount}

@@ -132,7 +132,7 @@ describe("NewExpenseModal — bank required rule", () => {
 					category_id: "cat-1",
 					payment_type_id: "pt-cc",
 					date: "2026-03-01",
-					amount: 5000,
+					amount: 50,
 					bank_id: "bank-1",
 					personal: false,
 					split: false

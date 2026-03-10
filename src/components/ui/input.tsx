@@ -6,10 +6,20 @@ import { cn } from "@/lib/utils"
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	icon?: LucideIcon | React.ElementType
 	error?: string
+	isCurrency?: boolean
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-	({ className, type, icon: Icon, error, ...props }, ref) => {
+	({ className, type, icon: Icon, error, isCurrency, onChange, ...props }, ref) => {
+		const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+			let { value } = e.target
+			value = value.replace(/\D/g, "")
+			value = value.replace(/(\d)(\d{2})$/, "$1.$2")
+			value = value.replace(/(?=(\d{3})+(\D))\B/g, ",")
+			e.target.value = value
+			onChange?.(e)
+		}
+
 		return (
 			<div
 				className={cn(
@@ -24,6 +34,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 					className="flex-1 bg-transparent border-none p-0 h-full w-full text-input-text focus:outline-none focus:ring-0 placeholder:text-iron-gray"
 					ref={ref}
 					{...props}
+					onChange={isCurrency ? handleCurrencyChange : onChange}
 				/>
 				{error && (
 					<div className="relative flex items-center group ml-2 h-5 shrink-0">
