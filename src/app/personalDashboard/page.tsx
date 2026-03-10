@@ -2,15 +2,18 @@
 
 import { DollarSign } from "lucide-react"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 import { BalanceCard } from "@/components/BalanceCard"
+import { ConfirmDeleteModal } from "@/components/ConfirmDeleteModal"
 import { ExpenseTable } from "@/components/ExpenseTable"
 import { FilterForm } from "@/components/FilterForm"
 import { Header } from "@/components/Header"
 import { Pagination } from "@/components/Pagination"
 import { Loader } from "@/components/ui/loader"
 import { translations } from "@/constants/translations"
+import { useAuth } from "@/contexts/auth-context"
 import { useBalance } from "@/hooks/use-balance"
-import { useExpenses } from "@/hooks/use-expenses"
+import { useDeleteExpense, useExpenses } from "@/hooks/use-expenses"
 import { useSortParams } from "@/hooks/use-sort-params"
 import { FILTER_VALUE_MAPPING } from "@/lib/constants"
 import { getFirstDayOfMonth, getLastDayOfMonth } from "@/lib/date-utils"
@@ -18,13 +21,15 @@ import { formatCurrency } from "@/lib/format-currency"
 import type {
 	BalanceFilterKey,
 	ExpenseFilters,
-	ExpenseQueryParams
+	ExpenseQueryParams,
+	FormattedExpense
 } from "@/types/expenses"
 
 const DEFAULT_LIMIT = 8
 
 export default function PersonalDashboard() {
 	const { orderBy, orderType, toggleSort, getSortIndicator } = useSortParams()
+	const { user } = useAuth()
 
 	const [params, setParams] = useState<ExpenseQueryParams>({
 		offset: 0,
@@ -51,7 +56,33 @@ export default function PersonalDashboard() {
 		filterValue: params.filterValue
 	})
 
+	const [deletingExpense, setDeletingExpense] =
+		useState<FormattedExpense | null>(null)
+	const { mutate: deleteExpense, isPending: isDeleting } = useDeleteExpense()
+
 	const total = formatCurrency(balance?.personalBalance ?? 0)
+
+	const handleDelete = () => {
+		if (!deletingExpense) return
+
+		deleteExpense(deletingExpense.id, {
+			onSuccess: () => {
+				toast.success(translations.management.expenseDeleteSuccess)
+				setDeletingExpense(null)
+
+				// If we just deleted the last row on a non-first page, step back
+				if (data?.expenses.length === 1 && params.offset > 0) {
+					setParams((prev) => ({
+						...prev,
+						offset: Math.max(0, prev.offset - prev.limit)
+					}))
+				}
+			},
+			onError: (error) => {
+				toast.error(error.message || translations.management.expenseDeleteError)
+			}
+		})
+	}
 
 	const handleSearch = (filters: ExpenseFilters) => {
 		setParams((prev) => ({
@@ -114,6 +145,8 @@ export default function PersonalDashboard() {
 							expenses={data.expenses}
 							onSort={toggleSort}
 							getSortIndicator={getSortIndicator}
+							onDelete={setDeletingExpense}
+							currentUserId={user?.id}
 						/>
 
 						<Pagination
@@ -129,6 +162,15 @@ export default function PersonalDashboard() {
 						{translations.common.noExpensesFound}
 					</p>
 				)}
+				<ConfirmDeleteModal
+					title={translations.management.confirmDeleteExpenseTitle}
+					description={translations.management.confirmDeleteExpenseDescription}
+					resourceName={deletingExpense?.description}
+					isOpen={!!deletingExpense}
+					onClose={() => setDeletingExpense(null)}
+					onConfirm={handleDelete}
+					isPending={isDeleting}
+				/>
 			</main>
 		</div>
 	)

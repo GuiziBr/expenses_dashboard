@@ -68,6 +68,7 @@ describe("formatDate", () => {
 
 const baseExpense: Expense = {
 	id: "exp-1",
+	owner_id: "user-42",
 	description: "Groceries",
 	amount: 5000,
 	type: "outcome",
@@ -80,6 +81,11 @@ const baseExpense: Expense = {
 }
 
 describe("formatExpense — personal variant", () => {
+	it("maps owner_id to ownerId", () => {
+		const result = formatExpense(baseExpense, "personal")
+		expect(result.ownerId).toBe("user-42")
+	})
+
 	it("does not prefix outcome amounts with '- '", () => {
 		const result = formatExpense(baseExpense, "personal")
 		expect(result.formattedAmount).not.toContain("- ")
