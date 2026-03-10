@@ -122,6 +122,7 @@ export const translations = {
 		success: "Expense created successfully!",
 		error: "Failed to create expense.",
 		bankRequired: "Bank is required for this payment type",
+		invalidAmount: "Amount must be a valid positive number",
 		personalLabel: "Personal",
 		splitLabel: "Split",
 		personalMobileLabel: "P",
