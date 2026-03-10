@@ -108,6 +108,7 @@ export const translations = {
 		confirmDeleteStoreDescription:
 			"Are you sure you want to delete this store?",
 		editStoreTitle: "Edit Store",
+		expenseActions: "Expense actions",
 		expenseDeleteSuccess: "Expense deleted successfully!",
 		expenseDeleteError: "Failed to delete expense.",
 		confirmDeleteExpenseTitle: "Delete Expense",

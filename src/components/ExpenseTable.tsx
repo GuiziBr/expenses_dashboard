@@ -181,7 +181,10 @@ export function ExpenseTable({
 							<td className="bg-white py-5 px-1 text-right last:rounded-r-lg pr-4">
 								{onDelete && currentUserId === expense.ownerId && (
 									<DropdownMenu>
-										<DropdownMenuTrigger className="p-2 hover:bg-light-blue/10 rounded-full transition-colors outline-none">
+										<DropdownMenuTrigger
+										aria-label={translations.management.expenseActions}
+										className="p-2 hover:bg-light-blue/10 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+									>
 											<MoreVertical className="h-5 w-5 text-light-gray" />
 										</DropdownMenuTrigger>
 										<DropdownMenuContent
