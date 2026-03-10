@@ -1,5 +1,12 @@
+import { translations } from "@/constants/translations"
 import { getAuthToken } from "./auth-helpers"
 import { API_BASE_URL } from "./constants"
+
+let unauthorizedHandler: (() => void) | null = null
+
+export function setUnauthorizedHandler(handler: () => void) {
+	unauthorizedHandler = handler
+}
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
 
@@ -51,7 +58,8 @@ class ApiClient {
 
 		if (!response.ok) {
 			if (response.status === 401) {
-				// Optional: Redirect to login or clear token
+				unauthorizedHandler?.()
+				throw new Error(translations.auth.sessionExpired)
 			}
 
 			const errorData = await response.json().catch(() => ({}))
@@ -89,6 +97,11 @@ class ApiClient {
 		const response = await fetch(`${API_BASE_URL}/${endpoint}`, config)
 
 		if (!response.ok) {
+			if (response.status === 401) {
+				unauthorizedHandler?.()
+				throw new Error("Session expired. Please sign in again.")
+			}
+
 			const errorData = await response.json().catch(() => ({}))
 			throw new Error(errorData.message || `API Error: ${response.status}`)
 		}
