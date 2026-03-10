@@ -1,8 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function middleware(request: NextRequest) {
-	const token = request.cookies.get("auth_token")?.value
+	const rawToken = request.cookies.get("auth_token")?.value
 	const { pathname } = request.nextUrl
+
+	// Treat malformed tokens (not 3-part JWT) as absent
+	const isValidToken =
+		typeof rawToken === "string" && rawToken.split(".").length === 3
+	const token = isValidToken ? rawToken : undefined
 
 	// Public routes (accessible only when NOT logged in)
 	const isPublicRoute = pathname === "/"
@@ -13,7 +18,6 @@ export async function middleware(request: NextRequest) {
 	}
 
 	// If NOT logged in and trying to access a protected route, redirect to login
-	// Add other protected routes to this check as needed
 	if (!token && !isPublicRoute) {
 		return NextResponse.redirect(new URL("/", request.url))
 	}

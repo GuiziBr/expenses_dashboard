@@ -109,6 +109,9 @@ export const translations = {
 			"Are you sure you want to delete this store?",
 		editStoreTitle: "Edit Store"
 	},
+	auth: {
+		sessionExpired: "Session expired. Please sign in again."
+	},
 	createExpense: {
 		title: "Create Expense",
 		description: "Expense description",
