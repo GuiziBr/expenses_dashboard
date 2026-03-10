@@ -16,8 +16,8 @@ export const newExpenseSchema = z.object({
 		.min(1, "Amount is required")
 		.refine(
 			(val) => {
-				const n = parseFloat(val.replace(/,/g, ""))
-				return !Number.isNaN(n) && n > 0
+				const normalized = val.replace(/,/g, "")
+				return /^\d+(\.\d{1,2})?$/.test(normalized) && Number(normalized) > 0
 			},
 			{ message: translations.createExpense.invalidAmount }
 		),
