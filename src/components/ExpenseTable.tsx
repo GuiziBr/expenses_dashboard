@@ -182,25 +182,25 @@ export function ExpenseTable({
 								<td className="bg-white py-5 px-1 text-right last:rounded-r-lg pr-4">
 									{currentUserId === expense.ownerId && (
 										<DropdownMenu>
-										<DropdownMenuTrigger
-											aria-label={translations.management.expenseActions}
-											className="p-2 hover:bg-light-blue/10 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
-										>
-											<MoreVertical className="h-5 w-5 text-light-gray" />
-										</DropdownMenuTrigger>
-										<DropdownMenuContent
-											align="end"
-											className="bg-background border-white/10"
-										>
-											<DropdownMenuItem
-												onClick={() => onDelete(expense)}
-												className="flex items-center gap-2 cursor-pointer text-pink focus:bg-red/5"
+											<DropdownMenuTrigger
+												aria-label={translations.management.expenseActions}
+												className="p-2 hover:bg-light-blue/10 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
 											>
-												<Trash2 className="h-4 w-4" />
-												{translations.management.delete}
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
+												<MoreVertical className="h-5 w-5 text-light-gray" />
+											</DropdownMenuTrigger>
+											<DropdownMenuContent
+												align="end"
+												className="bg-background border-white/10"
+											>
+												<DropdownMenuItem
+													onClick={() => onDelete(expense)}
+													className="flex items-center gap-2 cursor-pointer text-pink focus:bg-red/5"
+												>
+													<Trash2 className="h-4 w-4" />
+													{translations.management.delete}
+												</DropdownMenuItem>
+											</DropdownMenuContent>
+										</DropdownMenu>
 									)}
 								</td>
 							)}
