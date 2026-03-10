@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { translations } from "@/constants/translations"
 
 export const newExpenseSchema = z.object({
 	description: z
@@ -10,7 +11,16 @@ export const newExpenseSchema = z.object({
 	bank: z.string().optional(),
 	store: z.string().optional(),
 	date: z.string().min(1, "Date is required"),
-	amount: z.string().min(1, "Amount is required"),
+	amount: z
+		.string()
+		.min(1, "Amount is required")
+		.refine(
+			(val) => {
+				const normalized = val.replace(/,/g, "")
+				return /^\d+(\.\d{1,2})?$/.test(normalized) && Number(normalized) > 0
+			},
+			{ message: translations.createExpense.invalidAmount }
+		),
 	options: z.array(z.string())
 })
 

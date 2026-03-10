@@ -17,13 +17,17 @@ describe("buildBalanceParams", () => {
 
 	it("uses provided endDate when given", () => {
 		vi.setSystemTime(new Date(2026, 2, 15))
-		const params = new URLSearchParams(buildBalanceParams({ endDate: "2026-03-15" }))
+		const params = new URLSearchParams(
+			buildBalanceParams({ endDate: "2026-03-15" })
+		)
 		expect(params.get("endDate")).toBe("2026-03-15")
 	})
 
 	it("includes startDate when provided", () => {
 		vi.setSystemTime(new Date(2026, 2, 15))
-		const params = new URLSearchParams(buildBalanceParams({ startDate: "2026-03-01" }))
+		const params = new URLSearchParams(
+			buildBalanceParams({ startDate: "2026-03-01" })
+		)
 		expect(params.get("startDate")).toBe("2026-03-01")
 	})
 
@@ -49,14 +53,18 @@ describe("buildBalanceParams", () => {
 
 	it("omits filterBy and filterValue when filterBy is not set", () => {
 		vi.setSystemTime(new Date(2026, 2, 15))
-		const params = new URLSearchParams(buildBalanceParams({ filterValue: "orphan" }))
+		const params = new URLSearchParams(
+			buildBalanceParams({ filterValue: "orphan" })
+		)
 		expect(params.get("filterBy")).toBeNull()
 		expect(params.get("filterValue")).toBeNull()
 	})
 
 	it("omits filterValue when filterBy is set but filterValue is absent", () => {
 		vi.setSystemTime(new Date(2026, 2, 15))
-		const params = new URLSearchParams(buildBalanceParams({ filterBy: "banks" }))
+		const params = new URLSearchParams(
+			buildBalanceParams({ filterBy: "banks" })
+		)
 		expect(params.get("filterBy")).toBe("bank")
 		expect(params.get("filterValue")).toBeNull()
 	})

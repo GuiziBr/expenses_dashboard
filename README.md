@@ -74,7 +74,7 @@ All routes except `/` are protected by `middleware.ts`.
    ```
 3. Create a `.env` file in the root directory:
    ```env
-   NEXT_PUBLIC_API_URL=http://localhost:3001/api
+   NEXT_PUBLIC_API_URL=http://localhost:3000
    ```
 4. Run the development server:
    ```bash
