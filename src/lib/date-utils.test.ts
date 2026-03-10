@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { getFirstDayOfMonth, getLastDayOfMonth, getTodayString } from "./date-utils"
+import {
+	getFirstDayOfMonth,
+	getLastDayOfMonth,
+	getTodayString
+} from "./date-utils"
 
 // Use the local-time constructor (year, month 0-indexed, day) to avoid
 // timezone issues that arise when passing ISO strings (parsed as UTC).

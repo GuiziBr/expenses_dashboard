@@ -205,9 +205,9 @@ describe("formatPaymentType", () => {
 
 	it("maps has_statement to hasStatement", () => {
 		expect(formatPaymentType(pt).hasStatement).toBe(true)
-		expect(formatPaymentType({ ...pt, has_statement: false }).hasStatement).toBe(
-			false
-		)
+		expect(
+			formatPaymentType({ ...pt, has_statement: false }).hasStatement
+		).toBe(false)
 	})
 
 	it("maps all other fields correctly", () => {

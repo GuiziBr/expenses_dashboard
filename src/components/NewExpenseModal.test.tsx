@@ -7,9 +7,15 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 vi.mock("@/components/ui/dialog", () => ({
 	Dialog: ({ children, open }: { children: React.ReactNode; open: boolean }) =>
 		open ? children : null,
-	DialogContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-	DialogHeader: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-	DialogTitle: ({ children }: { children: React.ReactNode }) => <h2>{children}</h2>
+	DialogContent: ({ children }: { children: React.ReactNode }) => (
+		<div>{children}</div>
+	),
+	DialogHeader: ({ children }: { children: React.ReactNode }) => (
+		<div>{children}</div>
+	),
+	DialogTitle: ({ children }: { children: React.ReactNode }) => (
+		<h2>{children}</h2>
+	)
 }))
 
 vi.mock("@/hooks/use-expenses", () => ({
@@ -52,14 +58,19 @@ function setupFilterValues(
 			banks: [BANK],
 			stores: []
 		}
-		return { data: map[filterType ?? ""] ?? [] } as ReturnType<typeof useFilterValues>
+		return { data: map[filterType ?? ""] ?? [] } as ReturnType<
+			typeof useFilterValues
+		>
 	})
 }
 
 async function fillBaseFields(container: HTMLElement, paymentTypeId: string) {
 	const user = userEvent.setup()
 
-	await user.type(screen.getByPlaceholderText("Expense description"), "Groceries")
+	await user.type(
+		screen.getByPlaceholderText("Expense description"),
+		"Groceries"
+	)
 
 	const selects = screen.getAllByRole("combobox")
 	await user.selectOptions(selects[0], "cat-1") // category
@@ -88,7 +99,9 @@ describe("NewExpenseModal — bank required rule", () => {
 
 	it("shows a bank error when a has_statement payment type is selected without a bank", async () => {
 		setupFilterValues(PT_WITH_STATEMENT)
-		const { container } = render(<NewExpenseModal isOpen={true} onClose={vi.fn()} />)
+		const { container } = render(
+			<NewExpenseModal isOpen={true} onClose={vi.fn()} />
+		)
 
 		await fillBaseFields(container, "pt-cc")
 		// Bank (selects[2]) left empty
@@ -104,7 +117,9 @@ describe("NewExpenseModal — bank required rule", () => {
 
 	it("does not show a bank error when payment type has no statement", async () => {
 		setupFilterValues(PT_NO_STATEMENT)
-		const { container } = render(<NewExpenseModal isOpen={true} onClose={vi.fn()} />)
+		const { container } = render(
+			<NewExpenseModal isOpen={true} onClose={vi.fn()} />
+		)
 
 		await fillBaseFields(container, "pt-cash")
 		// Bank (selects[2]) left empty — should be fine
@@ -118,7 +133,9 @@ describe("NewExpenseModal — bank required rule", () => {
 
 	it("calls createExpense with correct payload on valid submission", async () => {
 		setupFilterValues(PT_WITH_STATEMENT)
-		const { container } = render(<NewExpenseModal isOpen={true} onClose={vi.fn()} />)
+		const { container } = render(
+			<NewExpenseModal isOpen={true} onClose={vi.fn()} />
+		)
 
 		const { selects } = await fillBaseFields(container, "pt-cc")
 		await userEvent.selectOptions(selects[2], "bank-1") // select bank
