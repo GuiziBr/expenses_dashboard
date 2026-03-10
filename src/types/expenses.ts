@@ -9,6 +9,7 @@
 
 export interface Expense {
 	id: string
+	owner_id: string
 	description: string
 	category: { description: string }
 	amount: number // in cents
@@ -36,6 +37,7 @@ export interface NewExpensePayload {
 
 export interface FormattedExpense {
 	id: string
+	ownerId: string
 	description: string
 	category: string
 	amount: number

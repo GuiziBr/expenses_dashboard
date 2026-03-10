@@ -1,18 +1,30 @@
 "use client"
+import { MoreVertical, Trash2 } from "lucide-react"
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
 import { translations } from "@/constants/translations"
 import { EXPENSE_COLUMNS } from "@/lib/constants"
+import { cn } from "@/lib/utils"
 import type { FormattedExpense } from "@/types/expenses"
 
 interface ExpenseTableProps {
 	expenses: FormattedExpense[]
 	onSort: (column: string) => void
 	getSortIndicator: (column: string) => "↑" | "↓" | ""
+	onDelete?: (expense: FormattedExpense) => void
+	currentUserId?: string
 }
 
 export function ExpenseTable({
 	expenses,
 	onSort,
-	getSortIndicator
+	getSortIndicator,
+	onDelete,
+	currentUserId
 }: ExpenseTableProps) {
 	return (
 		<div className="mt-2 w-full min-h-[20rem] md:min-h-[40rem]">
@@ -110,6 +122,7 @@ export function ExpenseTable({
 								</span>
 							</div>
 						</th>
+						{onDelete && <th className="w-10" />}
 					</tr>
 				</thead>
 				<tbody className="w-full">
@@ -137,7 +150,7 @@ export function ExpenseTable({
 							>
 								{expense.paymentType}
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray whitespace-nowrap md:text-base">
+							<td className="bg-white py-5 px-1 md:px-2 text-light-gray whitespace-nowrap md:text-base last:rounded-r-lg">
 								<span className="md:hidden">
 									{expense.mobileFormattedDueDate || "—"}
 								</span>
@@ -145,20 +158,46 @@ export function ExpenseTable({
 									{expense.formattedDueDate || "—"}
 								</span>
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray whitespace-nowrap md:text-base rounded-r-lg xl:rounded-r-none">
+							<td
+								className={cn(
+									"bg-white py-5 px-1 md:px-2 text-light-gray whitespace-nowrap md:text-base",
+									onDelete ? "rounded-r-none" : "rounded-r-lg xl:rounded-r-none"
+								)}
+							>
 								<span className="md:hidden">{expense.mobileFormattedDate}</span>
 								<span className="hidden md:inline">
 									{expense.formattedDate}
 								</span>
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray hidden xl:table-cell md:text-base">
+							<td className="bg-white py-5 px-1 md:px-2 text-light-gray hidden xl:table-cell md:text-base last:rounded-r-lg">
 								{expense.bank || "—"}
 							</td>
 							<td
-								className="bg-white py-5 px-1 md:px-2 text-light-gray hidden xl:table-cell last:rounded-r-lg pr-2 truncate"
+								className="bg-white py-5 px-1 md:px-2 text-light-gray hidden xl:table-cell truncate last:rounded-r-lg"
 								title={expense.store || ""}
 							>
 								{expense.store || "—"}
+							</td>
+							<td className="bg-white py-5 px-1 text-right last:rounded-r-lg pr-4">
+								{onDelete && currentUserId === expense.ownerId && (
+									<DropdownMenu>
+										<DropdownMenuTrigger className="p-2 hover:bg-light-blue/10 rounded-full transition-colors outline-none">
+											<MoreVertical className="h-5 w-5 text-light-gray" />
+										</DropdownMenuTrigger>
+										<DropdownMenuContent
+											align="end"
+											className="bg-background border-white/10"
+										>
+											<DropdownMenuItem
+												onClick={() => onDelete(expense)}
+												className="flex items-center gap-2 cursor-pointer text-pink focus:bg-red/5"
+											>
+												<Trash2 className="h-4 w-4" />
+												{translations.management.delete}
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+								)}
 							</td>
 						</tr>
 					))}

@@ -74,6 +74,7 @@ export function formatExpense(
 
 	return {
 		id: expense.id,
+		ownerId: expense.owner_id,
 		description: expense.description,
 		category: expense.category.description,
 		amount: expense.amount,
