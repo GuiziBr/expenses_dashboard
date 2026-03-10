@@ -8,7 +8,9 @@ import React, {
 	useEffect,
 	useState
 } from "react"
-import { api } from "@/lib/api"
+import { toast } from "sonner"
+import { translations } from "@/constants/translations"
+import { api, setUnauthorizedHandler } from "@/lib/api"
 import {
 	getAuthToken,
 	getUser,
@@ -46,51 +48,60 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	// Initialize auth state
 	useEffect(() => {
 		async function loadUser() {
-			const token = await getAuthToken()
-			const userData = await getUser<User>()
+			try {
+				const token = await getAuthToken()
+				const userData = await getUser<User>()
 
-			if (token && userData) {
-				setUser(userData)
+				if (token && userData) {
+					setUser(userData)
+				}
+			} finally {
+				setIsLoading(false)
 			}
-			setIsLoading(false)
 		}
 
 		loadUser()
 	}, [])
 
-	const signIn = useCallback(
-		async ({ email, password }: SignInCredentials) => {
-			try {
-				// Login API call
-				const response = await api.post<{ token: string; user: User }>(
-					"sessions",
-					{
-						email,
-						password
-					}
-				)
+	const signIn = useCallback(async ({ email, password }: SignInCredentials) => {
+		try {
+			// Login API call
+			const response = await api.post<{ token: string; user: User }>(
+				"sessions",
+				{
+					email,
+					password
+				}
+			)
 
-				const { token, user } = response
+			const { token, user } = response
 
-				// Set cookies
-				setAuthToken(token)
-				setUserCookie(user)
+			// Set cookies
+			setAuthToken(token)
+			setUserCookie(user)
 
-				// Update state
-				setUser(user)
-			} catch (error) {
-				console.error("Sign in failed", error)
-				throw error
-			}
-		},
-		[router]
-	)
+			// Update state
+			setUser(user)
+		} catch (error) {
+			console.error("Sign in failed", error)
+			throw error
+		}
+	}, [])
 
 	const signOut = useCallback(() => {
 		removeAuthToken()
 		setUser(null)
 		router.push("/")
 	}, [router])
+
+	// Auto-logout on 401 from any API call
+	useEffect(() => {
+		setUnauthorizedHandler(() => {
+			toast.error(translations.auth.sessionExpired)
+			signOut()
+		})
+		return () => setUnauthorizedHandler(() => {})
+	}, [signOut])
 
 	return (
 		<AuthContext.Provider value={{ user, isLoading, signIn, signOut }}>
