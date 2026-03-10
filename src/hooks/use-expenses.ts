@@ -79,6 +79,18 @@ export function useExpenses(
 	})
 }
 
+export function useDeleteExpense() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: async (id: string) => api.delete(`expenses/${id}`),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["expenses"] })
+			queryClient.invalidateQueries({ queryKey: ["balance"] })
+		}
+	})
+}
+
 export function useCreateExpense() {
 	const queryClient = useQueryClient()
 

@@ -107,7 +107,13 @@ export const translations = {
 		confirmDeleteStoreTitle: "Delete Store",
 		confirmDeleteStoreDescription:
 			"Are you sure you want to delete this store?",
-		editStoreTitle: "Edit Store"
+		editStoreTitle: "Edit Store",
+		expenseActions: "Expense actions",
+		expenseDeleteSuccess: "Expense deleted successfully!",
+		expenseDeleteError: "Failed to delete expense.",
+		confirmDeleteExpenseTitle: "Delete Expense",
+		confirmDeleteExpenseDescription:
+			"Are you sure you want to delete this expense?"
 	},
 	auth: {
 		sessionExpired: "Session expired. Please sign in again."
