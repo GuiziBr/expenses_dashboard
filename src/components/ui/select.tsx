@@ -22,7 +22,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 		return (
 			<div
 				className={cn(
-					"flex h-11 w-full items-center rounded-md bg-container-background border-2 border-container-background px-3 text-sm shadow-sm transition-colors focus-within:border-orange text-input-text",
+					"flex h-11 w-full items-center rounded-md bg-container-background border-2 border-container-background px-3 text-base shadow-sm transition-colors focus-within:border-orange text-input-text",
 					error && "border-red text-red",
 					className
 				)}
