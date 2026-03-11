@@ -104,3 +104,23 @@ export function useCreateExpense() {
 		}
 	})
 }
+
+export function useUpdateExpense() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: async ({
+			id,
+			payload
+		}: {
+			id: string
+			payload: NewExpensePayload
+		}) => {
+			return api.put(`expenses/${id}`, payload)
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["expenses"] })
+			queryClient.invalidateQueries({ queryKey: ["balance"] })
+		}
+	})
+}
