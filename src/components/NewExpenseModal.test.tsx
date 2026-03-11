@@ -164,3 +164,348 @@ describe("NewExpenseModal — bank required rule", () => {
 		})
 	})
 })
+
+describe("NewExpenseModal — edit mode", () => {
+	let mockUpdateMutate: ReturnType<typeof vi.fn>
+	let mockOnClose: ReturnType<typeof vi.fn>
+
+	const mockExpense = {
+		id: "exp-123",
+		ownerId: "user-1",
+		description: "Original Expense",
+		categoryId: "cat-1",
+		paymentTypeId: "pt-cc",
+		bankId: "bank-1",
+		storeId: undefined,
+		personal: true,
+		split: false,
+		category: "Food",
+		amount: 10000,
+		formattedAmount: "$100.00",
+		date: "2026-02-15",
+		formattedDate: "02/15/2026",
+		mobileFormattedDate: "02/15",
+		type: "outcome" as const,
+		paymentType: "Credit Card",
+		bank: "TD Bank",
+		store: undefined,
+		dueDate: undefined,
+		formattedDueDate: undefined,
+		mobileFormattedDueDate: undefined
+	}
+
+	beforeEach(() => {
+		mockUpdateMutate = vi.fn()
+		mockOnClose = vi.fn()
+		setupFilterValues(PT_WITH_STATEMENT)
+
+		vi.mocked(useCreateExpense).mockReturnValue({
+			mutate: vi.fn(),
+			isPending: false
+		} as unknown as ReturnType<typeof useCreateExpense>)
+
+		vi.mocked(useUpdateExpense).mockReturnValue({
+			mutate: mockUpdateMutate,
+			isPending: false
+		} as unknown as ReturnType<typeof useUpdateExpense>)
+	})
+
+	it("displays 'Edit Expense' title when editing", () => {
+		render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={mockExpense}
+			/>
+		)
+
+		expect(screen.getByText("Edit Expense")).toBeInTheDocument()
+	})
+
+	it("displays 'Create Expense' title when creating", () => {
+		render(<NewExpenseModal isOpen={true} onClose={mockOnClose} />)
+
+		expect(screen.getByText("Create Expense")).toBeInTheDocument()
+	})
+
+	it("pre-fills form fields with expense data", () => {
+		const { container } = render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={mockExpense}
+			/>
+		)
+
+		const descriptionInput = screen.getByPlaceholderText(
+			"Expense description"
+		) as HTMLInputElement
+		expect(descriptionInput.value).toBe("Original Expense")
+
+		const amountInput = screen.getByPlaceholderText(
+			"99.99"
+		) as HTMLInputElement
+		expect(amountInput.value).toBe("100.00")
+
+		const dateInput = container.querySelector(
+			'input[type="date"]'
+		) as HTMLInputElement
+		expect(dateInput.value).toBe("2026-02-15")
+	})
+
+	it("pre-selects the correct category, payment type, and bank", () => {
+		render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={mockExpense}
+			/>
+		)
+
+		const selects = screen.getAllByRole("combobox")
+		expect((selects[0] as HTMLSelectElement).value).toBe("cat-1")
+		expect((selects[1] as HTMLSelectElement).value).toBe("pt-cc")
+		expect((selects[2] as HTMLSelectElement).value).toBe("bank-1")
+	})
+
+	it("pre-checks the personal checkbox when expense is personal", () => {
+		render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={mockExpense}
+			/>
+		)
+
+		const personalCheckbox = screen.getByLabelText("Personal")
+		expect(personalCheckbox).toBeChecked()
+	})
+
+	it("pre-checks the split checkbox when expense is split", () => {
+		const splitExpense = { ...mockExpense, split: true, amount: 5000 }
+		render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={splitExpense}
+			/>
+		)
+
+		const splitCheckbox = screen.getByLabelText("Split")
+		expect(splitCheckbox).toBeChecked()
+	})
+
+	it("displays split amount hint when editing a split expense", () => {
+		const splitExpense = { ...mockExpense, split: true, amount: 5000 }
+		render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={splitExpense}
+			/>
+		)
+
+		expect(
+			screen.getByText(/Split expense - your original share was:/i)
+		).toBeInTheDocument()
+		// The formatAmount function formats 5000 cents as "$50.00" but may include locale-specific formatting
+		expect(screen.getByText(/\$50\.00/)).toBeInTheDocument()
+	})
+
+	it("does not display split amount hint when expense is not split", () => {
+		render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={mockExpense}
+			/>
+		)
+
+		expect(
+			screen.queryByText(/Split expense - your original share was:/i)
+		).not.toBeInTheDocument()
+	})
+
+	it("calculates full amount correctly for split expenses", () => {
+		// If split expense has amount 5000 (your share), form should show 10000 (full amount)
+		const splitExpense = { ...mockExpense, split: true, amount: 5000 }
+		render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={splitExpense}
+			/>
+		)
+
+		const amountInput = screen.getByPlaceholderText(
+			"99.99"
+		) as HTMLInputElement
+		expect(amountInput.value).toBe("100.00")
+	})
+
+	it("shows Cancel button in edit mode", () => {
+		render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={mockExpense}
+			/>
+		)
+
+		expect(screen.getByText("Cancel")).toBeInTheDocument()
+	})
+
+	it("does not show Cancel button in create mode", () => {
+		render(<NewExpenseModal isOpen={true} onClose={mockOnClose} />)
+
+		expect(screen.queryByText("Cancel")).not.toBeInTheDocument()
+	})
+
+	it("calls onClose when Cancel button is clicked", async () => {
+		const user = userEvent.setup()
+		render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={mockExpense}
+			/>
+		)
+
+		await user.click(screen.getByText("Cancel"))
+		expect(mockOnClose).toHaveBeenCalled()
+	})
+
+	it("calls updateExpense with correct payload on save", async () => {
+		const user = userEvent.setup()
+		const { container } = render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={mockExpense}
+			/>
+		)
+
+		// Modify the description
+		const descriptionInput = screen.getByPlaceholderText("Expense description")
+		await user.clear(descriptionInput)
+		await user.type(descriptionInput, "Updated Expense")
+
+		// Modify the amount
+		const amountInput = screen.getByPlaceholderText("99.99")
+		await user.clear(amountInput)
+		await user.type(amountInput, "75.50")
+
+		await user.click(screen.getByRole("button", { name: /save/i }))
+
+		await waitFor(() => {
+			expect(mockUpdateMutate).toHaveBeenCalledWith(
+				{
+					id: "exp-123",
+					payload: expect.objectContaining({
+						description: "Updated Expense",
+						amount: 75.5,
+						category_id: "cat-1",
+						payment_type_id: "pt-cc",
+						date: "2026-02-15",
+						bank_id: "bank-1",
+						personal: true,
+						split: false
+					})
+				},
+				expect.any(Object)
+			)
+		})
+	})
+
+	it("resets form when modal closes", async () => {
+		const { rerender } = render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={mockExpense}
+			/>
+		)
+
+		// Close modal
+		rerender(<NewExpenseModal isOpen={false} onClose={mockOnClose} />)
+
+		// Reopen without expense (create mode)
+		rerender(<NewExpenseModal isOpen={true} onClose={mockOnClose} />)
+
+		const descriptionInput = screen.getByPlaceholderText(
+			"Expense description"
+		) as HTMLInputElement
+		expect(descriptionInput.value).toBe("")
+	})
+
+	it("updates form when switching between different expenses", () => {
+		const { rerender } = render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={mockExpense}
+			/>
+		)
+
+		const descriptionInput = screen.getByPlaceholderText(
+			"Expense description"
+		) as HTMLInputElement
+		expect(descriptionInput.value).toBe("Original Expense")
+
+		// Switch to a different expense
+		const anotherExpense = {
+			...mockExpense,
+			id: "exp-456",
+			description: "Another Expense",
+			amount: 5000
+		}
+		rerender(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={anotherExpense}
+			/>
+		)
+
+		expect(descriptionInput.value).toBe("Another Expense")
+	})
+
+	it("disables save button while updating", () => {
+		vi.mocked(useUpdateExpense).mockReturnValue({
+			mutate: mockUpdateMutate,
+			isPending: true
+		} as unknown as ReturnType<typeof useUpdateExpense>)
+
+		render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={mockExpense}
+			/>
+		)
+
+		// When isPending, the button shows a spinner and has no accessible name
+		// Find all buttons and check that the submit button (not Cancel) is disabled
+		const buttons = screen.getAllByRole("button")
+		const submitButton = buttons.find((btn) => btn.type === "submit")
+		expect(submitButton).toBeDisabled()
+	})
+
+	it("shows loading spinner while updating", () => {
+		vi.mocked(useUpdateExpense).mockReturnValue({
+			mutate: mockUpdateMutate,
+			isPending: true
+		} as unknown as ReturnType<typeof useUpdateExpense>)
+
+		const { container } = render(
+			<NewExpenseModal
+				isOpen={true}
+				onClose={mockOnClose}
+				expense={mockExpense}
+			/>
+		)
+
+		// Loader2 component renders with animate-spin class
+		expect(container.querySelector(".animate-spin")).toBeInTheDocument()
+	})
+})

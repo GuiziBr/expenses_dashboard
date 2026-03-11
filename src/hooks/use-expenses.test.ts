@@ -51,4 +51,52 @@ describe("buildSearchParams", () => {
 		expect(params.get("startDate")).toBe("2026-03-01")
 		expect(params.get("endDate")).toBeNull()
 	})
+
+	it("correctly handles orderType asc", () => {
+		const qs = buildSearchParams({
+			offset: 0,
+			limit: 10,
+			orderBy: "amount",
+			orderType: "asc"
+		})
+		const params = new URLSearchParams(qs)
+		expect(params.get("orderType")).toBe("asc")
+	})
+
+	it("correctly handles orderType desc", () => {
+		const qs = buildSearchParams({
+			offset: 0,
+			limit: 10,
+			orderBy: "amount",
+			orderType: "desc"
+		})
+		const params = new URLSearchParams(qs)
+		expect(params.get("orderType")).toBe("desc")
+	})
+
+	it("handles multiple filter combinations", () => {
+		const qs = buildSearchParams({
+			offset: 10,
+			limit: 25,
+			startDate: "2026-01-01",
+			filterBy: "banks",
+			filterValue: "bank-123"
+		})
+		const params = new URLSearchParams(qs)
+		expect(params.get("offset")).toBe("10")
+		expect(params.get("limit")).toBe("25")
+		expect(params.get("startDate")).toBe("2026-01-01")
+		expect(params.get("filterBy")).toBe("banks")
+		expect(params.get("filterValue")).toBe("bank-123")
+	})
+
+	it("preserves special characters in filter values", () => {
+		const qs = buildSearchParams({
+			offset: 0,
+			limit: 10,
+			filterValue: "category with spaces & special"
+		})
+		const params = new URLSearchParams(qs)
+		expect(params.get("filterValue")).toBe("category with spaces & special")
+	})
 })
