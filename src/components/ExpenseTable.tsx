@@ -1,5 +1,5 @@
 "use client"
-import { MoreVertical, Trash2 } from "lucide-react"
+import { MoreVertical, Pencil, Trash2 } from "lucide-react"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -16,6 +16,7 @@ interface ExpenseTableProps {
 	onSort: (column: string) => void
 	getSortIndicator: (column: string) => "↑" | "↓" | ""
 	onDelete?: (expense: FormattedExpense) => void
+	onEdit?: (expense: FormattedExpense) => void
 	currentUserId?: string
 }
 
@@ -24,6 +25,7 @@ export function ExpenseTable({
 	onSort,
 	getSortIndicator,
 	onDelete,
+	onEdit,
 	currentUserId
 }: ExpenseTableProps) {
 	return (
@@ -122,7 +124,7 @@ export function ExpenseTable({
 								</span>
 							</div>
 						</th>
-						{onDelete && <th className="w-10" />}
+						{(onDelete || onEdit) && <th className="w-10" />}
 					</tr>
 				</thead>
 				<tbody className="w-full">
@@ -161,7 +163,9 @@ export function ExpenseTable({
 							<td
 								className={cn(
 									"bg-white py-5 px-1 md:px-2 text-light-gray whitespace-nowrap md:text-base",
-									onDelete ? "rounded-r-none" : "rounded-r-lg xl:rounded-r-none"
+									onDelete || onEdit
+										? "rounded-r-none"
+										: "rounded-r-lg xl:rounded-r-none"
 								)}
 							>
 								<span className="md:hidden">{expense.mobileFormattedDate}</span>
@@ -178,7 +182,7 @@ export function ExpenseTable({
 							>
 								{expense.store || "—"}
 							</td>
-							{onDelete && (
+							{(onDelete || onEdit) && (
 								<td className="bg-white py-5 px-1 text-right last:rounded-r-lg pr-4">
 									{currentUserId === expense.ownerId && (
 										<DropdownMenu>
@@ -192,13 +196,24 @@ export function ExpenseTable({
 												align="end"
 												className="bg-background border-white/10"
 											>
-												<DropdownMenuItem
-													onClick={() => onDelete(expense)}
-													className="flex items-center gap-2 cursor-pointer text-pink focus:bg-red/5"
-												>
-													<Trash2 className="h-4 w-4" />
-													{translations.management.delete}
-												</DropdownMenuItem>
+												{onEdit && (
+													<DropdownMenuItem
+														onClick={() => onEdit(expense)}
+														className="flex items-center gap-2 cursor-pointer text-white focus:bg-white/5"
+													>
+														<Pencil className="h-4 w-4" />
+														{translations.management.edit}
+													</DropdownMenuItem>
+												)}
+												{onDelete && (
+													<DropdownMenuItem
+														onClick={() => onDelete(expense)}
+														className="flex items-center gap-2 cursor-pointer text-pink focus:bg-red/5"
+													>
+														<Trash2 className="h-4 w-4" />
+														{translations.management.delete}
+													</DropdownMenuItem>
+												)}
 											</DropdownMenuContent>
 										</DropdownMenu>
 									)}

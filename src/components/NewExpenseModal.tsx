@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2 } from "lucide-react"
+import { Info, Loader2 } from "lucide-react"
 import * as React from "react"
 import { useForm } from "react-hook-form"
 import { HiOutlineCurrencyDollar, HiOutlineSelector } from "react-icons/hi"
@@ -9,12 +9,14 @@ import { IoMdCheckboxOutline } from "react-icons/io"
 import { MdDateRange, MdTitle } from "react-icons/md"
 import { toast } from "sonner"
 import { translations } from "@/constants/translations"
-import { useCreateExpense } from "@/hooks/use-expenses"
+import { useCreateExpense, useUpdateExpense } from "@/hooks/use-expenses"
 import { useFilterValues } from "@/hooks/use-filter-values"
+import { formatAmount } from "@/lib/format-expense"
 import {
 	type NewExpenseFormValues,
 	newExpenseSchema
 } from "@/lib/schemas/new-expense-schema"
+import type { FormattedExpense } from "@/types/expenses"
 import { Button } from "./ui/button"
 import { CheckboxGroup } from "./ui/checkbox-group"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog"
@@ -24,10 +26,19 @@ import { Select } from "./ui/select"
 interface NewExpenseModalProps {
 	isOpen: boolean
 	onClose: () => void
+	expense?: FormattedExpense
 }
 
-export function NewExpenseModal({ isOpen, onClose }: NewExpenseModalProps) {
-	const { mutate: createExpense, isPending } = useCreateExpense()
+export function NewExpenseModal({
+	isOpen,
+	onClose,
+	expense
+}: NewExpenseModalProps) {
+	const isEditing = !!expense
+
+	const { mutate: createExpense, isPending: isCreating } = useCreateExpense()
+	const { mutate: updateExpense, isPending: isUpdating } = useUpdateExpense()
+	const isPending = isEditing ? isUpdating : isCreating
 
 	const { data: categories = [] } = useFilterValues("categories")
 	const { data: paymentTypes = [] } = useFilterValues("paymentType")
@@ -48,19 +59,41 @@ export function NewExpenseModal({ isOpen, onClose }: NewExpenseModalProps) {
 		)
 	}, [paymentTypes])
 
+	const buildDefaultValues = React.useCallback(
+		(exp?: FormattedExpense): NewExpenseFormValues => {
+			if (!exp) {
+				return {
+					description: "",
+					category: "",
+					paymentType: "",
+					bank: "",
+					store: "",
+					date: "",
+					amount: "",
+					options: []
+				}
+			}
+			return {
+				description: exp.description,
+				category: exp.categoryId,
+				paymentType: exp.paymentTypeId,
+				bank: exp.bankId ?? "",
+				store: exp.storeId ?? "",
+				date: exp.date.substring(0, 10),
+				amount: ((exp.split ? exp.amount * 2 : exp.amount) / 100).toFixed(2),
+				options: [
+					...(exp.personal ? ["personal"] : []),
+					...(exp.split ? ["split"] : [])
+				]
+			}
+		},
+		[]
+	)
+
 	const form = useForm<NewExpenseFormValues>({
 		resolver: zodResolver(schema),
 		mode: "onSubmit",
-		defaultValues: {
-			description: "",
-			category: "",
-			paymentType: "",
-			bank: "",
-			store: "",
-			date: "",
-			amount: "",
-			options: []
-		}
+		defaultValues: buildDefaultValues(expense)
 	})
 
 	const {
@@ -68,15 +101,18 @@ export function NewExpenseModal({ isOpen, onClose }: NewExpenseModalProps) {
 		handleSubmit,
 		formState: { errors },
 		watch,
-		setValue
+		setValue,
+		reset
 	} = form
 
-	// Clean fields when modal is closed
+	// Reset form when expense changes (switching between expenses) or modal closes
 	React.useEffect(() => {
 		if (!isOpen) {
-			form.reset()
+			reset(buildDefaultValues(undefined))
+		} else {
+			reset(buildDefaultValues(expense))
 		}
-	}, [isOpen, form.reset])
+	}, [isOpen, expense, reset, buildDefaultValues])
 
 	const onSubmit = (values: NewExpenseFormValues) => {
 		const payload = {
@@ -91,16 +127,31 @@ export function NewExpenseModal({ isOpen, onClose }: NewExpenseModalProps) {
 			store_id: values.store || undefined
 		}
 
-		createExpense(payload, {
-			onSuccess: () => {
-				toast.success(translations.createExpense.success)
-				form.reset()
-				onClose()
-			},
-			onError: (error) => {
-				toast.error(error.message)
-			}
-		})
+		if (isEditing) {
+			updateExpense(
+				{ id: expense.id, payload },
+				{
+					onSuccess: () => {
+						toast.success(translations.editExpense.success)
+						onClose()
+					},
+					onError: (error) => {
+						toast.error(error.message || translations.editExpense.error)
+					}
+				}
+			)
+		} else {
+			createExpense(payload, {
+				onSuccess: () => {
+					toast.success(translations.createExpense.success)
+					reset(buildDefaultValues(undefined))
+					onClose()
+				},
+				onError: (error) => {
+					toast.error(error.message)
+				}
+			})
+		}
 	}
 
 	const checkboxOptions = [
@@ -123,7 +174,9 @@ export function NewExpenseModal({ isOpen, onClose }: NewExpenseModalProps) {
 			<DialogContent className="sm:max-w-[450px] md:max-w-[600px] lg:max-w-[700px]">
 				<DialogHeader>
 					<DialogTitle className="text-[28px] font-bold text-input-text text-center">
-						{translations.createExpense.title}
+						{isEditing
+							? translations.editExpense.title
+							: translations.createExpense.title}
 					</DialogTitle>
 				</DialogHeader>
 
@@ -186,13 +239,22 @@ export function NewExpenseModal({ isOpen, onClose }: NewExpenseModalProps) {
 						/>
 
 						{/* Amount */}
-						<Input
-							isCurrency
-							icon={HiOutlineCurrencyDollar}
-							{...register("amount")}
-							placeholder={translations.createExpense.amount}
-							error={errors.amount?.message}
-						/>
+						<div className="flex flex-col gap-2">
+							<Input
+								isCurrency
+								icon={HiOutlineCurrencyDollar}
+								{...register("amount")}
+								placeholder={translations.createExpense.amount}
+								error={errors.amount?.message}
+							/>
+							{isEditing && expense?.split && (
+								<p className="flex items-center gap-1 text-xs text-muted-foreground lg:self-center">
+									<Info className="h-3 w-3 shrink-0" />
+									{translations.editExpense.splitAmountHint}{" "}
+									{formatAmount(expense.amount)}
+								</p>
+							)}
+						</div>
 					</div>
 
 					<CheckboxGroup
@@ -204,17 +266,29 @@ export function NewExpenseModal({ isOpen, onClose }: NewExpenseModalProps) {
 						}
 					/>
 
-					<Button
-						type="submit"
-						className="w-full h-12 bg-orange text-background font-bold text-[18px] hover:brightness-95 transition-all mt-4"
-						disabled={isPending}
-					>
-						{isPending ? (
-							<Loader2 className="h-5 w-5 animate-spin" />
-						) : (
-							translations.createExpense.save
+					<div className="flex gap-3 mt-4">
+						{isEditing && (
+							<Button
+								type="button"
+								onClick={onClose}
+								className="flex-1 h-12 bg-transparent border border-white/20 text-white font-bold text-[18px] hover:bg-white/5 transition-all"
+								disabled={isPending}
+							>
+								{translations.common.cancel}
+							</Button>
 						)}
-					</Button>
+						<Button
+							type="submit"
+							className="flex-1 h-12 bg-orange text-background font-bold text-[18px] hover:brightness-95 transition-all"
+							disabled={isPending}
+						>
+							{isPending ? (
+								<Loader2 className="h-5 w-5 animate-spin" />
+							) : (
+								translations.createExpense.save
+							)}
+						</Button>
+					</div>
 				</form>
 			</DialogContent>
 		</Dialog>

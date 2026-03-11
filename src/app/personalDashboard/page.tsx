@@ -8,6 +8,7 @@ import { ConfirmDeleteModal } from "@/components/ConfirmDeleteModal"
 import { ExpenseTable } from "@/components/ExpenseTable"
 import { FilterForm } from "@/components/FilterForm"
 import { Header } from "@/components/Header"
+import { NewExpenseModal } from "@/components/NewExpenseModal"
 import { Pagination } from "@/components/Pagination"
 import { Loader } from "@/components/ui/loader"
 import { translations } from "@/constants/translations"
@@ -58,6 +59,9 @@ export default function PersonalDashboard() {
 
 	const [deletingExpense, setDeletingExpense] =
 		useState<FormattedExpense | null>(null)
+	const [editingExpense, setEditingExpense] = useState<FormattedExpense | null>(
+		null
+	)
 	const { mutate: deleteExpense, isPending: isDeleting } = useDeleteExpense()
 
 	const total = formatCurrency(balance?.personalBalance ?? 0)
@@ -146,6 +150,7 @@ export default function PersonalDashboard() {
 							onSort={toggleSort}
 							getSortIndicator={getSortIndicator}
 							onDelete={setDeletingExpense}
+							onEdit={setEditingExpense}
 							currentUserId={user?.id}
 						/>
 
@@ -170,6 +175,11 @@ export default function PersonalDashboard() {
 					onClose={() => setDeletingExpense(null)}
 					onConfirm={handleDelete}
 					isPending={isDeleting}
+				/>
+				<NewExpenseModal
+					expense={editingExpense ?? undefined}
+					isOpen={!!editingExpense}
+					onClose={() => setEditingExpense(null)}
 				/>
 			</main>
 		</div>
