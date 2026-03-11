@@ -11,6 +11,12 @@ export interface Expense {
 	id: string
 	owner_id: string
 	description: string
+	category_id: string
+	payment_type_id: string
+	bank_id?: string
+	store_id?: string
+	personal: boolean
+	split: boolean
 	category: { description: string }
 	amount: number // in cents
 	type: "income" | "outcome"
@@ -39,6 +45,12 @@ export interface FormattedExpense {
 	id: string
 	ownerId: string
 	description: string
+	categoryId: string
+	paymentTypeId: string
+	bankId?: string
+	storeId?: string
+	personal: boolean
+	split: boolean
 	category: string
 	amount: number
 	formattedAmount: string

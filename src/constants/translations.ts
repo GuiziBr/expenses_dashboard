@@ -8,7 +8,8 @@ export const translations = {
 		previous: "Previous",
 		next: "Next",
 		logout: "Logout",
-		management: "Management"
+		management: "Management",
+		cancel: "Cancel"
 	},
 	dashboards: {
 		personal: {
@@ -117,6 +118,12 @@ export const translations = {
 	},
 	auth: {
 		sessionExpired: "Session expired. Please sign in again."
+	},
+	editExpense: {
+		title: "Edit Expense",
+		success: "Expense updated successfully!",
+		error: "Failed to update expense.",
+		splitAmountHint: "Split expense - your original share was:"
 	},
 	createExpense: {
 		title: "Create Expense",

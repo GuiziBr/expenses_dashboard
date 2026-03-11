@@ -19,7 +19,8 @@ vi.mock("@/components/ui/dialog", () => ({
 }))
 
 vi.mock("@/hooks/use-expenses", () => ({
-	useCreateExpense: vi.fn()
+	useCreateExpense: vi.fn(),
+	useUpdateExpense: vi.fn()
 }))
 
 vi.mock("@/hooks/use-filter-values", () => ({
@@ -31,7 +32,7 @@ vi.mock("sonner", () => ({
 }))
 
 import * as React from "react"
-import { useCreateExpense } from "@/hooks/use-expenses"
+import { useCreateExpense, useUpdateExpense } from "@/hooks/use-expenses"
 import { useFilterValues } from "@/hooks/use-filter-values"
 import { NewExpenseModal } from "./NewExpenseModal"
 
@@ -95,6 +96,10 @@ describe("NewExpenseModal — bank required rule", () => {
 			mutate: mockMutate,
 			isPending: false
 		} as unknown as ReturnType<typeof useCreateExpense>)
+		vi.mocked(useUpdateExpense).mockReturnValue({
+			mutate: vi.fn(),
+			isPending: false
+		} as unknown as ReturnType<typeof useUpdateExpense>)
 	})
 
 	it("shows a bank error when a has_statement payment type is selected without a bank", async () => {
