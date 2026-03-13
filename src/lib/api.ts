@@ -102,8 +102,12 @@ class ApiClient {
 
 		if (!response.ok) {
 			if (response.status === 401) {
-				unauthorizedHandler?.()
-				throw new Error("Session expired. Please sign in again.")
+				if (resolvedToken) {
+					const handler = unauthorizedHandler
+					unauthorizedHandler = null
+					handler?.()
+					throw new Error(translations.auth.sessionExpired)
+				}
 			}
 
 			const errorData = await response.json().catch(() => ({}))
