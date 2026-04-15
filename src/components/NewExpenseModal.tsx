@@ -16,6 +16,7 @@ import {
 	type NewExpenseFormValues,
 	newExpenseSchema
 } from "@/lib/schemas/new-expense-schema"
+import { cn } from "@/lib/utils"
 import type { FormattedExpense } from "@/types/expenses"
 import { Button } from "./ui/button"
 import { CheckboxGroup } from "./ui/checkbox-group"
@@ -70,7 +71,8 @@ export function NewExpenseModal({
 					store: "",
 					date: "",
 					amount: "",
-					options: []
+					options: [],
+					currentMonth: false
 				}
 			}
 			return {
@@ -84,7 +86,8 @@ export function NewExpenseModal({
 				options: [
 					...(exp.personal ? ["personal"] : []),
 					...(exp.split ? ["split"] : [])
-				]
+				],
+				currentMonth: false
 			}
 		},
 		[]
@@ -105,6 +108,30 @@ export function NewExpenseModal({
 		reset
 	} = form
 
+	const selectedPaymentTypeId = watch("paymentType")
+	const currentMonth = watch("currentMonth")
+
+	const hasNoStatement = React.useMemo(() => {
+		if (!selectedPaymentTypeId) return false
+		const selected = paymentTypes.find((pt) => pt.id === selectedPaymentTypeId)
+		return selected?.has_statement === false
+	}, [selectedPaymentTypeId, paymentTypes])
+
+	const today = React.useMemo(() => {
+		const d = new Date()
+		const year = d.getFullYear()
+		const month = String(d.getMonth() + 1).padStart(2, "0")
+		const day = String(d.getDate()).padStart(2, "0")
+		return `${year}-${month}-${day}`
+	}, [])
+
+	// Reset currentMonth when switching to a payment type that has a statement
+	React.useEffect(() => {
+		if (!hasNoStatement) {
+			setValue("currentMonth", false)
+		}
+	}, [hasNoStatement, setValue])
+
 	// Reset form when expense changes (switching between expenses) or modal closes
 	React.useEffect(() => {
 		if (!isOpen) {
@@ -124,7 +151,8 @@ export function NewExpenseModal({
 			personal: values.options.includes("personal"),
 			split: values.options.includes("split"),
 			bank_id: values.bank || undefined,
-			store_id: values.store || undefined
+			store_id: values.store || undefined,
+			current_month: hasNoStatement ? values.currentMonth : undefined
 		}
 
 		if (isEditing) {
@@ -234,6 +262,7 @@ export function NewExpenseModal({
 						<Input
 							type="date"
 							icon={MdDateRange}
+							max={today}
 							{...register("date")}
 							error={errors.date?.message}
 						/>
@@ -257,14 +286,67 @@ export function NewExpenseModal({
 						</div>
 					</div>
 
-					<CheckboxGroup
-						icon={IoMdCheckboxOutline}
-						options={checkboxOptions}
-						value={selectedOptions}
-						onChange={(val) =>
-							setValue("options", val, { shouldValidate: true })
-						}
-					/>
+					<div className="flex flex-col md:flex-row gap-3">
+						<CheckboxGroup
+							className="flex-1"
+							icon={IoMdCheckboxOutline}
+							options={checkboxOptions}
+							value={selectedOptions}
+							onChange={(val) =>
+								setValue("options", val, { shouldValidate: true })
+							}
+						/>
+						{hasNoStatement && (
+							<div className="flex flex-1 items-center gap-3 px-3 py-3 bg-container-background rounded-md border-2 border-container-background focus-within:border-orange">
+								<IoMdCheckboxOutline className="size-5 text-iron-gray shrink-0" />
+								<label
+									htmlFor="current-month"
+									className="flex items-center gap-2 cursor-pointer group select-none"
+								>
+									<div
+										aria-hidden="true"
+										className={cn(
+											"size-5 rounded border-2 flex items-center justify-center transition-colors shrink-0",
+											currentMonth
+												? "bg-orange border-orange"
+												: "border-iron-gray group-hover:border-orange"
+										)}
+									>
+										{currentMonth && (
+											<svg
+												className="size-3.5 text-background"
+												fill="none"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+												strokeWidth={4}
+												aria-hidden="true"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													d="M5 13l4 4L19 7"
+												/>
+											</svg>
+										)}
+									</div>
+									<input
+										id="current-month"
+										type="checkbox"
+										className="sr-only"
+										checked={currentMonth}
+										onChange={(e) =>
+											setValue("currentMonth", e.target.checked, {
+												shouldValidate: true
+											})
+										}
+									/>
+									<span className="text-base font-medium text-input-text">
+										{translations.createExpense.currentMonthLabel}
+									</span>
+								</label>
+							</div>
+						)}
+					</div>
 
 					<div className="flex gap-3 mt-4">
 						{isEditing && (

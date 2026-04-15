@@ -37,6 +37,7 @@ export interface NewExpensePayload {
 	split: boolean
 	bank_id?: string
 	store_id?: string
+	current_month?: boolean
 }
 
 // ── UI-Ready Types ──────────────────────────────────────────────────

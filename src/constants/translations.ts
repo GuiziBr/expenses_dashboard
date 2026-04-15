@@ -142,7 +142,8 @@ export const translations = {
 		personalLabel: "Personal",
 		splitLabel: "Split",
 		personalMobileLabel: "P",
-		splitMobileLabel: "S"
+		splitMobileLabel: "S",
+		currentMonthLabel: "Current Month"
 	}
 } as const
 
