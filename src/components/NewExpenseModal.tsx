@@ -114,7 +114,7 @@ export function NewExpenseModal({
 	const hasNoStatement = React.useMemo(() => {
 		if (!selectedPaymentTypeId) return false
 		const selected = paymentTypes.find((pt) => pt.id === selectedPaymentTypeId)
-		return selected ? !selected.has_statement : false
+		return selected?.has_statement === false
 	}, [selectedPaymentTypeId, paymentTypes])
 
 	const today = React.useMemo(() => {
@@ -299,8 +299,12 @@ export function NewExpenseModal({
 						{hasNoStatement && (
 							<div className="flex flex-1 items-center gap-3 px-3 py-3 bg-container-background rounded-md border-2 border-container-background focus-within:border-orange">
 								<IoMdCheckboxOutline className="size-5 text-iron-gray shrink-0" />
-								<label className="flex items-center gap-2 cursor-pointer group select-none">
+								<label
+									htmlFor="current-month"
+									className="flex items-center gap-2 cursor-pointer group select-none"
+								>
 									<div
+										aria-hidden="true"
 										className={cn(
 											"size-5 rounded border-2 flex items-center justify-center transition-colors shrink-0",
 											currentMonth
@@ -326,8 +330,9 @@ export function NewExpenseModal({
 										)}
 									</div>
 									<input
+										id="current-month"
 										type="checkbox"
-										className="hidden"
+										className="sr-only"
 										checked={currentMonth}
 										onChange={(e) =>
 											setValue("currentMonth", e.target.checked, {
