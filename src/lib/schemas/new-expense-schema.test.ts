@@ -7,7 +7,8 @@ const validPayload = {
 	paymentType: "pt-1",
 	date: "2024-03-15",
 	amount: "50.00",
-	options: []
+	options: [],
+	currentMonth: false
 }
 
 describe("newExpenseSchema — valid inputs", () => {

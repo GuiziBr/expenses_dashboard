@@ -157,8 +157,84 @@ describe("NewExpenseModal — bank required rule", () => {
 					amount: 50,
 					bank_id: "bank-1",
 					personal: false,
-					split: false
+					split: false,
+					current_month: undefined
 				}),
+				expect.any(Object)
+			)
+		})
+	})
+})
+
+describe("NewExpenseModal — current month checkbox", () => {
+	let mockMutate: ReturnType<typeof vi.fn>
+
+	beforeEach(() => {
+		mockMutate = vi.fn()
+		vi.mocked(useCreateExpense).mockReturnValue({
+			mutate: mockMutate,
+			isPending: false
+		} as unknown as ReturnType<typeof useCreateExpense>)
+		vi.mocked(useUpdateExpense).mockReturnValue({
+			mutate: vi.fn(),
+			isPending: false
+		} as unknown as ReturnType<typeof useUpdateExpense>)
+	})
+
+	it("does not show the Current Month checkbox when payment type has a statement", async () => {
+		setupFilterValues(PT_WITH_STATEMENT)
+		const { container } = render(
+			<NewExpenseModal isOpen={true} onClose={vi.fn()} />
+		)
+
+		await fillBaseFields(container, "pt-cc")
+
+		expect(screen.queryByText("Current Month")).toBeNull()
+	})
+
+	it("shows the Current Month checkbox when payment type has no statement", async () => {
+		setupFilterValues(PT_NO_STATEMENT)
+		const { container } = render(
+			<NewExpenseModal isOpen={true} onClose={vi.fn()} />
+		)
+
+		await fillBaseFields(container, "pt-cash")
+
+		expect(screen.getByText("Current Month")).toBeInTheDocument()
+	})
+
+	it("sends current_month: false by default when payment type has no statement", async () => {
+		setupFilterValues(PT_NO_STATEMENT)
+		const { container } = render(
+			<NewExpenseModal isOpen={true} onClose={vi.fn()} />
+		)
+
+		await fillBaseFields(container, "pt-cash")
+		await userEvent.click(screen.getByRole("button", { name: /save/i }))
+
+		await waitFor(() => {
+			expect(mockMutate).toHaveBeenCalledWith(
+				expect.objectContaining({ current_month: false }),
+				expect.any(Object)
+			)
+		})
+	})
+
+	it("sends current_month: true when the checkbox is checked", async () => {
+		setupFilterValues(PT_NO_STATEMENT)
+		const { container } = render(
+			<NewExpenseModal isOpen={true} onClose={vi.fn()} />
+		)
+
+		await fillBaseFields(container, "pt-cash")
+
+		await userEvent.click(screen.getByText("Current Month"))
+
+		await userEvent.click(screen.getByRole("button", { name: /save/i }))
+
+		await waitFor(() => {
+			expect(mockMutate).toHaveBeenCalledWith(
+				expect.objectContaining({ current_month: true }),
 				expect.any(Object)
 			)
 		})

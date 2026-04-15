@@ -21,7 +21,8 @@ export const newExpenseSchema = z.object({
 			},
 			{ message: translations.createExpense.invalidAmount }
 		),
-	options: z.array(z.string())
+	options: z.array(z.string()),
+	currentMonth: z.boolean()
 })
 
 export type NewExpenseFormValues = z.infer<typeof newExpenseSchema>
