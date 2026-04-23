@@ -433,7 +433,7 @@ The CSS triangle pointer under the tooltip: `border-[6px] border-t-red border-x-
 
 The `<SelectTrigger>` built-in chevron should be hidden (`[&>svg]:hidden`) and replaced with a `ChevronsUpDown` icon inside the container if needed, or the default shadcn chevron can be kept at the right edge.
 
-For simple filter dropdowns where the container is not a form field (no error state needed), use this leaner pattern with a native `<select>` only as a last resort, keeping the same container classes.
+For simple filter dropdowns where no error state is needed, use the same shadcn `<Select>` primitive with a leaner container — omit the left icon and drop `border-2` to `border` if visual weight should be reduced. Never fall back to a native `<select>`.
 
 ---
 
@@ -819,7 +819,8 @@ Used on Consolidated Balance pages. Two side-by-side tables (one per user), each
 | Property | Value | Notes |
 |---|---|---|
 | Max content width | `max-w-[1120px] mx-auto px-5` | Applied to page content wrappers |
-| Modal max width | `max-w-[425px]` | shadcn/ui Dialog default |
+| Modal max width — confirmation | `max-w-[500px]` | Confirm Delete and similar single-action dialogs |
+| Modal max width — form | `max-w-[700px]` | Multi-field forms (e.g. New Expense) |
 | Primary breakpoint | `md` (768px) | Most responsive switches happen here |
 | Secondary breakpoints | `lg` (1024px), `xl` (1280px) | Used for fine-tuning column widths |
 
