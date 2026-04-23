@@ -139,7 +139,7 @@ Copy this file verbatim into `src/app/globals.css`. It defines all color variabl
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-roboto-slab);
+  --font-serif: var(--font-roboto-slab);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -157,6 +157,7 @@ Copy this file verbatim into `src/app/globals.css`. It defines all color variabl
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -496,7 +497,7 @@ In the Payment Types table the "Has Statement" column renders differently based 
 
 ```tsx
 // has_statement = true
-<Check className="h-4 w-4 text-green-500" />
+<Check className="h-4 w-4 text-green" />
 
 // has_statement = false
 <span className="text-muted-foreground">—</span>
