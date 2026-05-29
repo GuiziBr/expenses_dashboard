@@ -4,9 +4,23 @@ export async function middleware(request: NextRequest) {
 	const rawToken = request.cookies.get("auth_token")?.value
 	const { pathname } = request.nextUrl
 
-	// Treat malformed tokens (not 3-part JWT) as absent
-	const isValidToken =
-		typeof rawToken === "string" && rawToken.split(".").length === 3
+	// Treat malformed or expired tokens as absent
+	const isValidToken = (() => {
+		if (typeof rawToken !== "string") return false
+		const parts = rawToken.split(".")
+		if (parts.length !== 3) return false
+		try {
+			const payload = JSON.parse(
+				atob(parts[1].replace(/-/g, "+").replace(/_/g, "/"))
+			)
+			if (typeof payload.exp === "number" && payload.exp * 1000 < Date.now())
+				return false
+		} catch {
+			return false
+		}
+		return true
+	})()
+
 	const token = isValidToken ? rawToken : undefined
 
 	// Public routes (accessible only when NOT logged in)
