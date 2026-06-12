@@ -272,6 +272,7 @@ export function NewExpenseModal({
 							<Input
 								isCurrency
 								icon={HiOutlineCurrencyDollar}
+								inputMode="decimal"
 								{...register("amount")}
 								placeholder={translations.createExpense.amount}
 								error={errors.amount?.message}
