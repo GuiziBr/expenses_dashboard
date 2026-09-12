@@ -13,6 +13,8 @@ updates:
     ignore:
       - dependency-name: "@vitejs/plugin-react"
         versions: ["6.x"]
+      - dependency-name: "typescript"
+        versions: ["7.x"]
 
   - package-ecosystem: github-actions
     directory: "/"
