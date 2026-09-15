@@ -19,6 +19,7 @@ import { useSortParams } from "@/hooks/use-sort-params"
 import { FILTER_VALUE_MAPPING } from "@/lib/constants"
 import { getFirstDayOfMonth, getLastDayOfMonth } from "@/lib/date-utils"
 import { formatCurrency } from "@/lib/format-currency"
+import { getErrorMessage } from "@/lib/get-error-message"
 import type {
 	BalanceFilterKey,
 	ExpenseFilters,
@@ -50,12 +51,20 @@ export default function PersonalDashboard() {
 	}, [orderBy, orderType])
 
 	const { data, isLoading, error } = useExpenses("personal", params)
-	const { data: balance } = useBalance({
+	const { data: balance, error: balanceError } = useBalance({
 		startDate: params.startDate,
 		endDate: params.endDate,
 		filterBy: params.filterBy as BalanceFilterKey,
 		filterValue: params.filterValue
 	})
+
+	useEffect(() => {
+		if (balanceError) {
+			toast.error(
+				getErrorMessage(balanceError, translations.common.errorLoadingBalance)
+			)
+		}
+	}, [balanceError])
 
 	const [deletingExpense, setDeletingExpense] =
 		useState<FormattedExpense | null>(null)
@@ -139,7 +148,7 @@ export default function PersonalDashboard() {
 
 				{error && (
 					<p className="text-center text-red">
-						{translations.common.errorLoading}
+						{getErrorMessage(error, translations.common.errorLoading)}
 					</p>
 				)}
 

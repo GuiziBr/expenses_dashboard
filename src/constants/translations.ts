@@ -3,6 +3,8 @@ export const translations = {
 		search: "Search",
 		loading: "...",
 		errorLoading: "Failed to load expenses. Please try again.",
+		errorLoadingBalance: "Failed to load balance. Please try again.",
+		errorLoadingOptions: "Failed to load options. Please try again.",
 		noExpensesFound: "No expenses found for this criteria.",
 		balance: "Balance",
 		previous: "Previous",
@@ -118,6 +120,11 @@ export const translations = {
 	},
 	auth: {
 		sessionExpired: "Session expired. Please sign in again."
+	},
+	errorBoundary: {
+		title: "Something went wrong",
+		description: "An unexpected error occurred. Please try again.",
+		retry: "Try again"
 	},
 	editExpense: {
 		title: "Edit Expense",

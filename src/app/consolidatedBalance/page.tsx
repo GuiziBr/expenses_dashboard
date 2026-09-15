@@ -10,6 +10,7 @@ import { ReportTables } from "@/components/ReportTables"
 import { translations } from "@/constants/translations"
 import { useConsolidatedBalance } from "@/hooks/use-consolidated-balance"
 import { formatCurrency } from "@/lib/format-currency"
+import { getErrorMessage } from "@/lib/get-error-message"
 
 export default function ConsolidatedBalance() {
 	const [params, setParams] = useState<{ year: number; month: number } | null>(
@@ -32,7 +33,9 @@ export default function ConsolidatedBalance() {
 
 	useEffect(() => {
 		if (error) {
-			toast.error(translations.dashboards.consolidated.error)
+			toast.error(
+				getErrorMessage(error, translations.dashboards.consolidated.error)
+			)
 		}
 	}, [error])
 

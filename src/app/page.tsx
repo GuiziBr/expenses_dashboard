@@ -10,6 +10,7 @@ import * as z from "zod"
 import { LoginInput } from "@/components/LoginInput"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/contexts/auth-context"
+import { ApiError } from "@/lib/api"
 import logo from "../../public/assets/images/logo.svg"
 import background from "../../public/assets/images/sign-in-background.jpg"
 
@@ -44,8 +45,15 @@ export default function Home() {
 				duration: 800
 			})
 			router.replace("/personalDashboard")
-		} catch {
-			toast.error("Invalid email or password. Please try again.")
+		} catch (error) {
+			// 401 means the credentials themselves were rejected, so a
+			// friendly fixed message is clearer than the backend's raw text.
+			// Any other error (e.g. 400 validation) surfaces its real message.
+			const message =
+				error instanceof ApiError && error.status !== 401 && error.message
+					? error.message
+					: "Invalid email or password. Please try again."
+			toast.error(message)
 		}
 	}
 

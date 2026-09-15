@@ -2,6 +2,16 @@ import { translations } from "@/constants/translations"
 import { getAuthToken } from "./auth-helpers"
 import { API_BASE_URL } from "./constants"
 
+export class ApiError extends Error {
+	constructor(
+		message: string,
+		public readonly status: number
+	) {
+		super(message)
+		this.name = "ApiError"
+	}
+}
+
 let unauthorizedHandler: (() => void) | null = null
 
 export function setUnauthorizedHandler(handler: () => void) {
@@ -41,11 +51,11 @@ class ApiClient {
 		}
 	}
 
-	private async request<T>(
+	private async fetch(
 		endpoint: string,
 		method: HttpMethod,
 		options: FetchOptions = {}
-	): Promise<T> {
+	): Promise<Response> {
 		const { config, token } = this.buildConfig(method, options)
 		const resolvedToken = await token
 
@@ -57,18 +67,33 @@ class ApiClient {
 		const response = await fetch(`${API_BASE_URL}/${endpoint}`, config)
 
 		if (!response.ok) {
-			if (response.status === 401) {
-				if (resolvedToken) {
-					const handler = unauthorizedHandler
-					unauthorizedHandler = null
-					handler?.()
-					throw new Error(translations.auth.sessionExpired)
-				}
+			// A 401 with no token attached means the request was never
+			// authenticated in the first place (e.g. login with wrong
+			// credentials) rather than a session that expired, so it must
+			// not trigger the logout flow below.
+			if (response.status === 401 && resolvedToken) {
+				const handler = unauthorizedHandler
+				unauthorizedHandler = null
+				handler?.()
+				throw new ApiError(translations.auth.sessionExpired, response.status)
 			}
 
 			const errorData = await response.json().catch(() => ({}))
-			throw new Error(errorData.message || `API Error: ${response.status}`)
+			throw new ApiError(
+				errorData.message || `API Error: ${response.status}`,
+				response.status
+			)
 		}
+
+		return response
+	}
+
+	private async request<T>(
+		endpoint: string,
+		method: HttpMethod,
+		options: FetchOptions = {}
+	): Promise<T> {
+		const response = await this.fetch(endpoint, method, options)
 
 		// Handle 204 No Content
 		if (response.status === 204) {
@@ -90,30 +115,7 @@ class ApiClient {
 		endpoint: string,
 		options?: FetchOptions
 	): Promise<PaginatedResponse<T>> {
-		const { config, token } = this.buildConfig("GET", options)
-		const resolvedToken = await token
-
-		if (resolvedToken) {
-			;(config.headers as Record<string, string>).Authorization =
-				`Bearer ${resolvedToken}`
-		}
-
-		const response = await fetch(`${API_BASE_URL}/${endpoint}`, config)
-
-		if (!response.ok) {
-			if (response.status === 401) {
-				if (resolvedToken) {
-					const handler = unauthorizedHandler
-					unauthorizedHandler = null
-					handler?.()
-					throw new Error(translations.auth.sessionExpired)
-				}
-			}
-
-			const errorData = await response.json().catch(() => ({}))
-			throw new Error(errorData.message || `API Error: ${response.status}`)
-		}
-
+		const response = await this.fetch(endpoint, "GET", options)
 		const data: T = await response.json()
 		const totalCount = Number(response.headers.get("x-total-count") ?? "0")
 
