@@ -28,7 +28,7 @@ No body.
 
 | Status | Condition |
 |--------|-----------|
-| `400 Bad Request` | Body fails schema validation, or the update fails a known database constraint (e.g. the user does not exist) |
+| `400 Bad Request` | Body fails schema validation |
 | `401 Unauthorized` | Missing/invalid token |
 | `404 Not Found` | The user resolved from the token no longer exists |
 | `500 Internal Server Error` | Unexpected database error |
