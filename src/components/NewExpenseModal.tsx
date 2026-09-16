@@ -12,6 +12,7 @@ import { translations } from "@/constants/translations"
 import { useCreateExpense, useUpdateExpense } from "@/hooks/use-expenses"
 import { useFilterValues } from "@/hooks/use-filter-values"
 import { formatAmount } from "@/lib/format-expense"
+import { getErrorMessage } from "@/lib/get-error-message"
 import {
 	type NewExpenseFormValues,
 	newExpenseSchema
@@ -41,10 +42,22 @@ export function NewExpenseModal({
 	const { mutate: updateExpense, isPending: isUpdating } = useUpdateExpense()
 	const isPending = isEditing ? isUpdating : isCreating
 
-	const { data: categories = [] } = useFilterValues("categories")
-	const { data: paymentTypes = [] } = useFilterValues("paymentType")
-	const { data: banks = [] } = useFilterValues("banks")
-	const { data: stores = [] } = useFilterValues("stores")
+	const { data: categories = [], error: categoriesError } =
+		useFilterValues("categories")
+	const { data: paymentTypes = [], error: paymentTypesError } =
+		useFilterValues("paymentType")
+	const { data: banks = [], error: banksError } = useFilterValues("banks")
+	const { data: stores = [], error: storesError } = useFilterValues("stores")
+
+	React.useEffect(() => {
+		const error =
+			categoriesError || paymentTypesError || banksError || storesError
+		if (isOpen && error) {
+			toast.error(
+				getErrorMessage(error, translations.common.errorLoadingOptions)
+			)
+		}
+	}, [isOpen, categoriesError, paymentTypesError, banksError, storesError])
 
 	const schema = React.useMemo(() => {
 		return newExpenseSchema.refine(
@@ -176,7 +189,7 @@ export function NewExpenseModal({
 					onClose()
 				},
 				onError: (error) => {
-					toast.error(error.message)
+					toast.error(error.message || translations.createExpense.error)
 				}
 			})
 		}

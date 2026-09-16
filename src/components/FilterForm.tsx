@@ -1,10 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { HiOutlineSelector, HiPlus } from "react-icons/hi"
+import { toast } from "sonner"
 import { translations } from "@/constants/translations"
 import { useFilterValues } from "@/hooks/use-filter-values"
 import { COLUMN_FILTERS } from "@/lib/constants"
+import { getErrorMessage } from "@/lib/get-error-message"
 import type { ExpenseFilters } from "@/types/expenses"
 import { NewExpenseModal } from "./NewExpenseModal"
 import { Button } from "./ui/button"
@@ -29,8 +31,22 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 	const [minEndDate, setMinEndDate] = useState<string>("")
 	const [maxStartDate, setMaxStartDate] = useState<string>("")
 
-	const { data: filterOptions = [], isLoading: isLoadingOptions } =
-		useFilterValues(filterBy)
+	const {
+		data: filterOptions = [],
+		isLoading: isLoadingOptions,
+		error: filterOptionsError
+	} = useFilterValues(filterBy)
+
+	useEffect(() => {
+		if (filterOptionsError) {
+			toast.error(
+				getErrorMessage(
+					filterOptionsError,
+					translations.common.errorLoadingOptions
+				)
+			)
+		}
+	}, [filterOptionsError])
 
 	const handleSubmit = (e: React.SubmitEvent) => {
 		e.preventDefault()
