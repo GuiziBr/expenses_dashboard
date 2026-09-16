@@ -1,6 +1,7 @@
 "use client"
 import { CircleArrowDown, CircleArrowUp, DollarSign } from "lucide-react"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 import { BalanceCard } from "@/components/BalanceCard"
 import { ExpenseTable } from "@/components/ExpenseTable"
 import { FilterForm } from "@/components/FilterForm"
@@ -14,6 +15,7 @@ import { useSortParams } from "@/hooks/use-sort-params"
 import { FILTER_VALUE_MAPPING } from "@/lib/constants"
 import { getFirstDayOfMonth, getLastDayOfMonth } from "@/lib/date-utils"
 import { formatCurrency } from "@/lib/format-currency"
+import { getErrorMessage } from "@/lib/get-error-message"
 import type {
 	BalanceFilterKey,
 	ExpenseFilters,
@@ -43,12 +45,20 @@ export default function SharedDashboard() {
 	}, [orderBy, orderType])
 
 	const { data, isLoading, error } = useExpenses("shared", params)
-	const { data: balance } = useBalance({
+	const { data: balance, error: balanceError } = useBalance({
 		startDate: params.startDate,
 		endDate: params.endDate,
 		filterBy: params.filterBy as BalanceFilterKey,
 		filterValue: params.filterValue
 	})
+
+	useEffect(() => {
+		if (balanceError) {
+			toast.error(
+				getErrorMessage(balanceError, translations.common.errorLoadingBalance)
+			)
+		}
+	}, [balanceError])
 
 	const paying = formatCurrency(balance?.sharedBalance?.paying ?? 0)
 	const payed = formatCurrency(balance?.sharedBalance?.payed ?? 0)
@@ -117,7 +127,7 @@ export default function SharedDashboard() {
 
 				{error && (
 					<p className="text-center text-red">
-						{translations.common.errorLoading}
+						{getErrorMessage(error, translations.common.errorLoading)}
 					</p>
 				)}
 
