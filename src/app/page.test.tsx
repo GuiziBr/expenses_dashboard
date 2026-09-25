@@ -14,6 +14,13 @@ vi.mock("sonner", () => ({
 	toast: { success: vi.fn(), error: vi.fn() }
 }))
 
+// next/image preloads `priority` images via a querySelector on the src; Vite
+// inlines the logo as a data URI, which exceeds jsdom's 2048-char selector cap.
+vi.mock("next/image", () => ({
+	// biome-ignore lint/performance/noImgElement: plain stub for next/image in tests
+	default: ({ alt }: { alt: string }) => <img alt={alt} />
+}))
+
 import { toast } from "sonner"
 import { useAuth } from "@/contexts/auth-context"
 import { ApiError } from "@/lib/api"
