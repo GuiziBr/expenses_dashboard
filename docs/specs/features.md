@@ -88,6 +88,19 @@ A monthly report showing expenses broken down by requester and partner, with tot
 
 ---
 
+## 5a. Balance Breakdown
+
+### What it does
+A monthly view of the user's personal spending split by one grouping (category, payment type, bank or store). It shows a donut chart and a ranked legend.
+
+### Rules
+- Uses `GET /balance/breakdown/:year/:month?filterBy=…`. Defaults to the **Category** tab and the current month.
+- Changing the tab or month fetches the data immediately (no Search button).
+- The top 5 items get their own slice. The rest are grouped as **Other**.
+- Full spec: [balance-breakdown.md](./balance-breakdown.md).
+
+---
+
 ## 6. Expense Filtering
 
 ### What it does
