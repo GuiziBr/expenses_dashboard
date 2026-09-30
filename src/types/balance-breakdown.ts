@@ -5,6 +5,16 @@
  * - `BreakdownView` is the UI-ready shape derived by `buildBreakdownView`.
  */
 
+// ── API ────────────────────────────────────────────────────────────
+
+/** Raw entry: `description` for category / payment type, `name` for bank / store. */
+export interface RawBreakdownItem {
+	id: string | null
+	description?: string | null
+	name?: string | null
+	total: number // in cents
+}
+
 // ── Input ───────────────────────────────────────────────────────────
 
 export interface BreakdownItem {
