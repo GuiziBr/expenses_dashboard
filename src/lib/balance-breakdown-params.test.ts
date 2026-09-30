@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest"
 import {
 	buildBreakdownQuery,
+	formatMonthLabel,
 	formatMonthParam,
 	getCurrentMonth,
 	parseGroupBy,
-	parseMonth
+	parseMonth,
+	shiftMonth
 } from "./balance-breakdown-params"
 
 const NOW = new Date(2026, 8, 29) // September 2026
@@ -105,5 +107,43 @@ describe("getCurrentMonth", () => {
 			year: 2026,
 			month: 1
 		})
+	})
+})
+
+describe("shiftMonth", () => {
+	it("moves forward and backward within a year", () => {
+		expect(shiftMonth({ year: 2026, month: 9 }, 1)).toEqual({
+			year: 2026,
+			month: 10
+		})
+		expect(shiftMonth({ year: 2026, month: 9 }, -1)).toEqual({
+			year: 2026,
+			month: 8
+		})
+	})
+
+	it("crosses into the next year (Dec 2026 ▶ Jan 2027)", () => {
+		expect(shiftMonth({ year: 2026, month: 12 }, 1)).toEqual({
+			year: 2027,
+			month: 1
+		})
+	})
+
+	it("crosses into the previous year (Jan 2027 ◀ Dec 2026)", () => {
+		expect(shiftMonth({ year: 2027, month: 1 }, -1)).toEqual({
+			year: 2026,
+			month: 12
+		})
+	})
+})
+
+describe("formatMonthLabel", () => {
+	it("formats as the full month name and year", () => {
+		expect(formatMonthLabel({ year: 2026, month: 9 })).toBe("September 2026")
+	})
+
+	it("does not shift months with the local timezone", () => {
+		expect(formatMonthLabel({ year: 2027, month: 1 })).toBe("January 2027")
+		expect(formatMonthLabel({ year: 2026, month: 12 })).toBe("December 2026")
 	})
 })

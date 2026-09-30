@@ -76,3 +76,29 @@ export function buildBreakdownQuery(
 	})
 	return params.toString()
 }
+
+/**
+ * Move a month forwards or backwards, crossing year boundaries.
+ * @example shiftMonth({ year: 2026, month: 12 }, 1) → { year: 2027, month: 1 }
+ */
+export function shiftMonth(
+	{ year, month }: BreakdownMonth,
+	delta: number
+): BreakdownMonth {
+	const index = year * 12 + (month - 1) + delta
+	return { year: Math.floor(index / 12), month: (index % 12) + 1 }
+}
+
+const monthLabelFormatter = new Intl.DateTimeFormat("en-US", {
+	timeZone: "UTC",
+	month: "long",
+	year: "numeric"
+})
+
+/**
+ * Format a month for display as `MMMM YYYY`.
+ * @example formatMonthLabel({ year: 2026, month: 9 }) → "September 2026"
+ */
+export function formatMonthLabel({ year, month }: BreakdownMonth): string {
+	return monthLabelFormatter.format(new Date(Date.UTC(year, month - 1, 1)))
+}

@@ -23,7 +23,18 @@ export const translations = {
 			outcomes: "Outcomes"
 		},
 		breakdown: {
-			title: "Balance Breakdown"
+			title: "Balance Breakdown",
+			groupingLabel: "Group spending by",
+			tabs: {
+				categories: "Category",
+				paymentType: "Payment type",
+				paymentTypeShort: "Payment",
+				banks: "Bank",
+				stores: "Store"
+			},
+			month: "Month",
+			previousMonth: "Previous month",
+			nextMonth: "Next month"
 		},
 		consolidated: {
 			title: "Consolidated Balance",
