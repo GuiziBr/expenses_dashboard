@@ -34,7 +34,32 @@ export const translations = {
 			},
 			month: "Month",
 			previousMonth: "Previous month",
-			nextMonth: "Next month"
+			nextMonth: "Next month",
+			summary: {
+				top: {
+					categories: "Top category",
+					paymentType: "Top payment type",
+					banks: "Top bank",
+					stores: "Top store"
+				},
+				count: {
+					categories: "Categories",
+					paymentType: "Payment types",
+					banks: "Banks",
+					stores: "Stores"
+				},
+				ofTheMonth: "of the month",
+				countSub: "with expenses this month",
+				countSubShort: "with expenses",
+				total: "Total spent",
+				totalSub: "personal expenses",
+				empty: "—"
+			},
+			noBank: "No bank",
+			noStore: "No store",
+			emptyMonth: "No personal expenses for",
+			error: "Failed to load data. Please try again.",
+			retry: "Retry"
 		},
 		consolidated: {
 			title: "Consolidated Balance",

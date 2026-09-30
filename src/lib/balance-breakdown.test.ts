@@ -3,6 +3,7 @@ import type { BreakdownItem } from "@/types/balance-breakdown"
 import {
 	buildBreakdownView,
 	formatShare,
+	getItemLabel,
 	OTHER_COLOR,
 	SLICE_COLORS
 } from "./balance-breakdown"
@@ -274,5 +275,34 @@ describe("formatShare", () => {
 
 	it("shows 0.0% for zero", () => {
 		expect(formatShare(0)).toBe("0.0%")
+	})
+})
+
+// ── getItemLabel (BR-21) ────────────────────────────────────────────
+
+describe("getItemLabel", () => {
+	it("returns a real label untouched", () => {
+		expect(getItemLabel("Chase", "banks")).toEqual({
+			text: "Chase",
+			isPlaceholder: false
+		})
+	})
+
+	it("reads 'No bank' for a null bank", () => {
+		expect(getItemLabel(null, "banks")).toEqual({
+			text: "No bank",
+			isPlaceholder: true
+		})
+	})
+
+	it("reads 'No store' for a null store", () => {
+		expect(getItemLabel(null, "stores")).toEqual({
+			text: "No store",
+			isPlaceholder: true
+		})
+	})
+
+	it("falls back to a dash for groupings that never return null", () => {
+		expect(getItemLabel(null, "categories")).toMatchObject({ text: "—" })
 	})
 })

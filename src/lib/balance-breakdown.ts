@@ -1,9 +1,11 @@
+import { translations } from "@/constants/translations"
 import type {
 	BreakdownItem,
 	BreakdownRow,
 	BreakdownSlice,
 	BreakdownView
 } from "@/types/balance-breakdown"
+import type { BalanceFilterKey } from "@/types/expenses"
 
 // ── Constants ───────────────────────────────────────────────────────
 
@@ -110,4 +112,25 @@ export function buildBreakdownView(items: BreakdownItem[]): BreakdownView {
 export function formatShare(share: number): string {
 	if (share > 0 && share < 0.1) return "<0.1%"
 	return `${share.toFixed(1)}%`
+}
+
+const NULL_LABELS: Partial<Record<BalanceFilterKey, string>> = {
+	banks: translations.dashboards.breakdown.noBank,
+	stores: translations.dashboards.breakdown.noStore
+}
+
+/**
+ * Display name for an item. The API's null bank / store entry reads
+ * "No bank" / "No store" (BR-21); `isPlaceholder` lets the UI style it.
+ */
+export function getItemLabel(
+	label: string | null,
+	groupBy: BalanceFilterKey
+): { text: string; isPlaceholder: boolean } {
+	if (label !== null) return { text: label, isPlaceholder: false }
+	return {
+		text:
+			NULL_LABELS[groupBy] ?? translations.dashboards.breakdown.summary.empty,
+		isPlaceholder: true
+	}
 }

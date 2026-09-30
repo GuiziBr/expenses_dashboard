@@ -1,14 +1,21 @@
 "use client"
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Suspense } from "react"
+import { Suspense, useMemo } from "react"
 import { BreakdownControls } from "@/components/BreakdownControls"
+import {
+	BreakdownEmpty,
+	BreakdownError,
+	BreakdownSkeleton
+} from "@/components/BreakdownStates"
+import { BreakdownSummary } from "@/components/BreakdownSummary"
 import { Header } from "@/components/Header"
-import { translations } from "@/constants/translations"
 import { useBalanceBreakdown } from "@/hooks/use-balance-breakdown"
+import { buildBreakdownView } from "@/lib/balance-breakdown"
 import {
 	type BreakdownMonth,
 	buildBreakdownQuery,
+	formatMonthLabel,
 	parseGroupBy,
 	parseMonth,
 	shiftMonth
@@ -23,11 +30,13 @@ function BalanceBreakdownContent() {
 	const groupBy = parseGroupBy(searchParams.get("groupBy"))
 	const month = parseMonth(searchParams.get("month"))
 
-	const { data, isLoading, error } = useBalanceBreakdown(
+	const { data, isLoading, error, refetch } = useBalanceBreakdown(
 		month.year,
 		month.month,
 		groupBy
 	)
+
+	const view = useMemo(() => buildBreakdownView(data ?? []), [data])
 
 	// A push (not replace) so back/forward restore the previous view
 	const navigate = (nextGroupBy: BalanceFilterKey, nextMonth: BreakdownMonth) =>
@@ -37,9 +46,13 @@ function BalanceBreakdownContent() {
 
 	return (
 		<main className="max-w-[1120px] mx-auto px-5 -mt-24 pb-16 flex flex-col gap-8">
-			<h1 className="text-2xl font-bold text-white">
-				{translations.dashboards.breakdown.title}
-			</h1>
+			<BreakdownSummary
+				groupBy={groupBy}
+				month={month}
+				view={view}
+				isLoading={isLoading}
+				hasError={!!error}
+			/>
 
 			<BreakdownControls
 				groupBy={groupBy}
@@ -49,18 +62,19 @@ function BalanceBreakdownContent() {
 				onShiftMonth={(delta) => navigate(groupBy, shiftMonth(month, delta))}
 			/>
 
-			{/* TODO(task 5-7): replace with the summary cards, legend and chart */}
-			<div className="text-input-text">
-				{isLoading && <p>{translations.common.loading}</p>}
-				{error && <p>{translations.common.errorLoading}</p>}
-				<ul>
-					{data?.map((item, index) => (
-						<li key={item.id ?? `none-${index}`}>
-							{item.label ?? "—"}: {formatCurrency(item.total)}
-						</li>
-					))}
-				</ul>
-			</div>
+			{/* TODO(task 6-7): replace the list with the legend and chart */}
+			{isLoading && <BreakdownSkeleton />}
+			{error && <BreakdownError onRetry={() => refetch()} />}
+			{!isLoading && !error && view.rows.length === 0 && (
+				<BreakdownEmpty monthLabel={formatMonthLabel(month)} />
+			)}
+			<ul className="text-input-text">
+				{view.rows.map((row) => (
+					<li key={row.id ?? `none-${row.rank}`}>
+						{row.label ?? "—"}: {formatCurrency(row.total)}
+					</li>
+				))}
+			</ul>
 		</main>
 	)
 }
