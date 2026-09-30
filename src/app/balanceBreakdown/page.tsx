@@ -3,6 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useMemo } from "react"
 import { BreakdownControls } from "@/components/BreakdownControls"
+import { BreakdownLegend } from "@/components/BreakdownLegend"
 import {
 	BreakdownEmpty,
 	BreakdownError,
@@ -16,11 +17,11 @@ import {
 	type BreakdownMonth,
 	buildBreakdownQuery,
 	formatMonthLabel,
+	formatMonthParam,
 	parseGroupBy,
 	parseMonth,
 	shiftMonth
 } from "@/lib/balance-breakdown-params"
-import { formatCurrency } from "@/lib/format-currency"
 import type { BalanceFilterKey } from "@/types/expenses"
 
 function BalanceBreakdownContent() {
@@ -62,19 +63,20 @@ function BalanceBreakdownContent() {
 				onShiftMonth={(delta) => navigate(groupBy, shiftMonth(month, delta))}
 			/>
 
-			{/* TODO(task 6-7): replace the list with the legend and chart */}
 			{isLoading && <BreakdownSkeleton />}
 			{error && <BreakdownError onRetry={() => refetch()} />}
 			{!isLoading && !error && view.rows.length === 0 && (
 				<BreakdownEmpty monthLabel={formatMonthLabel(month)} />
 			)}
-			<ul className="text-input-text">
-				{view.rows.map((row) => (
-					<li key={row.id ?? `none-${row.rank}`}>
-						{row.label ?? "—"}: {formatCurrency(row.total)}
-					</li>
-				))}
-			</ul>
+			{/* TODO(task 7): the chart card joins the legend here */}
+			{view.rows.length > 0 && (
+				<BreakdownLegend
+					// Remount so the expanded state resets on tab / month change (FR-38)
+					key={`${groupBy}-${formatMonthParam(month)}`}
+					view={view}
+					groupBy={groupBy}
+				/>
+			)}
 		</main>
 	)
 }

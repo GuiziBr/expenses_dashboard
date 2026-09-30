@@ -55,6 +55,11 @@ export const translations = {
 				totalSub: "personal expenses",
 				empty: "—"
 			},
+			legend: {
+				other: "OTHER",
+				showAll: "Show all",
+				showLess: "Show less"
+			},
 			noBank: "No bank",
 			noStore: "No store",
 			emptyMonth: "No personal expenses for",
