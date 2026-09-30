@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useMemo } from "react"
+import { BreakdownChart } from "@/components/BreakdownChart"
 import { BreakdownControls } from "@/components/BreakdownControls"
 import { BreakdownLegend } from "@/components/BreakdownLegend"
 import {
@@ -63,19 +64,31 @@ function BalanceBreakdownContent() {
 				onShiftMonth={(delta) => navigate(groupBy, shiftMonth(month, delta))}
 			/>
 
-			{isLoading && <BreakdownSkeleton />}
 			{error && <BreakdownError onRetry={() => refetch()} />}
 			{!isLoading && !error && view.rows.length === 0 && (
 				<BreakdownEmpty monthLabel={formatMonthLabel(month)} />
 			)}
-			{/* TODO(task 7): the chart card joins the legend here */}
-			{view.rows.length > 0 && (
-				<BreakdownLegend
-					// Remount so the expanded state resets on tab / month change (FR-38)
-					key={`${groupBy}-${formatMonthParam(month)}`}
-					view={view}
-					groupBy={groupBy}
-				/>
+			{(isLoading || (!error && view.rows.length > 0)) && (
+				<div className="flex flex-col gap-8 md:flex-row md:items-start">
+					<BreakdownChart
+						view={view}
+						groupBy={groupBy}
+						month={month}
+						isLoading={isLoading}
+					/>
+					<div className="min-w-0 flex-1">
+						{isLoading ? (
+							<BreakdownSkeleton />
+						) : (
+							<BreakdownLegend
+								// Remount so the expanded state resets on tab / month change (FR-38)
+								key={`${groupBy}-${formatMonthParam(month)}`}
+								view={view}
+								groupBy={groupBy}
+							/>
+						)}
+					</div>
+				</div>
 			)}
 		</main>
 	)

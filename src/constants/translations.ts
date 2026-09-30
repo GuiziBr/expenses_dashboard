@@ -55,6 +55,18 @@ export const translations = {
 				totalSub: "personal expenses",
 				empty: "—"
 			},
+			chart: {
+				title: "Share of month by",
+				item: {
+					categories: "category",
+					paymentType: "payment type",
+					banks: "bank",
+					stores: "store"
+				},
+				topThree: "Top 3",
+				accountFor: "account for",
+				hint: "Tap a slice to see its value"
+			},
 			legend: {
 				other: "OTHER",
 				showAll: "Show all",
