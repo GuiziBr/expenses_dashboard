@@ -10,18 +10,20 @@ const round = (value: number) => Math.round(value * 1000) / 1000
  * @param shares      Slice sizes, in order
  * @param size        Width and height of the square the donut fits in
  * @param innerRatio  Inner radius as a fraction of the outer radius
+ * @param growth      Extra outer radius per slice (a selected slice grows outward)
  */
 export function buildDonutPaths(
 	shares: number[],
 	size: number,
-	innerRatio: number
+	innerRatio: number,
+	growth: number[] = []
 ): string[] {
 	const total = shares.reduce((sum, share) => sum + share, 0)
 	if (total <= 0) return []
 
 	const center = size / 2
-	const outer = size / 2
-	const inner = outer * innerRatio
+	const baseOuter = size / 2
+	const inner = baseOuter * innerRatio
 
 	const point = (radius: number, angle: number) => {
 		const radians = (angle * Math.PI) / 180
@@ -29,7 +31,8 @@ export function buildDonutPaths(
 	}
 
 	let start = 0
-	return shares.map((share) => {
+	return shares.map((share, index) => {
+		const outer = baseOuter + (growth[index] ?? 0)
 		const sweep = (share / total) * FULL_TURN
 		const end = start + sweep
 		const from = start

@@ -2,14 +2,9 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useMemo } from "react"
-import { BreakdownChart } from "@/components/BreakdownChart"
+import { BreakdownContent } from "@/components/BreakdownContent"
 import { BreakdownControls } from "@/components/BreakdownControls"
-import { BreakdownLegend } from "@/components/BreakdownLegend"
-import {
-	BreakdownEmpty,
-	BreakdownError,
-	BreakdownSkeleton
-} from "@/components/BreakdownStates"
+import { BreakdownEmpty, BreakdownError } from "@/components/BreakdownStates"
 import { BreakdownSummary } from "@/components/BreakdownSummary"
 import { Header } from "@/components/Header"
 import { useBalanceBreakdown } from "@/hooks/use-balance-breakdown"
@@ -69,26 +64,14 @@ function BalanceBreakdownContent() {
 				<BreakdownEmpty monthLabel={formatMonthLabel(month)} />
 			)}
 			{(isLoading || (!error && view.rows.length > 0)) && (
-				<div className="flex flex-col gap-8 md:flex-row md:items-start">
-					<BreakdownChart
-						view={view}
-						groupBy={groupBy}
-						month={month}
-						isLoading={isLoading}
-					/>
-					<div className="min-w-0 flex-1">
-						{isLoading ? (
-							<BreakdownSkeleton />
-						) : (
-							<BreakdownLegend
-								// Remount so the expanded state resets on tab / month change (FR-38)
-								key={`${groupBy}-${formatMonthParam(month)}`}
-								view={view}
-								groupBy={groupBy}
-							/>
-						)}
-					</div>
-				</div>
+				<BreakdownContent
+					// Remount to reset the selection and expanded legend (FR-16, FR-38)
+					key={`${groupBy}-${formatMonthParam(month)}`}
+					view={view}
+					groupBy={groupBy}
+					month={month}
+					isLoading={isLoading}
+				/>
 			)}
 		</main>
 	)

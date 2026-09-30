@@ -65,7 +65,9 @@ export const translations = {
 				},
 				topThree: "Top 3",
 				accountFor: "account for",
-				hint: "Tap a slice to see its value"
+				hint: "Tap a slice to see its value",
+				hintSelected: "Tap the slice again or tap outside to show the total",
+				other: "Other"
 			},
 			legend: {
 				other: "OTHER",

@@ -56,6 +56,15 @@ describe("BreakdownChart", () => {
 		expect(screen.getByTestId("donut")).toHaveAttribute("aria-hidden", "true")
 	})
 
+	it("lets clicks and hovers through the centre label to the slices", () => {
+		// The label overlay covers the whole donut; without pointer-events-none it
+		// swallows every click meant for a slice (jsdom cannot hit-test, so assert the class)
+		renderChart([60, 40])
+		expect(
+			screen.getByText("Total spent").closest(".pointer-events-none")
+		).not.toBeNull()
+	})
+
 	it("draws one slice per own item plus one for Other", () => {
 		// 14 items: 5 own slices + Other
 		const { container } = renderChart([

@@ -122,11 +122,15 @@ describe("BreakdownLegend – Show all (AC-09)", () => {
 	it("has no button for exactly 10 items", () => {
 		renderLegend(toItems([10, 10, 10, 10, 10, 10, 10, 10, 10, 10]))
 		expect(screen.getAllByRole("listitem")).toHaveLength(10)
-		expect(screen.queryByRole("button")).not.toBeInTheDocument()
+		expect(
+			screen.queryByRole("button", { name: /^show (all|less)/i })
+		).not.toBeInTheDocument()
 	})
 
 	it("has no button for a single item", () => {
 		renderLegend(toItems([500]))
-		expect(screen.queryByRole("button")).not.toBeInTheDocument()
+		expect(
+			screen.queryByRole("button", { name: /^show (all|less)/i })
+		).not.toBeInTheDocument()
 	})
 })

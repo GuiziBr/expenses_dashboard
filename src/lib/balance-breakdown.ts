@@ -2,6 +2,7 @@ import { translations } from "@/constants/translations"
 import type {
 	BreakdownItem,
 	BreakdownRow,
+	BreakdownSelection,
 	BreakdownSlice,
 	BreakdownView
 } from "@/types/balance-breakdown"
@@ -133,4 +134,52 @@ export function getItemLabel(
 			NULL_LABELS[groupBy] ?? translations.dashboards.breakdown.summary.empty,
 		isPlaceholder: true
 	}
+}
+
+// ── Selection (FR-40, FR-42) ────────────────────────────────────────
+
+const OTHER_SELECTION: BreakdownSelection = { kind: "other" }
+
+/** Any row inside the Other group selects the whole group. */
+export function getRowSelection(row: BreakdownRow): BreakdownSelection {
+	return row.inOther ? OTHER_SELECTION : { kind: "item", rank: row.rank }
+}
+
+export function getSliceSelection(slice: BreakdownSlice): BreakdownSelection {
+	return slice.kind === "other"
+		? OTHER_SELECTION
+		: { kind: "item", rank: slice.row.rank }
+}
+
+export function isSameSelection(
+	a: BreakdownSelection | null,
+	b: BreakdownSelection | null
+): boolean {
+	if (!a || !b) return a === b
+	return a.kind === "other"
+		? b.kind === "other"
+		: b.kind === "item" && a.rank === b.rank
+}
+
+export function isRowSelected(
+	row: BreakdownRow,
+	selection: BreakdownSelection | null
+): boolean {
+	return isSameSelection(getRowSelection(row), selection)
+}
+
+export function isSliceSelected(
+	slice: BreakdownSlice,
+	selection: BreakdownSelection | null
+): boolean {
+	return isSameSelection(getSliceSelection(slice), selection)
+}
+
+/** The slice a selection points to, or null when it no longer exists. */
+export function getSelectedSlice(
+	view: BreakdownView,
+	selection: BreakdownSelection | null
+): BreakdownSlice | null {
+	if (!selection) return null
+	return view.slices.find((slice) => isSliceSelected(slice, selection)) ?? null
 }

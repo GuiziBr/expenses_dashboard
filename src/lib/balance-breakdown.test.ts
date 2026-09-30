@@ -4,6 +4,12 @@ import {
 	buildBreakdownView,
 	formatShare,
 	getItemLabel,
+	getRowSelection,
+	getSelectedSlice,
+	getSliceSelection,
+	isRowSelected,
+	isSameSelection,
+	isSliceSelected,
 	OTHER_COLOR,
 	SLICE_COLORS
 } from "./balance-breakdown"
@@ -304,5 +310,75 @@ describe("getItemLabel", () => {
 
 	it("falls back to a dash for groupings that never return null", () => {
 		expect(getItemLabel(null, "categories")).toMatchObject({ text: "—" })
+	})
+})
+
+// ── Selection (FR-40, FR-42) ────────────────────────────────────────
+
+describe("selection helpers", () => {
+	// 14 items: ranks 1–5 own slices, ranks 6–14 in Other
+	const view = buildBreakdownView(
+		toItems([14, 14, 14, 14, 14, 5, 5, 4, 4, 3, 3, 2, 2, 2])
+	)
+	const [first] = view.rows
+	const inOther = view.rows[9]
+	const otherSlice = view.slices.at(-1)
+
+	it("selects an own-slice row by rank", () => {
+		expect(getRowSelection(first)).toEqual({ kind: "item", rank: 1 })
+	})
+
+	it("selects Other from any row inside the group (AC-08)", () => {
+		expect(getRowSelection(view.rows[5])).toEqual({ kind: "other" })
+		expect(getRowSelection(inOther)).toEqual({ kind: "other" })
+	})
+
+	it("maps slices to the same selection as their rows", () => {
+		expect(getSliceSelection(view.slices[1])).toEqual({ kind: "item", rank: 2 })
+		expect(getSliceSelection(otherSlice as never)).toEqual({ kind: "other" })
+	})
+
+	it("compares selections, including null", () => {
+		expect(isSameSelection(null, null)).toBe(true)
+		expect(isSameSelection({ kind: "other" }, { kind: "other" })).toBe(true)
+		expect(
+			isSameSelection({ kind: "item", rank: 2 }, { kind: "item", rank: 2 })
+		).toBe(true)
+		expect(
+			isSameSelection({ kind: "item", rank: 2 }, { kind: "item", rank: 3 })
+		).toBe(false)
+		expect(isSameSelection({ kind: "other" }, { kind: "item", rank: 1 })).toBe(
+			false
+		)
+		expect(isSameSelection({ kind: "other" }, null)).toBe(false)
+	})
+
+	it("highlights every row of the Other group when Other is selected", () => {
+		const other = { kind: "other" } as const
+		expect(view.rows.filter((row) => isRowSelected(row, other))).toHaveLength(9)
+		expect(isRowSelected(first, other)).toBe(false)
+	})
+
+	it("highlights only the selected item row", () => {
+		const selection = { kind: "item", rank: 2 } as const
+		expect(
+			view.rows.filter((row) => isRowSelected(row, selection))
+		).toHaveLength(1)
+	})
+
+	it("finds the selected slice, or null when nothing / nothing matching is selected", () => {
+		expect(getSelectedSlice(view, null)).toBeNull()
+		expect(getSelectedSlice(view, { kind: "item", rank: 3 })).toBe(
+			view.slices[2]
+		)
+		expect(getSelectedSlice(view, { kind: "other" })).toBe(otherSlice)
+		expect(getSelectedSlice(view, { kind: "item", rank: 9 })).toBeNull()
+	})
+
+	it("reports slice selection state", () => {
+		expect(isSliceSelected(view.slices[0], { kind: "item", rank: 1 })).toBe(
+			true
+		)
+		expect(isSliceSelected(view.slices[0], { kind: "other" })).toBe(false)
 	})
 })

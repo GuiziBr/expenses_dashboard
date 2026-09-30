@@ -49,3 +49,8 @@ export interface BreakdownView {
 	top: BreakdownRow | null
 	topThreeShare: number | null // null when fewer than 4 items
 }
+
+/** What the user selected: one ranked item, or the whole Other group. */
+export type BreakdownSelection =
+	| { kind: "item"; rank: number }
+	| { kind: "other" }

@@ -1,12 +1,21 @@
 "use client"
 
 import { ChevronDown, ChevronUp } from "lucide-react"
+import type React from "react"
 import { useState } from "react"
 import { translations } from "@/constants/translations"
-import { formatShare, getItemLabel } from "@/lib/balance-breakdown"
+import {
+	formatShare,
+	getItemLabel,
+	getRowSelection,
+	isRowSelected
+} from "@/lib/balance-breakdown"
 import { formatCurrency } from "@/lib/format-currency"
 import { cn } from "@/lib/utils"
-import type { BreakdownView } from "@/types/balance-breakdown"
+import type {
+	BreakdownSelection,
+	BreakdownView
+} from "@/types/balance-breakdown"
 import type { BalanceFilterKey } from "@/types/expenses"
 
 const { legend, summary } = translations.dashboards.breakdown
@@ -24,9 +33,21 @@ const Dot = ({ color }: { color: string }) => (
 interface BreakdownLegendProps {
 	view: BreakdownView
 	groupBy: BalanceFilterKey
+	selection?: BreakdownSelection | null
+	onSelect?: (selection: BreakdownSelection) => void
+	onPreview?: (selection: BreakdownSelection | null) => void
 }
 
-export function BreakdownLegend({ view, groupBy }: BreakdownLegendProps) {
+const focusRing =
+	"focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+
+export function BreakdownLegend({
+	view,
+	groupBy,
+	selection = null,
+	onSelect,
+	onPreview
+}: BreakdownLegendProps) {
 	const [expanded, setExpanded] = useState(false)
 
 	const { rows } = view
@@ -36,6 +57,15 @@ export function BreakdownLegend({ view, groupBy }: BreakdownLegendProps) {
 	const otherSlice = view.slices.find((slice) => slice.kind === "other")
 	const firstOtherRank = rows.find((row) => row.inOther)?.rank
 	const itemsLabel = summary.count[groupBy].toLowerCase()
+	const hasSelection = selection !== null
+	const otherSelected = selection?.kind === "other"
+
+	const previewProps = (target: BreakdownSelection) => ({
+		onPointerEnter: (e: React.PointerEvent) =>
+			e.pointerType === "mouse" && onPreview?.(target),
+		onPointerLeave: (e: React.PointerEvent) =>
+			e.pointerType === "mouse" && onPreview?.(null)
+	})
 
 	return (
 		<div className="flex flex-col gap-2">
@@ -45,8 +75,19 @@ export function BreakdownLegend({ view, groupBy }: BreakdownLegendProps) {
 					return (
 						<li key={row.id ?? `none-${row.rank}`} className="contents">
 							{otherSlice?.kind === "other" && row.rank === firstOtherRank && (
-								<div className="flex items-center justify-between px-1 pt-2 text-light-gray">
-									<div className="flex items-center gap-2 text-xs">
+								<button
+									type="button"
+									aria-pressed={otherSelected}
+									onClick={() => onSelect?.({ kind: "other" })}
+									{...previewProps({ kind: "other" })}
+									className={cn(
+										"flex items-center justify-between rounded-md px-1 pt-2 text-light-gray transition-opacity cursor-pointer",
+										focusRing,
+										otherSelected && "text-input-text",
+										hasSelection && !otherSelected && "opacity-[0.55]"
+									)}
+								>
+									<span className="flex items-center gap-2 text-xs">
 										<Dot color={otherSlice.color} />
 										<span className="font-bold tracking-[1px]">
 											{legend.other}
@@ -54,14 +95,28 @@ export function BreakdownLegend({ view, groupBy }: BreakdownLegendProps) {
 										<span>
 											· {otherSlice.count} {itemsLabel}
 										</span>
-									</div>
+									</span>
 									<span className="text-xs font-semibold">
 										{formatShare(otherSlice.share)} ·{" "}
 										{formatCurrency(otherSlice.total)}
 									</span>
-								</div>
+								</button>
 							)}
-							<div className="flex h-12 items-center gap-2.5 rounded-lg bg-white px-4 text-sm font-medium text-blue-wood md:text-[0.9375rem]">
+							<button
+								type="button"
+								aria-label={`${label.text}, ${formatShare(row.share)}, ${formatCurrency(row.total)}`}
+								aria-pressed={isRowSelected(row, selection)}
+								onClick={() => onSelect?.(getRowSelection(row))}
+								{...previewProps(getRowSelection(row))}
+								className={cn(
+									"flex h-12 items-center gap-2.5 rounded-lg bg-white px-4 text-left text-sm font-medium text-blue-wood transition-opacity cursor-pointer md:text-[0.9375rem]",
+									focusRing,
+									isRowSelected(row, selection) && "ring-2 ring-orange",
+									hasSelection &&
+										!isRowSelected(row, selection) &&
+										"opacity-[0.55]"
+								)}
+							>
 								<Dot color={row.color} />
 								<span
 									className={cn(
@@ -77,7 +132,7 @@ export function BreakdownLegend({ view, groupBy }: BreakdownLegendProps) {
 								<span className="min-w-[76px] whitespace-nowrap text-right md:min-w-[110px]">
 									{formatCurrency(row.total)}
 								</span>
-							</div>
+							</button>
 						</li>
 					)
 				})}

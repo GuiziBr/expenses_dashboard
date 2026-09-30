@@ -61,4 +61,12 @@ describe("buildDonutPaths", () => {
 			for (const value of numbers(path)) expect(value).toBeLessThanOrEqual(200)
 		}
 	})
+
+	it("grows only the chosen slice's outer radius", () => {
+		const grown = buildDonutPaths([50, 50], SIZE, RATIO, [8, 0])
+		const plain = buildDonutPaths([50, 50], SIZE, RATIO)
+		expect(grown[0]).toContain("A 108 108")
+		expect(grown[0]).toContain("A 50 50") // inner radius is unchanged
+		expect(grown[1]).toBe(plain[1])
+	})
 })
