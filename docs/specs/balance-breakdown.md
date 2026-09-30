@@ -299,7 +299,8 @@ Note: the loading, empty and error states are specified here but not yet drawn i
 **AC-05: Small-share rule**
 - **Given** the rank-4 item has a 3.2% share
 - **When** the page renders
-- **Then** ranks 4 and above are grouped into *Other*, and only ranks 1–3 have their own slices.
+- **Then**, if at least two items remain from rank 4 onward, rank 4 and all later ranks are grouped into *Other*. If rank 4 is the only leftover item, it gets its own light-gray slice with its real name.
+
 
 **AC-06: Single leftover**
 - **Given** 6 items are returned, all with share ≥ 4%

@@ -359,6 +359,16 @@
               "fontFamily": "Roboto Slab",
               "fontSize": 16,
               "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "WlZoQ",
+              "name": "breakdownLink",
+              "fill": "#ffffff",
+              "content": "Balance Breakdown",
+              "fontFamily": "Roboto Slab",
+              "fontSize": 16,
+              "fontWeight": "500"
             }
           ]
         },
@@ -9688,7 +9698,7 @@
       "y": 13820,
       "name": "Mobile Menu",
       "width": 390,
-      "height": 512,
+      "height": 564,
       "fill": "$--background",
       "layout": "none",
       "children": [
@@ -9822,6 +9832,31 @@
                   "name": "mmn3txt",
                   "fill": "#ffffff",
                   "content": "Consolidated Balance",
+                  "fontFamily": "Roboto Slab",
+                  "fontSize": 18,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "S0ZIuU",
+              "name": "navItem4",
+              "width": "fill_container",
+              "height": 52,
+              "cornerRadius": 6,
+              "padding": [
+                0,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "WLPi7",
+                  "name": "mmn4txt",
+                  "fill": "#ffffff",
+                  "content": "Balance Breakdown",
                   "fontFamily": "Roboto Slab",
                   "fontSize": 18,
                   "fontWeight": "500"
@@ -12660,325 +12695,10 @@
       ]
     },
     {
-      "type": "text",
-      "id": "j7BQBy",
-      "x": 0,
-      "y": 0,
-      "name": "label-components",
-      "fill": "#969cb3",
-      "content": "◆ COMPONENTS",
-      "fontFamily": "Roboto Slab",
-      "fontSize": 14,
-      "fontWeight": "700"
-    },
-    {
-      "type": "frame",
-      "id": "tibfX",
-      "x": 0,
-      "y": 40,
-      "name": "Header/Desktop",
-      "reusable": true,
-      "width": 1280,
-      "fill": "$--light-blue",
-      "padding": [
-        32,
-        80
-      ],
-      "justifyContent": "space_between",
-      "alignItems": "center",
-      "children": [
-        {
-          "type": "frame",
-          "id": "OIy38",
-          "name": "leftNav",
-          "gap": 32,
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "EGbvq",
-              "name": "sharedLink",
-              "fill": "#ffffff",
-              "content": "Shared Dashboard",
-              "fontFamily": "Roboto Slab",
-              "fontSize": 16,
-              "fontWeight": "500"
-            },
-            {
-              "type": "text",
-              "id": "PXrQT",
-              "name": "personalLink",
-              "fill": "#ffffff",
-              "content": "Personal Dashboard",
-              "fontFamily": "Roboto Slab",
-              "fontSize": 16,
-              "fontWeight": "500"
-            },
-            {
-              "type": "text",
-              "id": "i36ov",
-              "name": "consolidatedLink",
-              "fill": "#ffffff",
-              "content": "Consolidated Balance",
-              "fontFamily": "Roboto Slab",
-              "fontSize": 16,
-              "fontWeight": "500"
-            },
-            {
-              "type": "text",
-              "id": "gQvlC",
-              "name": "breakdownLink",
-              "fill": "#ffffff",
-              "content": "Balance Breakdown",
-              "fontFamily": "Roboto Slab",
-              "fontSize": 16,
-              "fontWeight": "500"
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "MPkf0",
-          "name": "rightNav",
-          "gap": 32,
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "frame",
-              "id": "uP3Vm",
-              "name": "mgmtBtn",
-              "gap": 4,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "VM2ln",
-                  "name": "mgmtText",
-                  "fill": "#ffffff",
-                  "content": "Management",
-                  "fontFamily": "Roboto Slab",
-                  "fontSize": 16,
-                  "fontWeight": "500"
-                },
-                {
-                  "type": "icon",
-                  "id": "wFyJW",
-                  "name": "mgmtIcon",
-                  "width": 16,
-                  "height": 16,
-                  "icon": "chevron-down",
-                  "library": "lucide",
-                  "fill": "#ffffff"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "Xk5SF",
-              "name": "logoutBtn",
-              "gap": 8,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "Hmx0C",
-                  "name": "logoutText",
-                  "fill": "#ffffff",
-                  "content": "Logout",
-                  "fontFamily": "Roboto Slab",
-                  "fontSize": 16,
-                  "fontWeight": "500"
-                },
-                {
-                  "type": "icon",
-                  "id": "Y3k40",
-                  "name": "logoutIcon",
-                  "width": 16,
-                  "height": 16,
-                  "icon": "log-out",
-                  "library": "lucide",
-                  "fill": "#ffffff"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "nblgo",
-      "x": 1440,
-      "y": 40,
-      "name": "Header/Mobile",
-      "reusable": true,
-      "width": 390,
-      "fill": "$--light-blue",
-      "padding": [
-        24,
-        20
-      ],
-      "justifyContent": "space_between",
-      "alignItems": "center",
-      "children": [
-        {
-          "type": "icon",
-          "id": "qMoG1",
-          "name": "menuIcon",
-          "width": 24,
-          "height": 24,
-          "icon": "menu",
-          "library": "lucide",
-          "fill": "#ffffff"
-        },
-        {
-          "type": "text",
-          "id": "fU1CW",
-          "name": "pageTitle",
-          "fill": "#ffffff",
-          "content": "Balance Breakdown",
-          "fontFamily": "Roboto Slab",
-          "fontSize": 18,
-          "fontWeight": "700"
-        },
-        {
-          "type": "icon",
-          "id": "ovRYn",
-          "name": "mobileLogoutIcon",
-          "width": 24,
-          "height": 24,
-          "icon": "log-out",
-          "library": "lucide",
-          "fill": "#ffffff"
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "VOXL0",
-      "x": 0,
-      "y": 180,
-      "name": "Button/Primary",
-      "reusable": true,
-      "height": 48,
-      "fill": "$--orange",
-      "cornerRadius": 5,
-      "padding": [
-        0,
-        24
-      ],
-      "justifyContent": "center",
-      "alignItems": "center",
-      "children": [
-        {
-          "type": "text",
-          "id": "GVYmx",
-          "name": "label",
-          "fill": "$--background",
-          "content": "Search",
-          "fontFamily": "Roboto Slab",
-          "fontSize": 16,
-          "fontWeight": "700"
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "vnJxM",
-      "x": 160,
-      "y": 180,
-      "name": "Input/Default",
-      "reusable": true,
-      "width": 240,
-      "height": 48,
-      "fill": "$--container-background",
-      "cornerRadius": 6,
-      "gap": 8,
-      "padding": [
-        0,
-        12
-      ],
-      "alignItems": "center",
-      "children": [
-        {
-          "type": "icon",
-          "id": "nQIxQ",
-          "name": "icon",
-          "width": 20,
-          "height": 20,
-          "icon": "calendar",
-          "library": "lucide",
-          "fill": "$--iron-gray"
-        },
-        {
-          "type": "text",
-          "id": "yWdFJ",
-          "name": "placeholder",
-          "fill": "$--iron-gray",
-          "content": "Select month",
-          "fontFamily": "Roboto Slab",
-          "fontSize": 16,
-          "fontWeight": "normal"
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "vCQwL",
-      "x": 440,
-      "y": 180,
-      "name": "Select/Default",
-      "reusable": true,
-      "width": 240,
-      "height": 48,
-      "fill": "$--container-background",
-      "cornerRadius": 6,
-      "gap": 8,
-      "padding": [
-        0,
-        12
-      ],
-      "alignItems": "center",
-      "children": [
-        {
-          "type": "icon",
-          "id": "H5lrw7",
-          "name": "icon",
-          "width": 20,
-          "height": 20,
-          "icon": "chevrons-up-down",
-          "library": "lucide",
-          "fill": "$--iron-gray"
-        },
-        {
-          "type": "text",
-          "id": "e2QG9",
-          "name": "placeholder",
-          "fill": "$--iron-gray",
-          "content": "Select option",
-          "fontFamily": "Roboto Slab",
-          "fontSize": 16,
-          "fontWeight": "normal"
-        }
-      ]
-    },
-    {
-      "type": "text",
-      "id": "xjOkU",
-      "x": 0,
-      "y": 340,
-      "name": "label-B",
-      "fill": "#969cb3",
-      "content": "Balance Breakdown · Desktop",
-      "fontFamily": "Roboto Slab",
-      "fontSize": 14,
-      "fontWeight": "700"
-    },
-    {
       "type": "frame",
       "id": "JqFiI",
       "x": 0,
-      "y": 380,
+      "y": 17960,
       "name": "Balance Breakdown",
       "clip": true,
       "width": 1280,
@@ -12998,18 +12718,19 @@
           "layout": "none",
           "children": [
             {
-              "id": "c1vejJ",
+              "id": "tVNqR",
               "type": "ref",
-              "ref": "tibfX",
+              "ref": "XBls4",
               "name": "header",
               "x": 0,
               "y": 0,
+              "width": 1280,
               "descendants": {
-                "EGbvq": {
+                "folOE": {
                   "fill": "#ffffff"
                 },
-                "gQvlC": {
-                  "fill": "$--orange"
+                "WlZoQ": {
+                  "fill": "#ff872c"
                 }
               }
             }
@@ -13462,16 +13183,17 @@
                       ]
                     },
                     {
-                      "id": "DPh8X",
+                      "id": "rJiwM",
                       "type": "ref",
-                      "ref": "vnJxM",
+                      "ref": "RAoSM",
                       "name": "monthInput",
                       "width": 220,
                       "descendants": {
-                        "nQIxQ": {
+                        "4PNTH": {
+                          "icon": "calendar",
                           "fill": "$--orange"
                         },
-                        "yWdFJ": {
+                        "6TGOZ": {
                           "content": "September 2026",
                           "fill": "$--input-text"
                         }
@@ -14577,8 +14299,8 @@
     {
       "type": "frame",
       "id": "eQONK",
-      "x": 1440,
-      "y": 380,
+      "x": 2320,
+      "y": 17960,
       "name": "Design Notes",
       "width": 420,
       "fill": "$--container-background",
@@ -14967,22 +14689,10 @@
       ]
     },
     {
-      "type": "text",
-      "id": "QQ8ar",
-      "x": 0,
-      "y": 1437,
-      "name": "label-B-mobile",
-      "fill": "#969cb3",
-      "content": "Mobile",
-      "fontFamily": "Roboto Slab",
-      "fontSize": 14,
-      "fontWeight": "700"
-    },
-    {
       "type": "frame",
       "id": "vgib5",
-      "x": 0,
-      "y": 1477,
+      "x": 1440,
+      "y": 17960,
       "name": "Balance Breakdown (Mobile)",
       "clip": true,
       "width": 390,
@@ -15002,12 +14712,17 @@
           "layout": "none",
           "children": [
             {
-              "id": "za1iE",
+              "id": "V9X0jm",
               "type": "ref",
-              "ref": "nblgo",
+              "ref": "MVg4N",
               "name": "header",
               "x": 0,
-              "y": 0
+              "y": 0,
+              "descendants": {
+                "eMUuS": {
+                  "content": "Balance Breakdown"
+                }
+              }
             }
           ]
         },
@@ -15418,16 +15133,17 @@
                       ]
                     },
                     {
-                      "id": "xZ865",
+                      "id": "ryAbk",
                       "type": "ref",
-                      "ref": "vnJxM",
+                      "ref": "RAoSM",
                       "name": "monthInput",
                       "width": "fill_container",
                       "descendants": {
-                        "nQIxQ": {
+                        "4PNTH": {
+                          "icon": "calendar",
                           "fill": "$--orange"
                         },
-                        "yWdFJ": {
+                        "6TGOZ": {
                           "content": "September 2026",
                           "fill": "$--input-text"
                         }
@@ -16521,22 +16237,10 @@
       ]
     },
     {
-      "type": "text",
-      "id": "v6MiRn",
-      "x": 440,
-      "y": 1437,
-      "name": "label-B-mobile-selected",
-      "fill": "#969cb3",
-      "content": "Mobile – “Other” slice selected (tap)",
-      "fontFamily": "Roboto Slab",
-      "fontSize": 14,
-      "fontWeight": "700"
-    },
-    {
       "type": "frame",
       "id": "P99yVv",
-      "x": 440,
-      "y": 1477,
+      "x": 1880,
+      "y": 17960,
       "name": "Balance Breakdown (Mobile) – Other Selected",
       "clip": true,
       "width": 390,
@@ -16556,12 +16260,17 @@
           "layout": "none",
           "children": [
             {
-              "id": "uAIoT",
+              "id": "dPDEP",
               "type": "ref",
-              "ref": "nblgo",
+              "ref": "MVg4N",
               "name": "header",
               "x": 0,
-              "y": 0
+              "y": 0,
+              "descendants": {
+                "eMUuS": {
+                  "content": "Balance Breakdown"
+                }
+              }
             }
           ]
         },
@@ -16972,16 +16681,17 @@
                       ]
                     },
                     {
-                      "id": "W9EoZ3",
+                      "id": "YDt6h",
                       "type": "ref",
-                      "ref": "vnJxM",
+                      "ref": "RAoSM",
                       "name": "monthInput",
                       "width": "fill_container",
                       "descendants": {
-                        "nQIxQ": {
+                        "4PNTH": {
+                          "icon": "calendar",
                           "fill": "$--orange"
                         },
-                        "yWdFJ": {
+                        "6TGOZ": {
                           "content": "September 2026",
                           "fill": "$--input-text"
                         }
@@ -18096,6 +17806,33 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "qayU6",
+      "x": 0,
+      "y": 17900,
+      "name": "[Section] Balance Breakdown",
+      "width": 1600,
+      "height": 36,
+      "fill": "#3a3645",
+      "cornerRadius": 6,
+      "padding": [
+        0,
+        16
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "gJjQw",
+          "fill": "#9b8cff",
+          "content": "◆  BALANCE BREAKDOWN",
+          "fontFamily": "Inter",
+          "fontSize": 11,
+          "fontWeight": "700"
         }
       ]
     }

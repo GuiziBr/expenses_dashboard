@@ -96,7 +96,8 @@ A monthly view of the user's personal spending split by one grouping (category, 
 ### Rules
 - Uses `GET /balance/breakdown/:year/:month?filterBy=…`. Defaults to the **Category** tab and the current month.
 - Changing the tab or month fetches the data immediately (no Search button).
-- The top 5 items get their own slice. The rest are grouped as **Other**.
+- Ranks 1–5 get their own slices unless a rank 2–5 item has a share below 4%. That item and all later items go into **Other**. **Other** is created only when at least two items remain; one leftover item keeps its real name and gets a light-gray slice.
+
 - Full spec: [balance-breakdown.md](./balance-breakdown.md).
 
 ---
