@@ -22,6 +22,9 @@ export const translations = {
 			incomes: "Incomes",
 			outcomes: "Outcomes"
 		},
+		breakdown: {
+			title: "Balance Breakdown"
+		},
 		consolidated: {
 			title: "Consolidated Balance",
 			error: "Error loading consolidated balance. Please try again.",
