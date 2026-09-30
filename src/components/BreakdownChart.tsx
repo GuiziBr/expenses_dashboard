@@ -77,7 +77,11 @@ function CenterLabel({
 		// swallow clicks and hovers meant for the slices underneath
 		<div className="pointer-events-none absolute inset-0 flex items-center justify-center px-10 md:px-12">
 			{/* The three main lines stay centred and in place in every state */}
-			<div className="relative flex w-full flex-col items-center gap-0.5 md:gap-1">
+			<div
+				aria-live="polite"
+				aria-atomic="true"
+				className="relative flex w-full flex-col items-center gap-0.5 md:gap-1"
+			>
 				<span
 					className={cn(
 						"max-w-full truncate text-xs text-light-gray md:text-sm",
@@ -131,7 +135,8 @@ export function BreakdownChart({
 	const itemsLabel = summary.count[groupBy].toLowerCase()
 
 	return (
-		<div className="flex flex-col items-center gap-5 rounded-[0.625rem] bg-container-background p-6 md:w-[400px] md:shrink-0 md:gap-6 md:p-8">
+		// Desktop: sticks while a long legend scrolls past (spec section 8)
+		<div className="flex flex-col items-center gap-5 rounded-[0.625rem] bg-container-background p-6 md:sticky md:top-6 md:w-[400px] md:shrink-0 md:gap-6 md:p-8">
 			<h2 className="w-full text-[0.8125rem] text-light-gray md:text-sm">
 				{chart.title} {chart.item[groupBy]}
 			</h2>

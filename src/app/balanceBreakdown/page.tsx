@@ -3,7 +3,11 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useMemo } from "react"
 import { BreakdownContent } from "@/components/BreakdownContent"
-import { BreakdownControls } from "@/components/BreakdownControls"
+import {
+	BREAKDOWN_PANEL_ID,
+	BreakdownControls,
+	getTabId
+} from "@/components/BreakdownControls"
 import { BreakdownEmpty, BreakdownError } from "@/components/BreakdownStates"
 import { BreakdownSummary } from "@/components/BreakdownSummary"
 import { Header } from "@/components/Header"
@@ -59,20 +63,26 @@ function BalanceBreakdownContent() {
 				onShiftMonth={(delta) => navigate(groupBy, shiftMonth(month, delta))}
 			/>
 
-			{error && <BreakdownError onRetry={() => refetch()} />}
-			{!isLoading && !error && view.rows.length === 0 && (
-				<BreakdownEmpty monthLabel={formatMonthLabel(month)} />
-			)}
-			{(isLoading || (!error && view.rows.length > 0)) && (
-				<BreakdownContent
-					// Remount to reset the selection and expanded legend (FR-16, FR-38)
-					key={`${groupBy}-${formatMonthParam(month)}`}
-					view={view}
-					groupBy={groupBy}
-					month={month}
-					isLoading={isLoading}
-				/>
-			)}
+			<div
+				role="tabpanel"
+				id={BREAKDOWN_PANEL_ID}
+				aria-labelledby={getTabId(groupBy)}
+			>
+				{error && <BreakdownError onRetry={() => refetch()} />}
+				{!isLoading && !error && view.rows.length === 0 && (
+					<BreakdownEmpty monthLabel={formatMonthLabel(month)} />
+				)}
+				{(isLoading || (!error && view.rows.length > 0)) && (
+					<BreakdownContent
+						// Remount to reset the selection and expanded legend (FR-16, FR-38)
+						key={`${groupBy}-${formatMonthParam(month)}`}
+						view={view}
+						groupBy={groupBy}
+						month={month}
+						isLoading={isLoading}
+					/>
+				)}
+			</div>
 		</main>
 	)
 }
