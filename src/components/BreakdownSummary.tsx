@@ -17,8 +17,36 @@ interface SummaryCardProps {
 	value: React.ReactNode
 	sub: React.ReactNode
 	isLoading: boolean
+	// Known before the data arrives (e.g. "September 2026 · personal expenses"),
+	// so it is shown as real text while loading. Without it, a short bar is shown.
+	loadingSub?: React.ReactNode
+	loadingValueWidth: string
 	variant?: "default" | "total"
 	className?: string
+}
+
+/**
+ * A rounded bar sized in `em`, so inside a text line it takes the line's own
+ * height and swapping it for real text never shifts the layout. Tinted to the
+ * card it sits on, not the page.
+ */
+function SkeletonBar({
+	tone,
+	className
+}: {
+	tone: "light" | "orange"
+	className: string
+}) {
+	return (
+		<span
+			aria-hidden="true"
+			className={cn(
+				"inline-block h-[0.7em] animate-pulse rounded-full align-middle",
+				tone === "orange" ? "bg-white/30" : "bg-blue-wood/15",
+				className
+			)}
+		/>
+	)
 }
 
 function SummaryCard({
@@ -27,10 +55,13 @@ function SummaryCard({
 	value,
 	sub,
 	isLoading,
+	loadingSub,
+	loadingValueWidth,
 	variant = "default",
 	className
 }: SummaryCardProps) {
 	const isTotal = variant === "total"
+	const tone = isTotal ? "orange" : "light"
 
 	return (
 		<div
@@ -53,31 +84,29 @@ function SummaryCard({
 				/>
 			</header>
 			<div className="flex flex-col gap-1 min-w-0">
-				{isLoading ? (
-					<>
-						<div className="h-8 md:h-10 w-2/3 rounded-md bg-muted animate-pulse" />
-						<div className="h-4 w-1/2 rounded-md bg-muted animate-pulse" />
-					</>
-				) : (
-					<>
-						<p
-							className={cn(
-								"truncate text-[1.375rem] font-medium md:text-4xl md:font-normal",
-								isTotal && "text-4xl font-normal"
-							)}
-						>
-							{value}
-						</p>
-						<p
-							className={cn(
-								"text-xs md:text-sm",
-								isTotal ? "text-white/80 text-[0.8125rem]" : "text-light-gray"
-							)}
-						>
-							{sub}
-						</p>
-					</>
-				)}
+				<p
+					className={cn(
+						"truncate text-[1.375rem] font-medium md:text-4xl md:font-normal",
+						isTotal && "text-4xl font-normal"
+					)}
+				>
+					{isLoading ? (
+						<SkeletonBar tone={tone} className={loadingValueWidth} />
+					) : (
+						value
+					)}
+				</p>
+				<p
+					className={cn(
+						"text-xs md:text-sm",
+						isTotal ? "text-white/80 text-[0.8125rem]" : "text-light-gray"
+					)}
+				>
+					{isLoading
+						? (loadingSub ?? <SkeletonBar tone={tone} className="w-2/5" />)
+						: // Keeps the line's height when there is nothing to say (empty, error)
+							(sub ?? "\u00A0")}
+				</p>
 			</div>
 		</div>
 	)
@@ -121,37 +150,44 @@ export function BreakdownSummary({
 			</>
 		) : null
 
+	const countSub = (
+		<>
+			<span className="hidden md:inline">{summary.countSub}</span>
+			<span className="md:hidden">{summary.countSubShort}</span>
+		</>
+	)
+	const totalSub = `${formatMonthLabel(month)} · ${summary.totalSub}`
+
 	return (
-		<section className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-8">
+		<section
+			aria-busy={isLoading}
+			className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-8"
+		>
 			<SummaryCard
 				label={summary.top[groupBy]}
 				icon={Trophy}
 				value={topValue || dash}
 				sub={topSub}
 				isLoading={isLoading}
+				loadingValueWidth="w-3/5"
 			/>
 			<SummaryCard
 				label={summary.count[groupBy]}
 				icon={Layers}
 				value={showValues ? view.rows.length : dash}
-				sub={
-					showValues ? (
-						<>
-							<span className="hidden md:inline">{summary.countSub}</span>
-							<span className="md:hidden">{summary.countSubShort}</span>
-						</>
-					) : null
-				}
+				sub={showValues ? countSub : null}
 				isLoading={isLoading}
+				loadingSub={countSub}
+				loadingValueWidth="w-10"
 			/>
 			<SummaryCard
 				label={summary.total}
 				icon={DollarSign}
 				value={hasError ? dash : formatCurrency(view.monthTotal)}
-				sub={
-					hasError ? null : `${formatMonthLabel(month)} · ${summary.totalSub}`
-				}
+				sub={hasError ? null : totalSub}
 				isLoading={isLoading}
+				loadingSub={totalSub}
+				loadingValueWidth="w-1/2"
 				variant="total"
 				className="col-span-2 order-first md:col-span-1 md:order-last"
 			/>

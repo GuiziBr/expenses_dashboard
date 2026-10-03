@@ -71,6 +71,57 @@ describe("BreakdownSummary", () => {
 		expect(screen.getAllByText("—")).toHaveLength(3)
 	})
 
+	it("keeps the subtitles that do not depend on the data while loading", () => {
+		renderSummary("categories", [], { isLoading: true })
+		expect(screen.getByText("with expenses this month")).toBeInTheDocument()
+		expect(
+			screen.getByText("September 2026 · personal expenses")
+		).toBeInTheDocument()
+		// labels are known too
+		expect(screen.getByText("Top category")).toBeInTheDocument()
+		expect(screen.getByText("Categories")).toBeInTheDocument()
+	})
+
+	it("uses one decorative bar per unknown value and one for the top subtitle", () => {
+		const { container } = renderSummary("categories", [], { isLoading: true })
+		const bars = container.querySelectorAll(".animate-pulse")
+		// Top (value + sub), Count (value), Total (value)
+		expect(bars).toHaveLength(4)
+		for (const bar of bars) expect(bar).toHaveAttribute("aria-hidden", "true")
+	})
+
+	it("tints the bars to the card they sit on", () => {
+		const { container } = renderSummary("categories", [], { isLoading: true })
+		const bars = Array.from(container.querySelectorAll(".animate-pulse"))
+		expect(
+			bars.slice(0, 3).every((b) => b.classList.contains("bg-blue-wood/15"))
+		).toBe(true)
+		expect(bars[3]).toHaveClass("bg-white/30") // the orange Total spent card
+	})
+
+	it("marks the cards as busy only while loading", () => {
+		const { container, rerender } = renderSummary("categories", [], {
+			isLoading: true
+		})
+		expect(container.querySelector("section")).toHaveAttribute(
+			"aria-busy",
+			"true"
+		)
+		rerender(
+			<BreakdownSummary
+				groupBy="categories"
+				month={month}
+				view={buildBreakdownView(items)}
+				isLoading={false}
+				hasError={false}
+			/>
+		)
+		expect(container.querySelector("section")).toHaveAttribute(
+			"aria-busy",
+			"false"
+		)
+	})
+
 	it("hides values behind skeletons while loading", () => {
 		const { container } = renderSummary("categories", [], { isLoading: true })
 		expect(container.querySelectorAll(".animate-pulse").length).toBeGreaterThan(
