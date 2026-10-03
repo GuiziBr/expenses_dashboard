@@ -60,7 +60,7 @@ export function BreakdownContent({
 	return (
 		<div
 			ref={containerRef}
-			className="flex flex-col gap-8 md:flex-row md:items-start"
+			className="flex flex-col gap-6 md:flex-row md:items-start"
 		>
 			<BreakdownChart
 				view={view}

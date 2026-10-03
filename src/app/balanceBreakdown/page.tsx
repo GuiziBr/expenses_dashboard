@@ -46,7 +46,7 @@ function BalanceBreakdownContent() {
 		})
 
 	return (
-		<main className="max-w-[1120px] mx-auto px-5 -mt-24 pb-16 flex flex-col gap-8">
+		<main className="max-w-[1120px] mx-auto px-5 -mt-24 pb-16 flex flex-col gap-2 md:gap-8">
 			<BreakdownSummary
 				groupBy={groupBy}
 				month={month}
