@@ -22,6 +22,64 @@ export const translations = {
 			incomes: "Incomes",
 			outcomes: "Outcomes"
 		},
+		breakdown: {
+			title: "Balance Breakdown",
+			groupingLabel: "Group spending by",
+			tabs: {
+				categories: "Category",
+				paymentType: "Payment type",
+				paymentTypeShort: "Payment",
+				banks: "Bank",
+				stores: "Store"
+			},
+			month: "Month",
+			previousMonth: "Previous month",
+			nextMonth: "Next month",
+			summary: {
+				top: {
+					categories: "Top category",
+					paymentType: "Top payment type",
+					banks: "Top bank",
+					stores: "Top store"
+				},
+				count: {
+					categories: "Categories",
+					paymentType: "Payment types",
+					banks: "Banks",
+					stores: "Stores"
+				},
+				ofTheMonth: "of the month",
+				countSub: "with expenses this month",
+				countSubShort: "with expenses",
+				total: "Total spent",
+				totalSub: "personal expenses",
+				empty: "—"
+			},
+			chart: {
+				title: "Share of month by",
+				item: {
+					categories: "category",
+					paymentType: "payment type",
+					banks: "bank",
+					stores: "store"
+				},
+				topThree: "Top 3",
+				accountFor: "account for",
+				hint: "Tap a slice to see its value",
+				hintSelected: "Tap the slice again or tap outside to show the total",
+				other: "Other"
+			},
+			legend: {
+				other: "OTHER",
+				showAll: "Show all",
+				showLess: "Show less"
+			},
+			noBank: "No bank",
+			noStore: "No store",
+			emptyMonth: "No personal expenses for",
+			error: "Failed to load data. Please try again.",
+			retry: "Retry"
+		},
 		consolidated: {
 			title: "Consolidated Balance",
 			error: "Error loading consolidated balance. Please try again.",

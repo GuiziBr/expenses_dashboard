@@ -5,7 +5,7 @@ import { api } from "@/lib/api"
 import { getLastDayOfMonth } from "@/lib/date-utils"
 import type { BalanceFilters, GetBalanceResponse } from "@/types/expenses"
 
-const FILTER_VALUES: Record<string, string> = {
+export const FILTER_VALUES: Record<string, string> = {
 	categories: "category",
 	paymentType: "payment_type",
 	banks: "bank",
