@@ -1,5 +1,6 @@
 "use client"
 
+import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import React, {
 	createContext,
@@ -44,6 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<User | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const router = useRouter()
+	const queryClient = useQueryClient()
 
 	// Initialize auth state
 	useEffect(() => {
@@ -63,36 +65,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		loadUser()
 	}, [])
 
-	const signIn = useCallback(async ({ email, password }: SignInCredentials) => {
-		try {
-			// Login API call
-			const response = await api.post<{ token: string; user: User }>(
-				"sessions",
-				{
-					email,
-					password
-				}
-			)
+	const signIn = useCallback(
+		async ({ email, password }: SignInCredentials) => {
+			try {
+				// Login API call
+				const response = await api.post<{ token: string; user: User }>(
+					"sessions",
+					{
+						email,
+						password
+					}
+				)
 
-			const { token, user } = response
+				const { token, user } = response
 
-			// Set cookies
-			setAuthToken(token)
-			setUserCookie(user)
+				// Query keys are not scoped to a user, so data cached for a previous
+				// account must never be served to this one
+				queryClient.clear()
 
-			// Update state
-			setUser(user)
-		} catch (error) {
-			console.error("Sign in failed", error)
-			throw error
-		}
-	}, [])
+				// Set cookies
+				setAuthToken(token)
+				setUserCookie(user)
+
+				// Update state
+				setUser(user)
+			} catch (error) {
+				console.error("Sign in failed", error)
+				throw error
+			}
+		},
+		[queryClient]
+	)
 
 	const signOut = useCallback(() => {
 		removeAuthToken()
 		setUser(null)
+		// Drop the previous account's cached data (see signIn)
+		queryClient.clear()
 		router.push("/")
-	}, [router])
+	}, [router, queryClient])
 
 	// Auto-logout on 401 from any API call
 	useEffect(() => {

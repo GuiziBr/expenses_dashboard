@@ -19,7 +19,8 @@ import { cn } from "@/lib/utils"
 const PAGE_TITLES: Record<string, string> = {
 	"/sharedDashboard": translations.dashboards.shared.title,
 	"/personalDashboard": translations.dashboards.personal.title,
-	"/consolidatedBalance": translations.dashboards.consolidated.title
+	"/consolidatedBalance": translations.dashboards.consolidated.title,
+	"/balanceBreakdown": translations.dashboards.breakdown.title
 }
 
 export function Header() {
@@ -67,6 +68,15 @@ export function Header() {
 						)}
 					>
 						{translations.dashboards.consolidated.title}
+					</Link>
+					<Link
+						href="/balanceBreakdown"
+						className={cn(
+							"text-base transition-opacity duration-200 no-underline font-medium",
+							getClassName("/balanceBreakdown")
+						)}
+					>
+						{translations.dashboards.breakdown.title}
 					</Link>
 				</nav>
 
@@ -198,6 +208,20 @@ export function Header() {
 								)}
 							>
 								{translations.dashboards.consolidated.title}
+							</Link>
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							asChild
+							className="focus:bg-white/10 focus:text-white cursor-pointer px-4 py-3"
+						>
+							<Link
+								href="/balanceBreakdown"
+								className={cn(
+									"text-lg font-medium w-full",
+									getClassName("/balanceBreakdown")
+								)}
+							>
+								{translations.dashboards.breakdown.title}
 							</Link>
 						</DropdownMenuItem>
 
