@@ -84,21 +84,21 @@ function CenterLabel({
 			>
 				<span
 					className={cn(
-						"max-w-full truncate text-xs text-light-gray md:text-sm",
+						"max-w-full truncate text-xs text-muted-foreground md:text-sm",
 						item?.isPlaceholder && "italic"
 					)}
 				>
 					{lines.name}
 				</span>
-				<span className="max-w-full truncate text-[1.625rem] font-medium text-input-text md:text-[2rem]">
+				<span className="max-w-full truncate text-[1.625rem] font-semibold text-foreground md:text-[2rem]">
 					{lines.value}
 				</span>
-				<span className="max-w-full truncate text-[0.6875rem] text-iron-gray md:text-[0.8125rem]">
+				<span className="max-w-full truncate text-[0.6875rem] text-muted-foreground md:text-[0.8125rem]">
 					{lines.sub}
 				</span>
 				{/* Hangs below the block so it does not push the lines above it up */}
 				{lines.extra && (
-					<span className="absolute top-full mt-0.5 max-w-full truncate text-[0.6875rem] text-iron-gray md:mt-1 md:text-[0.8125rem]">
+					<span className="absolute top-full mt-0.5 max-w-full truncate text-[0.6875rem] text-muted-foreground md:mt-1 md:text-[0.8125rem]">
 						{lines.extra}
 					</span>
 				)}
@@ -136,8 +136,8 @@ export function BreakdownChart({
 
 	return (
 		// Desktop: sticks while a long legend scrolls past (spec section 8)
-		<div className="flex flex-col items-center gap-5 rounded-[0.625rem] bg-container-background p-6 md:sticky md:top-6 md:w-[400px] md:shrink-0 md:gap-6 md:p-8">
-			<h2 className="w-full text-[0.8125rem] text-light-gray md:text-sm">
+		<div className="flex flex-col items-center gap-5 rounded-xl border border-border bg-card p-6 md:sticky md:top-6 md:w-[400px] md:shrink-0 md:gap-6 md:p-8">
+			<h2 className="w-full text-[0.8125rem] text-muted-foreground md:text-sm">
 				{chart.title} {chart.item[groupBy]}
 			</h2>
 
@@ -170,7 +170,7 @@ export function BreakdownChart({
 									d={d}
 									fillRule="evenodd"
 									fill={`var(${color})`}
-									stroke="var(--container-background)"
+									stroke="var(--card)"
 									strokeWidth={2}
 									className={cn(
 										"cursor-pointer transition-opacity duration-200",
@@ -203,14 +203,14 @@ export function BreakdownChart({
 			{!isLoading && (
 				<>
 					{view.topThreeShare !== null && (
-						<p className="hidden w-full items-center gap-2.5 rounded-md bg-white/5 px-4 py-3 text-[0.8125rem] text-input-text md:flex">
-							<Sparkles className="h-[18px] w-[18px] shrink-0 text-orange" />
+						<p className="hidden w-full items-center gap-2.5 rounded-md bg-background px-4 py-3 text-[0.8125rem] text-foreground md:flex">
+							<Sparkles className="h-[18px] w-[18px] shrink-0 text-primary-text" />
 							{chart.topThree} {itemsLabel} {chart.accountFor}{" "}
 							{formatShare(view.topThreeShare)} {summary.ofTheMonth}
 						</p>
 					)}
-					<p className="flex w-full items-center gap-2 rounded-md bg-white/5 px-3 py-2.5 text-xs text-input-text md:hidden">
-						<Pointer className="h-4 w-4 shrink-0 text-orange" />
+					<p className="flex w-full items-center gap-2 rounded-md bg-background px-3 py-2.5 text-xs text-foreground md:hidden">
+						<Pointer className="h-4 w-4 shrink-0 text-primary-text" />
 						{selectedSlice ? chart.hintSelected : chart.hint}
 					</p>
 				</>

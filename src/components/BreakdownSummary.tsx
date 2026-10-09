@@ -34,7 +34,7 @@ function SkeletonBar({
 	tone,
 	className
 }: {
-	tone: "light" | "orange"
+	tone: "default" | "total"
 	className: string
 }) {
 	return (
@@ -42,7 +42,7 @@ function SkeletonBar({
 			aria-hidden="true"
 			className={cn(
 				"inline-block h-[0.7em] animate-pulse rounded-full align-middle",
-				tone === "orange" ? "bg-white/30" : "bg-blue-wood/15",
+				tone === "total" ? "bg-white/30" : "bg-foreground/10",
 				className
 			)}
 		/>
@@ -61,35 +61,41 @@ function SummaryCard({
 	className
 }: SummaryCardProps) {
 	const isTotal = variant === "total"
-	const tone = isTotal ? "orange" : "light"
+	const tone = isTotal ? "total" : "default"
 
 	return (
 		<div
 			className={cn(
-				"flex flex-col gap-2 md:gap-4 rounded-[0.3rem] p-4 md:px-8 md:py-6",
+				"flex flex-col gap-2 rounded-xl border p-4 md:gap-3 md:p-5",
 				isTotal
-					? "bg-orange text-white gap-3 px-6 py-5"
-					: "bg-white text-blue-wood",
+					? "border-primary bg-primary text-primary-foreground"
+					: "border-border bg-card text-card-foreground",
 				className
 			)}
 		>
 			<header className="flex items-center justify-between">
-				<p className="text-[0.8125rem] md:text-base">{label}</p>
-				<Icon
-					className={cn(
-						"w-5 h-5 md:w-8 md:h-8",
-						isTotal ? "w-7 h-7 text-white" : "text-orange"
-					)}
-					strokeWidth={1.5}
-				/>
-			</header>
-			<div className="flex flex-col gap-1 min-w-0">
 				<p
 					className={cn(
-						"truncate text-[1.375rem] font-medium md:text-4xl md:font-normal",
-						isTotal && "text-4xl font-normal"
+						"text-[13px] font-medium",
+						isTotal ? "text-primary-foreground/80" : "text-muted-foreground"
 					)}
 				>
+					{label}
+				</p>
+				<span
+					aria-hidden="true"
+					className={cn(
+						"flex size-8 shrink-0 items-center justify-center rounded-lg",
+						isTotal
+							? "bg-white/20 text-primary-foreground"
+							: "bg-primary-soft text-primary-text"
+					)}
+				>
+					<Icon className="size-4" />
+				</span>
+			</header>
+			<div className="flex flex-col gap-1 min-w-0">
+				<p className="truncate text-[1.375rem] font-semibold tracking-tight md:text-3xl">
 					{isLoading ? (
 						<SkeletonBar tone={tone} className={loadingValueWidth} />
 					) : (
@@ -99,7 +105,7 @@ function SummaryCard({
 				<p
 					className={cn(
 						"text-xs md:text-sm",
-						isTotal ? "text-white/80 text-[0.8125rem]" : "text-light-gray"
+						isTotal ? "text-primary-foreground/80" : "text-muted-foreground"
 					)}
 				>
 					{isLoading
@@ -133,7 +139,9 @@ export function BreakdownSummary({
 	const topLabel = top ? getItemLabel(top.label, groupBy) : null
 
 	const topValue = showValues && topLabel && (
-		<span className={cn(topLabel.isPlaceholder && "italic text-iron-gray")}>
+		<span
+			className={cn(topLabel.isPlaceholder && "italic text-muted-foreground")}
+		>
 			{topLabel.text}
 		</span>
 	)
@@ -161,7 +169,7 @@ export function BreakdownSummary({
 	return (
 		<section
 			aria-busy={isLoading}
-			className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-8"
+			className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5"
 		>
 			<SummaryCard
 				label={summary.top[groupBy]}

@@ -47,7 +47,7 @@ describe("BreakdownLegend – rows", () => {
 			"banks"
 		)
 		const label = screen.getByText("No bank")
-		expect(label).toHaveClass("italic", "text-iron-gray")
+		expect(label).toHaveClass("italic", "text-muted-foreground")
 		expect(screen.getAllByRole("listitem")[1]).toHaveTextContent("No bank")
 	})
 

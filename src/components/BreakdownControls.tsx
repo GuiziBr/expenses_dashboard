@@ -73,7 +73,7 @@ export function BreakdownControls({
 			<div
 				role="tablist"
 				aria-label={translations.dashboards.breakdown.groupingLabel}
-				className="flex gap-1 rounded-md bg-container-background p-1"
+				className="flex gap-1 rounded-lg border border-border bg-card p-1"
 			>
 				{TABS.map(({ key, label, shortLabel, icon: Icon }, index) => {
 					const isActive = key === groupBy
@@ -92,11 +92,11 @@ export function BreakdownControls({
 							onClick={() => onGroupByChange(key)}
 							onKeyDown={(e) => handleTabKeyDown(e, index)}
 							className={cn(
-								"flex flex-1 md:flex-none flex-col md:flex-row items-center justify-center gap-1 md:gap-2 h-14 md:h-10 md:px-4 rounded-[0.25rem] text-xs md:text-[0.9375rem] transition-colors cursor-pointer",
+								"flex flex-1 md:flex-none flex-col md:flex-row items-center justify-center gap-1 md:gap-2 h-14 md:h-10 md:px-4 rounded-md text-xs md:text-sm transition-colors cursor-pointer",
 								focusRing,
 								isActive
-									? "bg-orange text-background font-bold"
-									: "text-light-gray font-medium hover:text-input-text"
+									? "bg-primary font-semibold text-primary-foreground"
+									: "text-muted-foreground font-medium hover:text-foreground"
 							)}
 						>
 							<Icon className="w-[18px] h-[18px]" />
