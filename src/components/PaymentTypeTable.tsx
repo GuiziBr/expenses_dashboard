@@ -69,67 +69,68 @@ export function PaymentTypeTable({ paymentTypes }: PaymentTypeTableProps) {
 	}
 
 	return (
-		<div className="mt-8 w-full min-h-[20rem]">
-			<table className="w-full border-separate border-spacing-y-2 table-fixed">
-				<thead>
+		<div className="w-full min-h-[20rem] overflow-hidden rounded-xl border border-border bg-card">
+			<table className="w-full table-fixed">
+				<thead className="bg-background/60">
 					<tr>
-						<th className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl pl-2 w-[40%] md:w-[30%]">
+						<th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground md:px-4 w-[40%] md:w-[30%]">
 							{translations.management.paymentTypeColumn}
 						</th>
-						<th className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl w-[20%] md:w-[15%]">
+						<th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground md:px-4 w-[20%] md:w-[15%]">
 							{translations.management.hasStatementColumn}
 						</th>
-						<th className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl w-[35%] md:w-[25%]">
+						<th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground md:px-4 w-[35%] md:w-[25%]">
 							{translations.management.createdColumn}
 						</th>
-						<th className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl hidden md:table-cell md:w-[25%]">
+						<th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground md:px-4 hidden md:table-cell md:w-[25%]">
 							{translations.management.updatedColumn}
 						</th>
 					</tr>
 				</thead>
 				<tbody className="w-full">
 					{paymentTypes.map((pt) => (
-						<tr key={pt.id} className="group">
+						<tr
+							key={pt.id}
+							className="border-t border-border transition-colors hover:bg-accent/40"
+						>
 							<td
-								className="bg-white py-5 px-1 md:px-2 text-blue-wood first:rounded-l-lg pl-2 truncate md:text-base"
+								className="px-3 py-4 truncate text-sm font-medium text-foreground md:px-4"
 								title={pt.description}
 							>
 								{pt.description}
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray md:text-base">
+							<td className="px-3 py-4 text-sm text-muted-foreground md:px-4">
 								{pt.hasStatement ? (
-									<Check className="h-4 w-4 text-green-500" />
+									<Check className="h-4 w-4 text-success" />
 								) : (
-									<span className="text-light-gray">—</span>
+									<span className="text-muted-foreground">—</span>
 								)}
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray md:text-base">
+							<td className="px-3 py-4 text-sm text-muted-foreground md:px-4">
 								{pt.formattedCreatedAt}
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray hidden md:table-cell md:text-base">
+							<td className="px-3 py-4 hidden text-sm text-muted-foreground md:table-cell md:px-4">
 								{pt.formattedUpdatedAt}
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-right last:rounded-r-lg pr-4">
+							<td className="px-2 py-2 text-right md:px-3">
 								<DropdownMenu>
-									<DropdownMenuTrigger className="p-2 hover:bg-light-blue/10 rounded-full transition-colors outline-none">
-										<MoreVertical className="h-5 w-5 text-light-gray" />
+									<DropdownMenuTrigger className="cursor-pointer rounded-full p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+										<MoreVertical className="size-5" />
 									</DropdownMenuTrigger>
-									<DropdownMenuContent
-										align="end"
-										className="bg-background border-white/10"
-									>
+									<DropdownMenuContent align="end">
 										<DropdownMenuItem
 											onClick={() => setEditingPT(pt)}
-											className="flex items-center gap-2 cursor-pointer text-white focus:bg-white/5"
+											className="cursor-pointer"
 										>
-											<Pencil className="h-4 w-4" />
+											<Pencil />
 											{translations.management.edit}
 										</DropdownMenuItem>
 										<DropdownMenuItem
 											onClick={() => setDeletingPT(pt)}
-											className="flex items-center gap-2 cursor-pointer text-pink focus:bg-red/5"
+											variant="destructive"
+											className="cursor-pointer"
 										>
-											<Trash2 className="h-4 w-4" />
+											<Trash2 />
 											{translations.management.delete}
 										</DropdownMenuItem>
 									</DropdownMenuContent>

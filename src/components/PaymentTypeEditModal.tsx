@@ -50,9 +50,9 @@ export function PaymentTypeEditModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="sm:max-w-[425px] bg-background border-white/10">
+			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle className="text-white">
+					<DialogTitle>
 						{translations.management.editPaymentTypeTitle}
 					</DialogTitle>
 				</DialogHeader>
@@ -68,14 +68,14 @@ export function PaymentTypeEditModal({
 							className={cn(
 								"size-5 rounded border-2 flex items-center justify-center transition-colors shrink-0",
 								hasStatement
-									? "bg-orange border-orange"
-									: "border-iron-gray hover:border-orange"
+									? "bg-primary border-primary"
+									: "border-muted-foreground hover:border-primary"
 							)}
 						>
 							{hasStatement && (
 								<svg
 									aria-hidden="true"
-									className="size-3.5 text-background"
+									className="size-3.5 text-primary-foreground"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
@@ -95,7 +95,7 @@ export function PaymentTypeEditModal({
 							checked={hasStatement}
 							onChange={(e) => setHasStatement(e.target.checked)}
 						/>
-						<span className="text-sm font-medium text-white">
+						<span className="text-sm font-medium text-foreground">
 							{translations.management.hasStatementLabel}
 						</span>
 					</label>
@@ -105,14 +105,12 @@ export function PaymentTypeEditModal({
 							variant="outline"
 							onClick={onClose}
 							disabled={isPending}
-							className="text-white border-white/10 hover:bg-white/5"
 						>
 							Cancel
 						</Button>
 						<Button
 							type="submit"
 							disabled={!description.trim() || isPending || isUnchanged}
-							className="bg-orange text-background hover:brightness-95"
 						>
 							{isPending ? (
 								<Loader2 className="h-4 w-4 animate-spin" />

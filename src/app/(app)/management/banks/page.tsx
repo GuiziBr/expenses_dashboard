@@ -30,9 +30,9 @@ export default function BanksManagementPage() {
 	const currentPage = Math.floor(params.offset / params.limit) + 1
 
 	return (
-		<main className="max-w-[1120px] mx-auto px-5">
-			<section className="bg-white/5 rounded-lg border border-white/10 p-6 mb-8 backdrop-blur-sm shadow-xl">
-				<h2 className="text-2xl font-bold text-white mb-6">
+		<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5">
+			<section className="rounded-xl border border-border bg-card p-6">
+				<h2 className="mb-4 text-lg font-semibold text-foreground">
 					{translations.management.banks}
 				</h2>
 				<BankForm />
@@ -45,7 +45,7 @@ export default function BanksManagementPage() {
 			)}
 
 			{error && (
-				<p className="text-center text-red py-12">
+				<p className="py-12 text-center text-danger">
 					{translations.common.errorLoading}
 				</p>
 			)}
@@ -67,7 +67,7 @@ export default function BanksManagementPage() {
 						</>
 					) : (
 						!isLoading && (
-							<p className="text-center text-muted-foreground mt-12 py-12 px-4 bg-white/5 rounded-lg border border-dashed border-white/10">
+							<p className="rounded-xl border border-dashed border-border bg-card px-4 py-12 text-center text-muted-foreground">
 								No banks found.
 							</p>
 						)
