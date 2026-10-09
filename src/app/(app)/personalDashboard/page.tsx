@@ -29,7 +29,7 @@ import type {
 	FormattedExpense
 } from "@/types/expenses"
 
-const DEFAULT_LIMIT = 8
+const DEFAULT_LIMIT = 10
 
 export default function PersonalDashboard() {
 	const { orderBy, orderType, toggleSort, getSortIndicator } = useSortParams()

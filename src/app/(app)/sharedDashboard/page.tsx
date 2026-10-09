@@ -24,7 +24,7 @@ import type {
 	ExpenseQueryParams
 } from "@/types/expenses"
 
-const DEFAULT_LIMIT = 8
+const DEFAULT_LIMIT = 10
 
 export default function SharedDashboard() {
 	const { orderBy, orderType, toggleSort, getSortIndicator } = useSortParams()
