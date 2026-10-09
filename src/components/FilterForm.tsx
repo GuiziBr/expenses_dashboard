@@ -71,10 +71,10 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 	}
 
 	return (
-		<section className="flex w-full flex-col items-center justify-end gap-4 lg:flex-row">
+		<section className="flex w-full flex-col items-center justify-start gap-4 lg:flex-row">
 			<form
 				onSubmit={handleSubmit}
-				className="flex flex-col lg:flex-row items-center justify-end gap-3 w-full lg:w-auto ml-auto"
+				className="flex flex-col lg:flex-row items-center justify-start gap-3 w-full lg:w-auto"
 			>
 				{/* Filters Group */}
 				<div className="flex gap-2 w-full lg:w-auto">
