@@ -73,16 +73,16 @@ export function PaymentTypeTable({ paymentTypes }: PaymentTypeTableProps) {
 			<table className="w-full table-fixed">
 				<thead className="bg-background/60">
 					<tr>
-						<th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground md:px-4 w-[40%] md:w-[30%]">
+						<th className="px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 w-[40%] md:w-[30%]">
 							{translations.management.paymentTypeColumn}
 						</th>
-						<th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground md:px-4 w-[20%] md:w-[15%]">
+						<th className="px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 w-[20%] md:w-[15%]">
 							{translations.management.hasStatementColumn}
 						</th>
-						<th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground md:px-4 w-[35%] md:w-[25%]">
+						<th className="px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 w-[35%] md:w-[25%]">
 							{translations.management.createdColumn}
 						</th>
-						<th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground md:px-4 hidden md:table-cell md:w-[25%]">
+						<th className="px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 hidden md:table-cell md:w-[25%]">
 							{translations.management.updatedColumn}
 						</th>
 						<th scope="col" className="w-14" />

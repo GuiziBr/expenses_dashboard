@@ -133,7 +133,7 @@ export function ExpenseTable({
 									<button
 										type="button"
 										onClick={() => onSort(key)}
-										className="flex cursor-pointer items-center gap-1 whitespace-nowrap text-[11px] font-semibold uppercase tracking-wide text-muted-foreground transition-colors md:text-xs md:tracking-wider hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+										className="flex cursor-pointer items-center gap-1 whitespace-nowrap text-xs font-semibold text-muted-foreground transition-colors md:text-[13px] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 									>
 										{label}
 										<SortIcon
