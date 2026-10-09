@@ -38,7 +38,7 @@ const COLUMNS: Column[] = [
 	{
 		key: EXPENSE_COLUMNS.description,
 		label: translations.table.expense,
-		width: "w-[22%] md:w-[30%] lg:w-[25%] xl:w-[20%]"
+		width: "w-[22%] md:w-[33%] lg:w-[29%] xl:w-[26%]"
 	},
 	{
 		key: EXPENSE_COLUMNS.category,
@@ -65,12 +65,12 @@ const COLUMNS: Column[] = [
 				<span className="hidden md:inline">{translations.table.dueDate}</span>
 			</>
 		),
-		width: "w-[15%] md:w-[17%] lg:w-[17%] xl:w-[14%]"
+		width: "w-[15%] md:w-[16%] lg:w-[15%] xl:w-[11%]"
 	},
 	{
 		key: EXPENSE_COLUMNS.date,
 		label: translations.table.purchase,
-		width: "w-[27%] md:w-[18%] lg:w-[17%] xl:w-[14%]"
+		width: "w-[27%] md:w-[16%] lg:w-[15%] xl:w-[11%]"
 	},
 	{
 		key: EXPENSE_COLUMNS.bank,
