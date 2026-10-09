@@ -26,10 +26,10 @@ const LoginInput = forwardRef<HTMLInputElement, LoginInputProps>(
 		return (
 			<div
 				className={cn(
-					"flex items-center w-full p-4 rounded-[0.3rem] border-2 border-container-background bg-container-background text-iron-gray transition-colors duration-300",
-					error && "border-red text-red",
-					isFocused && "border-light-orange text-light-orange",
-					!error && isFilled && "text-light-orange",
+					"flex items-center w-full p-3.5 rounded-lg border border-border bg-card text-muted-foreground transition-colors duration-300",
+					error && "border-destructive text-destructive",
+					isFocused && "border-primary ring-2 ring-ring/30 text-primary-text",
+					!error && isFilled && "text-primary-text",
 					containerClassName
 				)}
 			>
@@ -50,7 +50,7 @@ const LoginInput = forwardRef<HTMLInputElement, LoginInputProps>(
 					aria-invalid={!!error}
 					aria-describedby={error ? `${name}-error` : undefined}
 					className={cn(
-						"flex-1 bg-transparent border-0 text-input-text placeholder:text-iron-gray focus:outline-none focus:ring-0",
+						"flex-1 bg-transparent border-0 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0",
 						className
 					)}
 					ref={(e) => {
@@ -64,14 +64,14 @@ const LoginInput = forwardRef<HTMLInputElement, LoginInputProps>(
 				/>
 				{error && (
 					<div className="relative flex items-center group ml-4 h-5">
-						<AlertCircle className="h-5 w-5 shrink-0 text-red" />
+						<AlertCircle className="h-5 w-5 shrink-0 text-destructive" />
 						<span
 							id={`${name}-error`}
 							role="alert"
-							className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 bg-red text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
+							className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 bg-destructive text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
 						>
 							{error.message as string}
-							<div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-t-red border-x-transparent border-b-transparent" />
+							<div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-t-destructive border-x-transparent border-b-transparent" />
 						</span>
 					</div>
 				)}
