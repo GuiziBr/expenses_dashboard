@@ -47,64 +47,72 @@ export function Pagination({
 	const visiblePages = getVisiblePages(currentPage, totalPages)
 
 	return (
-		<div className="flex w-full justify-center lg:sticky lg:bottom-4 lg:z-10">
-			<div className="flex items-center gap-2 lg:rounded-xl lg:border lg:border-border lg:bg-card lg:px-2 lg:py-1 lg:shadow-md">
-				<button
-					type="button"
-					onClick={() => setCurrentPage(currentPage - 1)}
-					disabled={currentPage <= 1}
-					aria-label={translations.common.previous}
-					className="flex h-8 cursor-pointer items-center rounded-lg px-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-				>
-					<ChevronLeft className="h-4 w-4 md:hidden" />
-					<span className="hidden md:inline">
-						{translations.common.previous}
-					</span>
-				</button>
+		<>
+			{/* Keeps the last rows clear of the fixed bar on desktop */}
+			<div aria-hidden="true" className="hidden h-14 lg:block" />
+			{/* On desktop the bar is pinned to the bottom of the viewport, centred in the area beside the sidebar (248px) */}
+			<nav
+				aria-label={translations.common.pagination}
+				className="flex w-full justify-center lg:pointer-events-none lg:fixed lg:right-0 lg:bottom-4 lg:left-[248px] lg:z-30 lg:w-auto"
+			>
+				<div className="flex items-center gap-2 lg:pointer-events-auto lg:rounded-xl lg:border lg:border-border lg:bg-card lg:px-2 lg:py-1 lg:shadow-md">
+					<button
+						type="button"
+						onClick={() => setCurrentPage(currentPage - 1)}
+						disabled={currentPage <= 1}
+						aria-label={translations.common.previous}
+						className="flex h-8 cursor-pointer items-center rounded-lg px-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+					>
+						<ChevronLeft className="h-4 w-4 md:hidden" />
+						<span className="hidden md:inline">
+							{translations.common.previous}
+						</span>
+					</button>
 
-				{visiblePages.map((page, index) => {
-					if (page === "...") {
+					{visiblePages.map((page, index) => {
+						if (page === "...") {
+							return (
+								<span
+									// biome-ignore lint/suspicious/noArrayIndexKey: ellipsis markers have no stable key
+									key={`ellipsis-${index}`}
+									className="px-1 text-muted-foreground select-none"
+								>
+									&hellip;
+								</span>
+							)
+						}
+
+						const isSelected = page === currentPage
 						return (
-							<span
-								// biome-ignore lint/suspicious/noArrayIndexKey: ellipsis markers have no stable key
-								key={`ellipsis-${index}`}
-								className="px-1 text-muted-foreground select-none"
+							<button
+								type="button"
+								key={page}
+								onClick={() => setCurrentPage(page)}
+								aria-current={isSelected ? "page" : undefined}
+								className={cn(
+									"h-8 min-w-8 cursor-pointer rounded-lg px-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+									isSelected
+										? "pointer-events-none bg-primary font-semibold text-primary-foreground"
+										: "text-muted-foreground hover:bg-accent hover:text-foreground"
+								)}
 							>
-								&hellip;
-							</span>
+								{page}
+							</button>
 						)
-					}
+					})}
 
-					const isSelected = page === currentPage
-					return (
-						<button
-							type="button"
-							key={page}
-							onClick={() => setCurrentPage(page)}
-							aria-current={isSelected ? "page" : undefined}
-							className={cn(
-								"h-8 min-w-8 cursor-pointer rounded-lg px-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-								isSelected
-									? "pointer-events-none bg-primary font-semibold text-primary-foreground"
-									: "text-muted-foreground hover:bg-accent hover:text-foreground"
-							)}
-						>
-							{page}
-						</button>
-					)
-				})}
-
-				<button
-					type="button"
-					onClick={() => setCurrentPage(currentPage + 1)}
-					disabled={currentPage === totalPages}
-					aria-label={translations.common.next}
-					className="flex h-8 cursor-pointer items-center rounded-lg px-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-				>
-					<ChevronRight className="h-4 w-4 md:hidden" />
-					<span className="hidden md:inline">{translations.common.next}</span>
-				</button>
-			</div>
-		</div>
+					<button
+						type="button"
+						onClick={() => setCurrentPage(currentPage + 1)}
+						disabled={currentPage === totalPages}
+						aria-label={translations.common.next}
+						className="flex h-8 cursor-pointer items-center rounded-lg px-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+					>
+						<ChevronRight className="h-4 w-4 md:hidden" />
+						<span className="hidden md:inline">{translations.common.next}</span>
+					</button>
+				</div>
+			</nav>
+		</>
 	)
 }

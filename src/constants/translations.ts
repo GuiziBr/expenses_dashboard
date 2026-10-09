@@ -10,6 +10,7 @@ export const translations = {
 		previous: "Previous",
 		next: "Next",
 		logout: "Logout",
+		pagination: "Pagination",
 		appName: "Expenses",
 		management: "Management",
 		cancel: "Cancel"
