@@ -47,14 +47,14 @@ export function Pagination({
 	const visiblePages = getVisiblePages(currentPage, totalPages)
 
 	return (
-		<div className="mb-8 flex w-full justify-center md:mt-4">
+		<div className="flex w-full justify-center">
 			<div className="flex items-center gap-2">
 				<button
 					type="button"
 					onClick={() => setCurrentPage(currentPage - 1)}
 					disabled={currentPage <= 1}
 					aria-label={translations.common.previous}
-					className="px-2 py-1 cursor-pointer hover:brightness-75 transition-all text-light-gray disabled:opacity-50 disabled:pointer-events-none"
+					className="flex h-8 cursor-pointer items-center rounded-lg px-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
 				>
 					<ChevronLeft className="h-4 w-4 md:hidden" />
 					<span className="hidden md:inline">
@@ -68,7 +68,7 @@ export function Pagination({
 							<span
 								// biome-ignore lint/suspicious/noArrayIndexKey: ellipsis markers have no stable key
 								key={`ellipsis-${index}`}
-								className="px-1 py-1 text-light-gray select-none"
+								className="px-1 text-muted-foreground select-none"
 							>
 								&hellip;
 							</span>
@@ -81,11 +81,12 @@ export function Pagination({
 							type="button"
 							key={page}
 							onClick={() => setCurrentPage(page)}
+							aria-current={isSelected ? "page" : undefined}
 							className={cn(
-								"px-3 py-1 cursor-pointer hover:brightness-75 transition-all",
+								"h-8 min-w-8 cursor-pointer rounded-lg px-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
 								isSelected
-									? "bg-orange text-white rounded-[0.3rem] pointer-events-none"
-									: "text-light-gray"
+									? "pointer-events-none bg-primary font-semibold text-primary-foreground"
+									: "text-muted-foreground hover:bg-accent hover:text-foreground"
 							)}
 						>
 							{page}
@@ -98,7 +99,7 @@ export function Pagination({
 					onClick={() => setCurrentPage(currentPage + 1)}
 					disabled={currentPage === totalPages}
 					aria-label={translations.common.next}
-					className="px-2 py-1 cursor-pointer hover:brightness-75 transition-all text-light-gray disabled:opacity-50 disabled:pointer-events-none"
+					className="flex h-8 cursor-pointer items-center rounded-lg px-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
 				>
 					<ChevronRight className="h-4 w-4 md:hidden" />
 					<span className="hidden md:inline">{translations.common.next}</span>

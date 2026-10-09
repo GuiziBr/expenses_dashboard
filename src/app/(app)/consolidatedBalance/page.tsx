@@ -1,6 +1,6 @@
 "use client"
 
-import { CircleArrowDown, CircleArrowUp, DollarSign } from "lucide-react"
+import { ArrowDownLeft, ArrowUpRight, Wallet } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { BalanceCard } from "@/components/BalanceCard"
@@ -40,32 +40,30 @@ export default function ConsolidatedBalance() {
 
 	return (
 		<main className="max-w-[1120px] mx-auto px-5 pb-12">
-			<section className="grid grid-cols-1 md:grid-cols-3 gap-8">
-				<div className="hidden md:contents">
-					<BalanceCard
-						label={
-							data?.requester?.name ||
-							translations.dashboards.consolidated.requester
-						}
-						value={formatCurrency(data?.requester?.total ?? 0)}
-						icon={CircleArrowUp}
-						iconClassName="text-green"
-					/>
-					<BalanceCard
-						label={
-							data?.partner?.name ||
-							translations.dashboards.consolidated.partner
-						}
-						value={formatCurrency(data?.partner?.total ?? 0)}
-						icon={CircleArrowDown}
-						iconClassName="text-red"
-					/>
-				</div>
+			<section className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
+				<BalanceCard
+					label={
+						data?.requester?.name ||
+						translations.dashboards.consolidated.requester
+					}
+					value={formatCurrency(data?.requester?.total ?? 0)}
+					icon={ArrowDownLeft}
+					tone="income"
+				/>
+				<BalanceCard
+					label={
+						data?.partner?.name || translations.dashboards.consolidated.partner
+					}
+					value={formatCurrency(data?.partner?.total ?? 0)}
+					icon={ArrowUpRight}
+					tone="outcome"
+				/>
 				<BalanceCard
 					label={translations.common.balance}
 					value={formatCurrency(data?.balance ?? 0)}
-					icon={DollarSign}
+					icon={Wallet}
 					variant="total"
+					className="order-first col-span-2 md:order-none md:col-span-1"
 				/>
 			</section>
 

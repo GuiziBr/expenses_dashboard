@@ -1,6 +1,6 @@
 "use client"
 
-import { DollarSign } from "lucide-react"
+import { Wallet } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { BalanceCard } from "@/components/BalanceCard"
@@ -134,16 +134,14 @@ export default function PersonalDashboard() {
 	const currentPage = Math.floor(params.offset / params.limit) + 1
 
 	return (
-		<main className="max-w-[1120px] mx-auto px-5">
-			<section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-				<div className="md:col-start-2">
-					<BalanceCard
-						label={translations.common.balance}
-						value={total}
-						icon={DollarSign}
-						variant="total"
-					/>
-				</div>
+		<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5">
+			<section className="grid grid-cols-1 md:grid-cols-3 md:gap-5">
+				<BalanceCard
+					label={translations.common.balance}
+					value={total}
+					icon={Wallet}
+					variant="total"
+				/>
 			</section>
 
 			<FilterForm onSubmit={handleSearch} initialFilters={params} />
@@ -155,7 +153,7 @@ export default function PersonalDashboard() {
 			)}
 
 			{error && (
-				<p className="text-center text-red">
+				<p className="text-center text-danger">
 					{getErrorMessage(error, translations.common.errorLoading)}
 				</p>
 			)}
@@ -180,7 +178,7 @@ export default function PersonalDashboard() {
 			)}
 
 			{data && data.expenses.length === 0 && !isLoading && (
-				<p className="text-center text-muted-foreground mt-12 py-12 px-4 bg-white/5 rounded-lg border border-dashed border-white/10">
+				<p className="rounded-xl border border-dashed border-border bg-card px-4 py-12 text-center text-muted-foreground">
 					{translations.common.noExpensesFound}
 				</p>
 			)}

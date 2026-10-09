@@ -2,10 +2,10 @@
 
 | | |
 |---|---|
-| **Status** | In progress: tasks 1 to 6 done (see §10) |
-| **Scope** | Header and menu. Content restyling is limited to the shared dashboard screen used as the mock |
+| **Status** | In progress: tasks 1 to 7 done (see §10) |
+| **Scope** | Header and menu, plus the restyle of the Shared and Personal dashboards (task 7). Other pages follow in task 8 |
 | **Design** | Current UI: `design.pen`. New UI: `design_v2.pen` → *Dashboard / Desktop*, *Dashboard / Mobile* and their *(Dark)* versions |
-| **Code today** | Shell in `src/app/(app)/layout.tsx`. The old [`Header.tsx`](../../src/components/Header.tsx) is unused and is removed in task 8 |
+| **Code today** | Shell in `src/app/(app)/layout.tsx`. The old [`Header.tsx`](../../src/components/Header.tsx) is unused and is removed in task 9 |
 | **Related** | [Design System](../../DESIGN_SYSTEM.md) · [Feature Specifications](../specs/features.md) |
 
 ---
@@ -145,10 +145,12 @@ The design tokens are CSS variables in `src/app/globals.css`: light values in `:
 | `success`, `success-soft` | `--success`, `--success-soft` (new) | `text-success`, `bg-success-soft` |
 | `danger`, `danger-soft` | `--danger`, `--danger-soft` (new) | `text-danger`, `bg-danger-soft` |
 
-**Not applied yet, on purpose.** The `.dark` block still holds the app's original values, so nothing changes visually while the dark theme is the default. Two differences from the mock remain until the restyle task (§10, task 7):
+**Applied with the dashboard restyle (task 7).** Dark `--primary` and `--ring` are now the mock's purple (`#6c4cf0`), so both themes share one accent. The restyled components use the semantic tokens (`bg-card`, `border-border`, `text-muted-foreground`, `bg-primary`, and so on) instead of fixed colours.
 
-- Dark `--primary` is still orange (`#ff872c`), not the mock's purple (`#6c4cf0`), and light `--primary` is already purple. Align them when the pages are restyled.
+**Still different from the mock.**
+
 - The font stays Roboto and Roboto Slab (open question 2). Inter is not loaded yet.
+- Pages that task 7 did not touch still use the old orange accent through utilities such as `bg-orange`. Until task 8 the app shows both: purple on the shell and the dashboards, orange on the login page, the management pages, the modals, and the Consolidated Balance filters and tables (its cards are already restyled).
 
 ### Theme switching
 
@@ -157,7 +159,7 @@ The design tokens are CSS variables in `src/app/globals.css`: light values in `:
 - `src/components/ThemeToggle.tsx` is the toggle button. It is mounted in the current header (desktop only) but **disabled**, with a "Coming soon" tooltip on hover or keyboard focus. `THEME_SWITCHING_ENABLED` in `src/lib/theme.ts` controls this. See *Pending items* in §12.
 - Default is dark. The choice is stored in `localStorage` under `theme`. There is no "follow the system" option.
 
-Typography: **Inter** at 14px/500 for navigation and body, 26px/700 for the page title, 30px/600 for metric values. Radii: 8px for controls, 12px for cards. Orange is no longer used.
+Typography: **Inter** at 14px/500 for navigation and body, 26px/700 for the page title, 30px/600 for metric values. Radii: 8px for controls, 12px for cards. Orange is no longer used on the restyled screens.
 
 > **Differences from the current app.** [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md) defines a **dark-only** UI with Roboto and Roboto Slab and orange as the only accent. The mock uses Inter and purple, and adds a light theme. The dark theme is the closest to today's look. See §11, questions 1 to 3.
 
@@ -185,6 +187,11 @@ Each screen exists in a light and a dark version in `design_v2.pen`, built from 
 - The mock's mobile top bar has an avatar. The build has no avatar there, since the user menu is in the More sheet.
 - The theme toggle is disabled and hidden on mobile (§12).
 - The *New expense* button moved out of the filter row into the top bar. On mobile it is the floating button.
+
+- The mock's metric cards show a delta ("+8% vs last month"). It is not built, because the app has no previous-month figures.
+- On mobile the mock shows the expenses as a two-line list. The build keeps the table with fewer columns (expense, amount, due, purchase).
+- The mock uses Inter. The build keeps Roboto and Roboto Slab (§11, Q2).
+- Icons on the cards follow the mock (arrow down-left for incomes, arrow up-right for outcomes, wallet for the balance).
 
 ### Reusable components in the design file
 
@@ -225,10 +232,11 @@ Suggested order, one small PR each. Branch off `development`.
 | 2 | **Tokens and theme switching.** Light and dark tokens in `globals.css`, a theme provider, a no-flash script and a `ThemeToggle` component. Done, see §6. | The toggle is mounted in the current header, disabled with a "Coming soon" tooltip. The font change waits for §11, Q2. |
 | 3 | **`AppSidebar`.** Desktop sidebar built from the config, with active state via `usePathname`, `aria-current`, and the user menu using the existing `DropdownMenu`. Done: `src/components/AppSidebar.tsx`. | Not mounted yet. Task 5 puts it in the shared layout, and it is hidden below `lg` there. Reuses `signOut` from `useAuth`. The Management section is collapsed unless the current page is under `/management`. |
 | 4 | **`BottomTabBar` and More sheet.** Done: `src/components/BottomTabBar.tsx`, tab and More config in `src/lib/navigation.ts`. | Uses `src/components/ui/sheet.tsx` as a bottom sheet. Not mounted yet. Task 5 renders it below `md`. The tab labelled *Balance* still points to Consolidated Balance (§11, Q4). |
-| 5 | **Shared layout.** Done: `src/app/(app)/layout.tsx` renders the shell once. The 8 pages moved under the `(app)` route group (URLs unchanged), and `<Header />`, the purple band and the `-mt-24` overlap were removed from each. | `/` (login) stays outside the group. The sidebar shows from `lg`, the tab bar below `lg`. Header.tsx is now unused and is removed in task 8. |
+| 5 | **Shared layout.** Done: `src/app/(app)/layout.tsx` renders the shell once. The 8 pages moved under the `(app)` route group (URLs unchanged), and `<Header />`, the purple band and the `-mt-24` overlap were removed from each. | `/` (login) stays outside the group. The sidebar shows from `lg`, the tab bar below `lg`. Header.tsx is now unused and is removed in task 9. |
 | 6 | **Top bar and month selection.** Done. `src/components/TopBar.tsx` shows the page title (`h1`), the month picker, the theme toggle and the *New expense* action. Month state is in the URL (`src/hooks/use-selected-month.ts`) and shared by the Shared and Personal dashboards and Balance Breakdown, see §5. | `MonthPicker`, `NewExpenseAction`, `MonthAwareLink` and a small page-toolbar context are new. `FilterForm` lost its *New expense* button and now follows the month. Balance Breakdown's own month controls were removed. |
-| 7 | **Restyle the shared dashboard.** Metric cards, filters, table. | Then roll out to the other pages. |
-| 8 | **Remove `Header.tsx`** and update tests. | Add tests for the active state, the nav config and logout. |
+| 7 | **Restyle the dashboards.** Done. `BalanceCard` (icon chip, tones, mobile order), `ExpenseTable` (card, uppercase header, category badge, keyboard-sortable headers with `aria-sort`), `Pagination`, the filter row and the shared `Input`/`Select`. The dashboards use the semantic tokens and the dark accent is now purple, see §6. | Shared and Personal get it through the shared components. `ui/input.tsx` and `ui/select.tsx` are restyled for the whole app, so forms and modals pick up the new look too. `BalanceCard`'s `iconClassName` prop became `tone`. |
+| 8 | **Roll out to the other pages.** Consolidated Balance (filters, report tables), Balance Breakdown (summary, chart, legend, controls), the four management pages (tables, forms, modals), the confirm-delete modal, the new-expense modal and the login page. Replace the remaining fixed colours (`bg-orange`, `text-white`, `text-light-gray`, `container-background`, and so on) with tokens. | This is also step 1 of enabling theme switching (§12). Do it page by page, one small PR or commit each. |
+| 9 | **Remove `Header.tsx`** and update tests. | Add tests for the active state, the nav config and logout. |
 
 Existing tools: Tailwind v4, shadcn/ui with Radix, `lucide-react`, and `sheet.tsx` and `dropdown-menu.tsx` in `src/components/ui`.
 
@@ -236,7 +244,7 @@ Existing tools: Tailwind v4, shadcn/ui with Radix, `lucide-react`, and `sheet.ts
 
 1. ~~**Theme.**~~ **Decided:** light and dark with a toggle, dark by default. `DESIGN_SYSTEM.md` still describes a dark-only app and needs updating when the restyle lands.
 2. **Fonts:** switch to Inter or keep Roboto and Roboto Slab for amounts, as the Balance Breakdown plan decided?
-3. **Brand colour:** drop orange, or keep it as a secondary accent for the balance highlight?
+3. **Brand colour:** the restyled screens use purple only. Should orange go everywhere (task 8), or stay as a secondary accent somewhere?
 4. **Mobile tab label:** *Balance* for Consolidated Balance, or use its full name?
 5. **Tablet:** is the icon-rail sidebar worth building now?
 6. **Sidebar collapse on desktop:** user-controlled or fixed?
@@ -248,8 +256,8 @@ Existing tools: Tailwind v4, shadcn/ui with Radix, `lucide-react`, and `sheet.ts
 
 Today the toggle shows in the desktop top bar as a disabled button with a "Coming soon" tooltip, and the app always uses the dark theme. To turn it on:
 
-1. **Audit hard-coded colours.** Many components use fixed colours (`text-white`, `bg-[var(--light-blue)]`, `text-orange`, raw hex values) that only make sense on dark. Replace them with the semantic tokens from §6 so both themes render correctly. Check every page, modal, table state and the Balance Breakdown chart.
-2. **Align the accent.** Switch dark `--primary` from orange to the mock's purple (`#6c4cf0`), or decide to keep orange (§11, Q3), so both themes share one accent.
+1. **Finish the hard-coded colour audit (task 8).** The dashboards are done. Many other components still use fixed colours (`text-white`, `bg-[var(--light-blue)]`, `text-orange`, raw hex values) that only make sense on dark. Replace them with the semantic tokens from §6 so both themes render correctly. Check every page, modal, table state and the Balance Breakdown chart.
+2. **Finish the accent change.** Dark `--primary` is already purple. The rest of it is task 8, which removes the remaining orange (§11, Q3).
 3. **Measure contrast in both themes** against the targets in §9, especially `muted` text and the dark `primary-text`.
 4. **Mobile placement for the toggle.** It is in the top bar on desktop (task 6) and hidden on mobile. Put it in the More sheet, because the "Coming soon" tooltip does not exist on touch.
 5. **Flip `THEME_SWITCHING_ENABLED` to `true`** and remove the disabled state and tooltip from `ThemeToggle`. The tests that cover the working toggle already exist.
@@ -276,6 +284,7 @@ The tablet rail, loading/empty/error states for the new screens, notification or
 | 2026-10-08 | First draft from `design_v2.pen` mock |
 | 2026-10-08 | Added dark theme tokens and dark screen mocks |
 | 2026-10-08 | Theme toggle mounted disabled with a "Coming soon" tooltip; added Pending items section |
+| 2026-10-09 | Task 7 (dashboard restyle) implemented; dark accent switched to purple; the rollout to other pages became task 8 and removing `Header.tsx` became task 9 |
 | 2026-10-08 | Task 6 (top bar and month selection) implemented; month picker shared by the dashboards and Balance Breakdown |
 | 2026-10-08 | Task 5 (shared layout) implemented; sidebar and tab bar are now live |
 | 2026-10-08 | Task 4 (`BottomTabBar` and More sheet) implemented, not yet mounted |

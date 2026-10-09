@@ -2,35 +2,63 @@ import type { LucideProps } from "lucide-react"
 import type React from "react"
 import { cn } from "@/lib/utils"
 
+type BalanceTone = "income" | "outcome" | "neutral"
+
 interface BalanceCardProps {
 	label: string
 	value: string
 	icon: React.ElementType<LucideProps>
-	iconClassName?: string
+	tone?: BalanceTone
 	variant?: "default" | "total"
+	className?: string
+}
+
+const CHIP_CLASS: Record<BalanceTone, string> = {
+	income: "bg-success-soft text-success",
+	outcome: "bg-danger-soft text-danger",
+	neutral: "bg-primary-soft text-primary-text"
 }
 
 export function BalanceCard({
 	label,
 	value,
 	icon: Icon,
-	iconClassName,
-	variant = "default"
+	tone = "neutral",
+	variant = "default",
+	className
 }: BalanceCardProps) {
 	const isTotal = variant === "total"
 
 	return (
 		<div
 			className={cn(
-				"px-8 py-6 rounded-[0.3rem] font-[family-name:var(--font-roboto)] flex flex-col items-center md:items-start",
-				isTotal ? "bg-orange text-white" : "bg-white text-blue-wood"
+				"flex flex-col gap-3 rounded-xl border p-4 font-[family-name:var(--font-roboto)] md:p-5",
+				isTotal
+					? "border-primary bg-primary text-primary-foreground"
+					: "border-border bg-card text-card-foreground",
+				className
 			)}
 		>
-			<header className="flex items-center justify-between w-full">
-				<p className="text-base">{label}</p>
-				<Icon className={cn("w-8 h-8", iconClassName)} strokeWidth={1.5} />
+			<header className="flex items-center justify-between gap-2">
+				<p
+					className={cn(
+						"text-[13px] font-medium",
+						isTotal ? "text-primary-foreground/80" : "text-muted-foreground"
+					)}
+				>
+					{label}
+				</p>
+				<span
+					aria-hidden="true"
+					className={cn(
+						"flex size-8 shrink-0 items-center justify-center rounded-lg",
+						isTotal ? "bg-white/20 text-primary-foreground" : CHIP_CLASS[tone]
+					)}
+				>
+					<Icon className="size-4" />
+				</span>
 			</header>
-			<p className="mt-4 text-[2.25rem] font-normal leading-[3.5rem] text-center md:text-left w-full">
+			<p className="truncate text-2xl font-semibold tracking-tight md:text-3xl">
 				{value}
 			</p>
 		</div>

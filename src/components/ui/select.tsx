@@ -22,12 +22,12 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 		return (
 			<div
 				className={cn(
-					"flex h-11 w-full items-center rounded-md bg-container-background border-2 border-container-background px-3 text-base shadow-sm transition-colors focus-within:border-orange text-input-text",
-					error && "border-red text-red",
+					"flex h-10 w-full items-center rounded-lg border border-border bg-card px-3 text-sm text-foreground shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30",
+					error && "border-destructive text-destructive",
 					className
 				)}
 			>
-				{Icon && <Icon className="mr-2 h-5 w-5 text-iron-gray" />}
+				{Icon && <Icon className="mr-2 size-4 shrink-0 text-muted-foreground" />}
 				<select
 					className="h-full w-full bg-transparent p-0 outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 appearance-none"
 					ref={ref}
@@ -37,7 +37,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 						<option
 							value=""
 							disabled
-							className="bg-container-background text-iron-gray"
+							className="bg-card text-muted-foreground"
 						>
 							{placeholder}
 						</option>
@@ -46,7 +46,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 						<option
 							key={option.id}
 							value={option.id}
-							className="bg-container-background text-input-text"
+							className="bg-card text-foreground"
 						>
 							{option.description || option.name}
 						</option>
@@ -54,13 +54,13 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 				</select>
 				{error && (
 					<div className="relative flex items-center group ml-2 h-5">
-						<AlertCircle className="h-5 w-5 shrink-0 text-red" />
+						<AlertCircle className="h-5 w-5 shrink-0 text-destructive" />
 						<span
 							role="alert"
-							className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 bg-red text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
+							className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 bg-destructive text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
 						>
 							{error}
-							<div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-t-red border-x-transparent border-b-transparent" />
+							<div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-t-destructive border-x-transparent border-b-transparent" />
 						</span>
 					</div>
 				)}

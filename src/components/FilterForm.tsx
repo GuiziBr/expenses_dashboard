@@ -71,7 +71,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 	}
 
 	return (
-		<section className="mt-6 w-full flex flex-col lg:flex-row justify-end items-center gap-4">
+		<section className="flex w-full flex-col items-center justify-end gap-4 lg:flex-row">
 			<form
 				onSubmit={handleSubmit}
 				className="flex flex-col lg:flex-row items-center justify-end gap-3 w-full lg:w-auto ml-auto"
@@ -83,7 +83,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 						name="filterBy"
 						options={COLUMN_FILTERS as unknown as SelectOption[]}
 						placeholder={translations.filters.filterBy}
-						className="flex-1 lg:w-36 text-sm md:text-base"
+						className="flex-1 lg:w-36"
 						value={filterBy}
 						onChange={handleFilterByChange}
 					/>
@@ -92,7 +92,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 						name="filterValue"
 						options={filterOptions}
 						placeholder={translations.filters.filterValue}
-						className="flex-1 lg:w-44 text-sm md:text-base"
+						className="flex-1 lg:w-44"
 						disabled={!filterBy || isLoadingOptions}
 						value={filterValue}
 						onChange={(e) => setFilterValue(e.target.value)}
@@ -101,11 +101,11 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 
 				{/* Inputs Group */}
 				<div className="flex gap-2 w-full lg:w-auto">
-					<div className="relative flex-1 lg:w-44 h-11 flex items-center bg-container-background rounded-md border-2 border-container-background px-3 transition-colors focus-within:border-orange">
+					<div className="relative flex-1 lg:w-44 h-10 flex items-center bg-card rounded-lg border border-border px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
 						<Input
 							type="date"
 							name="startDate"
-							className="bg-transparent border-none p-0 h-full w-full text-input-text focus-visible:ring-0 text-sm md:text-base"
+							className="bg-transparent border-none p-0 h-full w-full text-foreground focus-visible:ring-0 text-sm"
 							value={startDate}
 							max={maxStartDate}
 							onChange={(e) => {
@@ -114,11 +114,11 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 							}}
 						/>
 					</div>
-					<div className="relative flex-1 lg:w-44 h-11 flex items-center bg-container-background rounded-md border-2 border-container-background px-3 transition-colors focus-within:border-orange">
+					<div className="relative flex-1 lg:w-44 h-10 flex items-center bg-card rounded-lg border border-border px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
 						<Input
 							type="date"
 							name="endDate"
-							className="bg-transparent border-none p-0 h-full w-full text-input-text focus-visible:ring-0 text-sm md:text-base"
+							className="bg-transparent border-none p-0 h-full w-full text-foreground focus-visible:ring-0 text-sm"
 							value={endDate}
 							min={minEndDate}
 							onChange={(e) => {
@@ -131,7 +131,8 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 
 				<Button
 					type="submit"
-					className="h-10 w-full lg:w-[5.5rem] bg-orange text-background text-sm md:text-base font-medium hover:brightness-90 transition-all rounded-[0.3rem] border-none"
+					variant="outline"
+					className="h-10 w-full font-semibold lg:w-[5.5rem]"
 				>
 					{translations.common.search}
 				</Button>
