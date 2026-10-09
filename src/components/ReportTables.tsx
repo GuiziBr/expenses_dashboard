@@ -113,7 +113,7 @@ const Table = ({
 	return (
 		<div className="min-w-0 flex-1 overflow-hidden rounded-xl border border-border bg-card">
 			<table className="w-full">
-				<caption className="px-4 py-3 text-left text-base font-semibold text-foreground">
+				<caption className="px-4 py-3 text-center text-base font-semibold text-foreground">
 					{report.name}
 				</caption>
 				<tbody>
