@@ -2,9 +2,12 @@ import { describe, expect, it } from "vitest"
 import {
 	getPageTitle,
 	isManagementPath,
+	isMoreTabActive,
 	isNavItemActive,
 	MAIN_NAV_ITEMS,
 	MANAGEMENT_NAV_ITEMS,
+	MOBILE_TAB_ITEMS,
+	MORE_NAV_ITEMS,
 	NAV_GROUPS
 } from "./navigation"
 
@@ -77,5 +80,33 @@ describe("getPageTitle", () => {
 	it("falls back to Dashboard", () => {
 		expect(getPageTitle("/unknown")).toBe("Dashboard")
 		expect(getPageTitle(null)).toBe("Dashboard")
+	})
+})
+
+describe("mobile tabs", () => {
+	it("uses short labels for the three primary tabs", () => {
+		expect(MOBILE_TAB_ITEMS.map((tab) => tab.label)).toEqual([
+			"Shared",
+			"Personal",
+			"Balance"
+		])
+		expect(MOBILE_TAB_ITEMS.map((tab) => tab.href)).toEqual([
+			"/sharedDashboard",
+			"/personalDashboard",
+			"/consolidatedBalance"
+		])
+	})
+
+	it("moves the remaining main items into More", () => {
+		expect(MORE_NAV_ITEMS.map((item) => item.href)).toEqual([
+			"/balanceBreakdown"
+		])
+	})
+
+	it("flags More as active for its pages and management only", () => {
+		expect(isMoreTabActive("/balanceBreakdown")).toBe(true)
+		expect(isMoreTabActive("/management/stores")).toBe(true)
+		expect(isMoreTabActive("/sharedDashboard")).toBe(false)
+		expect(isMoreTabActive(null)).toBe(false)
 	})
 })

@@ -25,7 +25,14 @@ export const translations = {
 		manage: "Manage",
 		mainLabel: "Main",
 		userMenu: "Account menu",
-		account: "Account"
+		account: "Account",
+		tabBarLabel: "Primary",
+		tabs: {
+			shared: "Shared",
+			personal: "Personal",
+			balance: "Balance",
+			more: "More"
+		}
 	},
 	dashboards: {
 		personal: {

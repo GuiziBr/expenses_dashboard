@@ -87,12 +87,41 @@ export const MANAGEMENT_NAV_ITEMS: NavItem[] = [
 	}
 ]
 
+const findMainItem = (href: string) => {
+	const item = MAIN_NAV_ITEMS.find((candidate) => candidate.href === href)
+	if (!item) throw new Error(`Unknown navigation route: ${href}`)
+	return item
+}
+
+export const MOBILE_TAB_ITEMS: NavItem[] = [
+	{
+		...findMainItem("/sharedDashboard"),
+		label: translations.navigation.tabs.shared
+	},
+	{
+		...findMainItem("/personalDashboard"),
+		label: translations.navigation.tabs.personal
+	},
+	{
+		...findMainItem("/consolidatedBalance"),
+		label: translations.navigation.tabs.balance
+	}
+]
+
+export const MORE_NAV_ITEMS: NavItem[] = MAIN_NAV_ITEMS.filter(
+	(item) => !MOBILE_TAB_ITEMS.some((tab) => tab.href === item.href)
+)
+
 export const isManagementPath = (pathname: string | null) =>
 	pathname === MANAGEMENT_ROUTE ||
 	!!pathname?.startsWith(`${MANAGEMENT_ROUTE}/`)
 
 export const isNavItemActive = (pathname: string | null, href: string) =>
 	pathname === href
+
+export const isMoreTabActive = (pathname: string | null) =>
+	isManagementPath(pathname) ||
+	MORE_NAV_ITEMS.some((item) => isNavItemActive(pathname, item.href))
 
 export const getPageTitle = (pathname: string | null) => {
 	if (isManagementPath(pathname)) return translations.common.management
