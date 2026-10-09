@@ -159,7 +159,7 @@ export default function PersonalDashboard() {
 			)}
 
 			{data && data.expenses.length > 0 && (
-				<div className="animate-in fade-in duration-500">
+				<div className="flex flex-col gap-4 animate-in fade-in duration-500">
 					<ExpenseTable
 						expenses={data.expenses}
 						onSort={toggleSort}
