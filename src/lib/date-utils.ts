@@ -13,15 +13,6 @@ function toISODateString(date: Date): string {
 }
 
 /**
- * Get the first day of the current month as "yyyy-MM-dd".
- * @example "2026-02-01"
- */
-export function getFirstDayOfMonth(): string {
-	const now = new Date()
-	return toISODateString(new Date(now.getFullYear(), now.getMonth(), 1))
-}
-
-/**
  * Get the last day of the current month as "yyyy-MM-dd".
  * @example "2026-02-28"
  */

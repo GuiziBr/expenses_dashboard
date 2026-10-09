@@ -2,10 +2,10 @@
 
 | | |
 |---|---|
-| **Status** | In progress: tasks 1 to 8 done (see §10) |
+| **Status** | Implemented: all nine tasks done (see §10). Remaining follow-ups are in §12 |
 | **Scope** | Header and menu, plus the restyle of the Shared and Personal dashboards (task 7). The other pages followed in task 8 |
 | **Design** | Current UI: `design.pen`. New UI: `design_v2.pen` → *Dashboard / Desktop*, *Dashboard / Mobile* and their *(Dark)* versions |
-| **Code today** | Shell in `src/app/(app)/layout.tsx`. The old [`Header.tsx`](../../src/components/Header.tsx) is unused and is removed in task 9 |
+| **Code today** | Shell in `src/app/(app)/layout.tsx`. The old `Header.tsx` was removed in task 9 |
 | **Related** | [Design System](../../DESIGN_SYSTEM.md) · [Feature Specifications](../specs/features.md) |
 
 ---
@@ -233,11 +233,11 @@ Suggested order, one small PR each. Branch off `development`.
 | 2 | **Tokens and theme switching.** Light and dark tokens in `globals.css`, a theme provider, a no-flash script and a `ThemeToggle` component. Done, see §6. | The toggle is mounted in the current header, disabled with a "Coming soon" tooltip. The font change waits for §11, Q2. |
 | 3 | **`AppSidebar`.** Desktop sidebar built from the config, with active state via `usePathname`, `aria-current`, and the user menu using the existing `DropdownMenu`. Done: `src/components/AppSidebar.tsx`. | Not mounted yet. Task 5 puts it in the shared layout, and it is hidden below `lg` there. Reuses `signOut` from `useAuth`. The Management section is collapsed unless the current page is under `/management`. |
 | 4 | **`BottomTabBar` and More sheet.** Done: `src/components/BottomTabBar.tsx`, tab and More config in `src/lib/navigation.ts`. | Uses `src/components/ui/sheet.tsx` as a bottom sheet. Not mounted yet. Task 5 renders it below `md`. The tab labelled *Balance* still points to Consolidated Balance (§11, Q4). |
-| 5 | **Shared layout.** Done: `src/app/(app)/layout.tsx` renders the shell once. The 8 pages moved under the `(app)` route group (URLs unchanged), and `<Header />`, the purple band and the `-mt-24` overlap were removed from each. | `/` (login) stays outside the group. The sidebar shows from `lg`, the tab bar below `lg`. Header.tsx is now unused and is removed in task 9. |
+| 5 | **Shared layout.** Done: `src/app/(app)/layout.tsx` renders the shell once. The 8 pages moved under the `(app)` route group (URLs unchanged), and `<Header />`, the purple band and the `-mt-24` overlap were removed from each. | `/` (login) stays outside the group. The sidebar shows from `lg`, the tab bar below `lg`. `Header.tsx` was left unused and is removed in task 9. |
 | 6 | **Top bar and month selection.** Done. `src/components/TopBar.tsx` shows the page title (`h1`), the month picker, the theme toggle and the *New expense* action. Month state is in the URL (`src/hooks/use-selected-month.ts`) and shared by the Shared and Personal dashboards and Balance Breakdown, see §5. | `MonthPicker`, `NewExpenseAction`, `MonthAwareLink` and a small page-toolbar context are new. `FilterForm` lost its *New expense* button and now follows the month. Balance Breakdown's own month controls were removed. |
 | 7 | **Restyle the dashboards.** Done. `BalanceCard` (icon chip, tones, mobile order), `ExpenseTable` (card, uppercase header, category badge, keyboard-sortable headers with `aria-sort`), `Pagination`, the filter row and the shared `Input`/`Select`. The dashboards use the semantic tokens and the dark accent is now purple, see §6. | Shared and Personal get it through the shared components. `ui/input.tsx` and `ui/select.tsx` are restyled for the whole app, so forms and modals pick up the new look too. `BalanceCard`'s `iconClassName` prop became `tone`. |
 | 8 | **Roll out to the other pages.** Done, in five commits: Consolidated Balance (filters and report cards), Balance Breakdown (summary cards, chart panel, legend, group-by tabs), the four management pages (tables, forms, edit and confirm-delete dialogs), the new-expense dialog with the checkbox group, toasts and loader, and the login form. Every fixed colour (`bg-orange`, `text-white`, `text-light-gray`, `container-background`, and so on) outside the old `Header.tsx` and the chart palette was replaced with a token. | The app now has one accent (purple). Buttons use the default and outline variants instead of per-button colours. Checked visually in dark on desktop with fake data for each group. Light mode was only checked on the dashboards (task 7). |
-| 9 | **Remove `Header.tsx`** and update tests. | Add tests for the active state, the nav config and logout. |
+| 9 | **Remove `Header.tsx`** and update tests. Done: the file is deleted, and `getFirstDayOfMonth`, which the month selection made unused, went with it. | The tests the plan asked for already exist from the earlier tasks: active state and logout in `AppSidebar.test.tsx` and `BottomTabBar.test.tsx`, and the nav config in `navigation.test.ts`. No new tests were needed. |
 
 Existing tools: Tailwind v4, shadcn/ui with Radix, `lucide-react`, and `sheet.tsx` and `dropdown-menu.tsx` in `src/components/ui`.
 
@@ -285,6 +285,7 @@ The tablet rail, loading/empty/error states for the new screens, notification or
 | 2026-10-08 | First draft from `design_v2.pen` mock |
 | 2026-10-08 | Added dark theme tokens and dark screen mocks |
 | 2026-10-08 | Theme toggle mounted disabled with a "Coming soon" tooltip; added Pending items section |
+| 2026-10-09 | Task 9 implemented: `Header.tsx` removed. All nine tasks are done |
 | 2026-10-09 | Task 8 (rollout) implemented in five commits: Consolidated Balance, Balance Breakdown, management, dialogs and toasts, login |
 | 2026-10-09 | Task 7 (dashboard restyle) implemented; dark accent switched to purple; the rollout to other pages became task 8 and removing `Header.tsx` became task 9 |
 | 2026-10-08 | Task 6 (top bar and month selection) implemented; month picker shared by the dashboards and Balance Breakdown |

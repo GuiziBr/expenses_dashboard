@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import {
-	getFirstDayOfMonth,
 	getLastDayOfMonth,
 	getMonthRange,
 	getTodayString,
@@ -9,25 +8,6 @@ import {
 
 // Use the local-time constructor (year, month 0-indexed, day) to avoid
 // timezone issues that arise when passing ISO strings (parsed as UTC).
-
-describe("getFirstDayOfMonth", () => {
-	beforeEach(() => {
-		vi.useFakeTimers()
-	})
-	afterEach(() => {
-		vi.useRealTimers()
-	})
-
-	it("returns the first day of the current month", () => {
-		vi.setSystemTime(new Date(2026, 2, 15)) // March 15 2026 local time
-		expect(getFirstDayOfMonth()).toBe("2026-03-01")
-	})
-
-	it("handles January correctly", () => {
-		vi.setSystemTime(new Date(2026, 0, 31)) // Jan 31 2026 local time
-		expect(getFirstDayOfMonth()).toBe("2026-01-01")
-	})
-})
 
 describe("getLastDayOfMonth", () => {
 	beforeEach(() => {
