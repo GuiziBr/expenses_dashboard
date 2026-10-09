@@ -14,70 +14,42 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { translations } from "@/constants/translations"
 import { useAuth } from "@/contexts/auth-context"
+import {
+	getPageTitle,
+	isManagementPath,
+	isNavItemActive,
+	MAIN_NAV_ITEMS,
+	MANAGEMENT_NAV_ITEMS
+} from "@/lib/navigation"
 import { cn } from "@/lib/utils"
-
-const PAGE_TITLES: Record<string, string> = {
-	"/sharedDashboard": translations.dashboards.shared.title,
-	"/personalDashboard": translations.dashboards.personal.title,
-	"/consolidatedBalance": translations.dashboards.consolidated.title,
-	"/balanceBreakdown": translations.dashboards.breakdown.title
-}
 
 export function Header() {
 	const [isManagementOpen, setIsManagementOpen] = useState(false)
 	const pathname = usePathname()
 	const { signOut } = useAuth()
 
-	const getClassName = (path: string) =>
-		pathname === path ? "text-orange" : "text-white hover:text-orange/60"
-
-	const getPageTitle = () => {
-		if (pathname?.startsWith("/management"))
-			return translations.common.management
-		return PAGE_TITLES[pathname] ?? "Dashboard"
-	}
+	const getClassName = (href: string) =>
+		isNavItemActive(pathname, href)
+			? "text-orange"
+			: "text-white hover:text-orange/60"
 
 	return (
 		<div className="bg-[var(--light-blue)] py-8">
 			<header className="max-w-[1120px] mx-auto px-5 flex items-center justify-between relative">
 				{/* Desktop Navigation */}
 				<nav className="hidden md:flex items-center gap-8">
-					<Link
-						href="/sharedDashboard"
-						className={cn(
-							"text-base transition-opacity duration-200 no-underline font-medium",
-							getClassName("/sharedDashboard")
-						)}
-					>
-						{translations.dashboards.shared.title}
-					</Link>
-					<Link
-						href="/personalDashboard"
-						className={cn(
-							"text-base transition-opacity duration-200 no-underline font-medium",
-							getClassName("/personalDashboard")
-						)}
-					>
-						{translations.dashboards.personal.title}
-					</Link>
-					<Link
-						href="/consolidatedBalance"
-						className={cn(
-							"text-base transition-opacity duration-200 no-underline font-medium",
-							getClassName("/consolidatedBalance")
-						)}
-					>
-						{translations.dashboards.consolidated.title}
-					</Link>
-					<Link
-						href="/balanceBreakdown"
-						className={cn(
-							"text-base transition-opacity duration-200 no-underline font-medium",
-							getClassName("/balanceBreakdown")
-						)}
-					>
-						{translations.dashboards.breakdown.title}
-					</Link>
+					{MAIN_NAV_ITEMS.map(({ href, label }) => (
+						<Link
+							key={href}
+							href={href}
+							className={cn(
+								"text-base transition-opacity duration-200 no-underline font-medium",
+								getClassName(href)
+							)}
+						>
+							{label}
+						</Link>
+					))}
 				</nav>
 
 				{/* Desktop Right Side */}
@@ -89,7 +61,7 @@ export function Header() {
 								type="button"
 								className={cn(
 									"bg-transparent border-none outline-none flex items-center gap-1 transition-colors duration-200 cursor-pointer text-base font-medium px-0 hover:bg-transparent",
-									isManagementOpen || pathname?.startsWith("/management")
+									isManagementOpen || isManagementPath(pathname)
 										? "text-orange"
 										: "text-white hover:text-orange/60"
 								)}
@@ -106,38 +78,17 @@ export function Header() {
 							align="end"
 							className="bg-[var(--light-blue)] border-none text-white min-w-[160px]"
 						>
-							<DropdownMenuItem
-								asChild
-								className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
-							>
-								<Link href="/management/banks" className="w-full">
-									{translations.management.banks}
-								</Link>
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								asChild
-								className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
-							>
-								<Link href="/management/categories" className="w-full">
-									{translations.management.categories}
-								</Link>
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								asChild
-								className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
-							>
-								<Link href="/management/paymentTypes" className="w-full">
-									{translations.management.paymentTypes}
-								</Link>
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								asChild
-								className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
-							>
-								<Link href="/management/stores" className="w-full">
-									{translations.management.stores}
-								</Link>
-							</DropdownMenuItem>
+							{MANAGEMENT_NAV_ITEMS.map(({ href, label }) => (
+								<DropdownMenuItem
+									key={href}
+									asChild
+									className="hover:bg-white/10 cursor-pointer focus:bg-white/10 focus:text-white"
+								>
+									<Link href={href} className="w-full">
+										{label}
+									</Link>
+								</DropdownMenuItem>
+							))}
 						</DropdownMenuContent>
 					</DropdownMenu>
 
@@ -168,92 +119,40 @@ export function Header() {
 						align="start"
 						className="w-[calc(100vw-40px)] md:hidden bg-[var(--light-blue)] border-none text-white p-2 shadow-xl mt-2 z-50"
 					>
-						<DropdownMenuItem
-							asChild
-							className="focus:bg-white/10 focus:text-white cursor-pointer px-4 py-3"
-						>
-							<Link
-								href="/sharedDashboard"
-								className={cn(
-									"text-lg font-medium w-full",
-									getClassName("/sharedDashboard")
-								)}
+						{MAIN_NAV_ITEMS.map(({ href, label }) => (
+							<DropdownMenuItem
+								key={href}
+								asChild
+								className="focus:bg-white/10 focus:text-white cursor-pointer px-4 py-3"
 							>
-								{translations.dashboards.shared.title}
-							</Link>
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							asChild
-							className="focus:bg-white/10 focus:text-white cursor-pointer px-4 py-3"
-						>
-							<Link
-								href="/personalDashboard"
-								className={cn(
-									"text-lg font-medium w-full",
-									getClassName("/personalDashboard")
-								)}
-							>
-								{translations.dashboards.personal.title}
-							</Link>
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							asChild
-							className="focus:bg-white/10 focus:text-white cursor-pointer px-4 py-3"
-						>
-							<Link
-								href="/consolidatedBalance"
-								className={cn(
-									"text-lg font-medium w-full",
-									getClassName("/consolidatedBalance")
-								)}
-							>
-								{translations.dashboards.consolidated.title}
-							</Link>
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							asChild
-							className="focus:bg-white/10 focus:text-white cursor-pointer px-4 py-3"
-						>
-							<Link
-								href="/balanceBreakdown"
-								className={cn(
-									"text-lg font-medium w-full",
-									getClassName("/balanceBreakdown")
-								)}
-							>
-								{translations.dashboards.breakdown.title}
-							</Link>
-						</DropdownMenuItem>
+								<Link
+									href={href}
+									className={cn(
+										"text-lg font-medium w-full",
+										getClassName(href)
+									)}
+								>
+									{label}
+								</Link>
+							</DropdownMenuItem>
+						))}
 
 						<DropdownMenuSeparator className="bg-white/10 my-2" />
 
 						<div className="px-4 pt-2 pb-1 text-white/40 text-xs uppercase tracking-wider font-bold">
 							{translations.common.management}
 						</div>
-						<DropdownMenuItem
-							asChild
-							className="focus:bg-white/10 focus:text-white cursor-pointer px-6 py-2"
-						>
-							<Link href="/management/banks" className="w-full">
-								{translations.management.banks}
-							</Link>
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							asChild
-							className="focus:bg-white/10 focus:text-white cursor-pointer px-6 py-2"
-						>
-							<Link href="/management/categories" className="w-full">
-								{translations.management.categories}
-							</Link>
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							asChild
-							className="focus:bg-white/10 focus:text-white cursor-pointer px-6 py-2"
-						>
-							<Link href="/management/paymentTypes" className="w-full">
-								{translations.management.paymentTypes}
-							</Link>
-						</DropdownMenuItem>
+						{MANAGEMENT_NAV_ITEMS.map(({ href, label }) => (
+							<DropdownMenuItem
+								key={href}
+								asChild
+								className="focus:bg-white/10 focus:text-white cursor-pointer px-6 py-2"
+							>
+								<Link href={href} className="w-full">
+									{label}
+								</Link>
+							</DropdownMenuItem>
+						))}
 
 						<DropdownMenuSeparator className="bg-white/10 my-2" />
 
@@ -269,7 +168,7 @@ export function Header() {
 
 				{/* Mobile Logo / Page Title */}
 				<div className="md:hidden font-bold text-white text-lg">
-					{getPageTitle()}
+					{getPageTitle(pathname)}
 				</div>
 
 				{/* Mobile Logout (Icon only) */}

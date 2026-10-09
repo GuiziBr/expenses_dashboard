@@ -13,6 +13,11 @@ export const translations = {
 		management: "Management",
 		cancel: "Cancel"
 	},
+	navigation: {
+		dashboards: "Dashboards",
+		reports: "Reports",
+		manage: "Manage"
+	},
 	dashboards: {
 		personal: {
 			title: "Personal Dashboard"
