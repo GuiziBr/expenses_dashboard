@@ -88,6 +88,19 @@ describe("ExpenseTable", () => {
 		).toHaveAttribute("aria-sort", "none")
 	})
 
+	it("shows an up and down chevron on unsorted columns and the active direction on the sorted one", () => {
+		setup({
+			getSortIndicator: (column) =>
+				column === "amount" ? "↓" : column === "date" ? "↑" : ""
+		})
+		const icon = (name: RegExp) =>
+			screen.getByRole("columnheader", { name }).querySelector("svg")
+
+		expect(icon(/^Amount/)).toHaveClass("lucide-chevron-down")
+		expect(icon(/^Purchase/)).toHaveClass("lucide-chevron-up")
+		expect(icon(/^Category/)).toHaveClass("lucide-chevrons-up-down")
+	})
+
 	it("shows the actions menu only on the current user's expenses", () => {
 		setup({ onEdit: vi.fn(), onDelete: vi.fn(), currentUserId: "me" })
 

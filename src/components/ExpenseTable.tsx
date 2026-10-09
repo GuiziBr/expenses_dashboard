@@ -1,5 +1,12 @@
 "use client"
-import { MoreVertical, Pencil, Trash2 } from "lucide-react"
+import {
+	ChevronDown,
+	ChevronsUpDown,
+	ChevronUp,
+	MoreVertical,
+	Pencil,
+	Trash2
+} from "lucide-react"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -31,7 +38,7 @@ const COLUMNS: Column[] = [
 	{
 		key: EXPENSE_COLUMNS.description,
 		label: translations.table.expense,
-		width: "w-[26%] md:w-[30%] lg:w-[25%] xl:w-[20%]"
+		width: "w-[22%] md:w-[30%] lg:w-[25%] xl:w-[20%]"
 	},
 	{
 		key: EXPENSE_COLUMNS.category,
@@ -58,12 +65,12 @@ const COLUMNS: Column[] = [
 				<span className="hidden md:inline">{translations.table.dueDate}</span>
 			</>
 		),
-		width: "w-[16%] md:w-[17%] lg:w-[17%] xl:w-[14%]"
+		width: "w-[15%] md:w-[17%] lg:w-[17%] xl:w-[14%]"
 	},
 	{
 		key: EXPENSE_COLUMNS.date,
 		label: translations.table.purchase,
-		width: "w-[23%] md:w-[18%] lg:w-[17%] xl:w-[14%]"
+		width: "w-[27%] md:w-[18%] lg:w-[17%] xl:w-[14%]"
 	},
 	{
 		key: EXPENSE_COLUMNS.bank,
@@ -81,6 +88,12 @@ const COLUMNS: Column[] = [
 
 const CELL = "px-2 py-4 text-[13px] md:px-4 md:text-sm"
 const MUTED_CELL = cn(CELL, "text-muted-foreground")
+
+const SORT_ICON = {
+	"↑": ChevronUp,
+	"↓": ChevronDown,
+	"": ChevronsUpDown
+} as const
 
 const ARIA_SORT = {
 	"↑": "ascending",
@@ -105,6 +118,7 @@ export function ExpenseTable({
 					<tr>
 						{COLUMNS.map(({ key, label, width, visibility }) => {
 							const indicator = getSortIndicator(key)
+							const SortIcon = SORT_ICON[indicator]
 							return (
 								<th
 									key={key}
@@ -122,9 +136,13 @@ export function ExpenseTable({
 										className="flex cursor-pointer items-center gap-1 whitespace-nowrap text-[11px] font-semibold uppercase tracking-wide text-muted-foreground transition-colors md:text-xs md:tracking-wider hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 									>
 										{label}
-										<span aria-hidden="true" className="text-[0.9em]">
-											{indicator}
-										</span>
+										<SortIcon
+											aria-hidden="true"
+											className={cn(
+												"size-3.5 shrink-0",
+												indicator ? "text-foreground" : "opacity-50"
+											)}
+										/>
 									</button>
 								</th>
 							)
