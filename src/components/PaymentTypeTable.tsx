@@ -69,7 +69,7 @@ export function PaymentTypeTable({ paymentTypes }: PaymentTypeTableProps) {
 	}
 
 	return (
-		<div className="w-full min-h-[20rem] overflow-hidden rounded-xl border border-border bg-card">
+		<div className="w-full overflow-hidden rounded-xl border border-border bg-card">
 			<table className="w-full table-fixed">
 				<thead className="bg-background/60">
 					<tr>
