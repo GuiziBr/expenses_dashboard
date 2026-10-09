@@ -141,6 +141,7 @@ export default function PersonalDashboard() {
 					value={total}
 					icon={Wallet}
 					variant="total"
+					className="md:col-start-2"
 				/>
 			</section>
 
