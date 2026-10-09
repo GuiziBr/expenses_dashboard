@@ -3,6 +3,9 @@ export type Theme = "light" | "dark"
 export const THEME_STORAGE_KEY = "theme"
 export const DEFAULT_THEME: Theme = "dark"
 
+/** Flip to true to let users switch themes. Until then the toggle is shown disabled. */
+export const THEME_SWITCHING_ENABLED = false
+
 export const isTheme = (value: unknown): value is Theme =>
 	value === "light" || value === "dark"
 

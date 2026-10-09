@@ -2,19 +2,36 @@
 
 import { Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger
+} from "@/components/ui/tooltip"
 import { translations } from "@/constants/translations"
+import { THEME_SWITCHING_ENABLED } from "@/lib/theme"
+import { cn } from "@/lib/utils"
 import { useTheme } from "@/providers/theme-provider"
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+	disabled?: boolean
+	className?: string
+}
+
+export function ThemeToggle({
+	disabled = !THEME_SWITCHING_ENABLED,
+	className
+}: ThemeToggleProps) {
 	const { theme, toggleTheme } = useTheme()
 	const isDark = theme === "dark"
 
-	return (
+	const button = (
 		<Button
-			variant="outline"
+			variant="ghost"
 			size="icon"
 			type="button"
-			onClick={toggleTheme}
+			onClick={disabled ? undefined : toggleTheme}
+			aria-disabled={disabled}
+			className={cn(disabled && "opacity-50 cursor-not-allowed", className)}
 			aria-label={
 				isDark
 					? translations.theme.switchToLight
@@ -23,5 +40,14 @@ export function ThemeToggle() {
 		>
 			{isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
 		</Button>
+	)
+
+	if (!disabled) return button
+
+	return (
+		<Tooltip>
+			<TooltipTrigger asChild>{button}</TooltipTrigger>
+			<TooltipContent>{translations.theme.comingSoon}</TooltipContent>
+		</Tooltip>
 	)
 }

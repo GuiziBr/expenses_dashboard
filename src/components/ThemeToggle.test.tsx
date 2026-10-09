@@ -1,17 +1,25 @@
 // @vitest-environment jsdom
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { beforeEach, describe, expect, it } from "vitest"
+import { beforeAll, beforeEach, describe, expect, it } from "vitest"
 import { THEME_STORAGE_KEY } from "@/lib/theme"
 import { ThemeProvider } from "@/providers/theme-provider"
 import { ThemeToggle } from "./ThemeToggle"
 
-const renderToggle = () =>
+const renderToggle = (disabled = false) =>
 	render(
 		<ThemeProvider>
-			<ThemeToggle />
+			<ThemeToggle disabled={disabled} />
 		</ThemeProvider>
 	)
+
+beforeAll(() => {
+	globalThis.ResizeObserver = class {
+		observe() {}
+		unobserve() {}
+		disconnect() {}
+	}
+})
 
 beforeEach(() => {
 	window.localStorage.clear()
@@ -63,5 +71,35 @@ describe("ThemeToggle", () => {
 		expect(
 			await screen.findByRole("button", { name: "Switch to dark theme" })
 		).toBeInTheDocument()
+	})
+
+	describe("while switching is not available", () => {
+		it("renders aria-disabled and keeps the dark theme", async () => {
+			const user = userEvent.setup()
+			renderToggle(true)
+
+			const button = screen.getByRole("button", {
+				name: "Switch to light theme"
+			})
+			expect(button).toHaveAttribute("aria-disabled", "true")
+
+			await user.click(button)
+
+			expect(document.documentElement).toHaveClass("dark")
+			expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBeNull()
+		})
+
+		it("shows Coming soon on hover", async () => {
+			const user = userEvent.setup()
+			renderToggle(true)
+
+			await user.hover(
+				screen.getByRole("button", { name: "Switch to light theme" })
+			)
+
+			expect(await screen.findByRole("tooltip")).toHaveTextContent(
+				"Coming soon"
+			)
+		})
 	})
 })

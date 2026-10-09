@@ -8,7 +8,8 @@ import {
 	isTheme,
 	storeTheme,
 	THEME_INIT_SCRIPT,
-	THEME_STORAGE_KEY
+	THEME_STORAGE_KEY,
+	THEME_SWITCHING_ENABLED
 } from "./theme"
 
 beforeEach(() => {
@@ -20,6 +21,10 @@ describe("theme helpers", () => {
 	it("defaults to dark, the app's original look", () => {
 		expect(DEFAULT_THEME).toBe("dark")
 		expect(getStoredTheme()).toBe("dark")
+	})
+
+	it("keeps switching off until the feature ships", () => {
+		expect(THEME_SWITCHING_ENABLED).toBe(false)
 	})
 
 	it("reads and writes the stored theme", () => {

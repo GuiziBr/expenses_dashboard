@@ -131,7 +131,7 @@ The design tokens are CSS variables in `src/app/globals.css`: light values in `:
 
 - `src/lib/theme.ts` holds the theme helpers and the inline script that sets the `dark` class before first paint, so a stored light preference does not flash dark.
 - `src/providers/theme-provider.tsx` exposes `useTheme()` (`theme`, `setTheme`, `toggleTheme`).
-- `src/components/ThemeToggle.tsx` is the toggle button. It is **not mounted yet**: the current purple header was designed for dark only, and many pages use hard-coded colours, so light mode is not safe to expose until the shell and restyle tasks land. It goes in the new top bar (task 6).
+- `src/components/ThemeToggle.tsx` is the toggle button. It is mounted in the current header (desktop only) but **disabled**, with a "Coming soon" tooltip on hover or keyboard focus. `THEME_SWITCHING_ENABLED` in `src/lib/theme.ts` controls this. See *Pending items* in §12.
 - Default is dark. The choice is stored in `localStorage` under `theme`. There is no "follow the system" option.
 
 Typography: **Inter** at 14px/500 for navigation and body, 26px/700 for the page title, 30px/600 for metric values. Radii: 8px for controls, 12px for cards. Orange is no longer used.
@@ -191,7 +191,7 @@ Suggested order, one small PR each. Branch off `development`.
 | # | Task | Notes |
 |---|---|---|
 | 1 | **Navigation config.** A single typed list of groups and items (label from `translations`, route, icon). | Removes the duplicated markup in `Header.tsx` and fixes the missing Stores entry on mobile. |
-| 2 | **Tokens and theme switching.** Light and dark tokens in `globals.css`, a theme provider, a no-flash script and a `ThemeToggle` component. Done, see §6. | The toggle is built but not mounted until task 6. The font change waits for §11, Q2. |
+| 2 | **Tokens and theme switching.** Light and dark tokens in `globals.css`, a theme provider, a no-flash script and a `ThemeToggle` component. Done, see §6. | The toggle is mounted in the current header, disabled with a "Coming soon" tooltip. The font change waits for §11, Q2. |
 | 3 | **`AppSidebar`.** Desktop sidebar built from the config, with active state via `usePathname`, `aria-current`, and the user menu using the existing `DropdownMenu`. | Reuse `signOut` from `useAuth`. |
 | 4 | **`BottomTabBar` and More sheet.** | `src/components/ui/sheet.tsx` already exists. |
 | 5 | **Shared layout.** A route-group layout (for example `src/app/(app)/layout.tsx`) that renders the shell once. Move the 8 pages under it and remove `<Header />` from each. | `/` and the login page stay outside the group. This is the riskiest step because it moves files. |
@@ -210,14 +210,37 @@ Existing tools: Tailwind v4, shadcn/ui with Radix, `lucide-react`, and `sheet.ts
 5. **Tablet:** is the icon-rail sidebar worth building now?
 6. **Sidebar collapse on desktop:** user-controlled or fixed?
 
-## 12. Out of scope
+## 12. Pending items
+
+### Theme switching (toggle is built but disabled)
+
+Today the toggle shows in the desktop header as a disabled button with a "Coming soon" tooltip, and the app always uses the dark theme. To turn it on:
+
+1. **Audit hard-coded colours.** Many components use fixed colours (`text-white`, `bg-[var(--light-blue)]`, `text-orange`, raw hex values) that only make sense on dark. Replace them with the semantic tokens from §6 so both themes render correctly. Check every page, modal, table state and the Balance Breakdown chart.
+2. **Align the accent.** Switch dark `--primary` from orange to the mock's purple (`#6c4cf0`), or decide to keep orange (§11, Q3), so both themes share one accent.
+3. **Measure contrast in both themes** against the targets in §9, especially `muted` text and the dark `primary-text`.
+4. **Re-home the toggle in the new shell.** Put it in the new top bar (task 6). On mobile, put it in the user menu or the More sheet, because the "Coming soon" tooltip and the desktop header placement do not exist on touch.
+5. **Flip `THEME_SWITCHING_ENABLED` to `true`** and remove the disabled state and tooltip from `ThemeToggle`. The tests that cover the working toggle already exist.
+6. **Update `DESIGN_SYSTEM.md`**, which still describes a dark-only app.
+7. **Decide on "follow the system theme".** Not planned. It would add a third option and a `prefers-color-scheme` listener.
+
+Until step 5, a stored `light` value in `localStorage` would still apply. Nothing writes it today, so this only matters if someone sets it by hand.
+
+### Other pending items
+
+- Inter font (§11, Q2).
+- Tablet icon-rail sidebar (§11, Q5).
+- Designs for the states listed at the end of §7.
+
+## 13. Out of scope
 
 The tablet rail, loading/empty/error states for the new screens, notification or search entries in the top bar, and the content of other pages beyond the shell.
 
-## 13. Changelog
+## 14. Changelog
 
 | Date | Change |
 |---|---|
 | 2026-10-08 | First draft from `design_v2.pen` mock |
 | 2026-10-08 | Added dark theme tokens and dark screen mocks |
+| 2026-10-08 | Theme toggle mounted disabled with a "Coming soon" tooltip; added Pending items section |
 | 2026-10-08 | Task 1 (navigation config) and task 2 (tokens and theme switching) implemented; theme question decided |

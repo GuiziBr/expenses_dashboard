@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp, LogOut, Menu } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
+import { ThemeToggle } from "@/components/ThemeToggle"
 import { Button } from "@/components/ui/button"
 import {
 	DropdownMenu,
@@ -54,6 +55,7 @@ export function Header() {
 
 				{/* Desktop Right Side */}
 				<nav className="hidden md:flex items-center gap-8">
+					<ThemeToggle className="text-white hover:bg-white/10 hover:text-white" />
 					<DropdownMenu onOpenChange={setIsManagementOpen}>
 						<DropdownMenuTrigger asChild>
 							<Button
