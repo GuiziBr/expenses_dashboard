@@ -5,7 +5,6 @@ import { toast } from "sonner"
 import { BalanceCard } from "@/components/BalanceCard"
 import { ExpenseTable } from "@/components/ExpenseTable"
 import { FilterForm } from "@/components/FilterForm"
-import { Header } from "@/components/Header"
 import { Pagination } from "@/components/Pagination"
 import { Loader } from "@/components/ui/loader"
 import { translations } from "@/constants/translations"
@@ -87,72 +86,66 @@ export default function SharedDashboard() {
 	const currentPage = Math.floor(params.offset / params.limit) + 1
 
 	return (
-		<div className="min-h-screen bg-background">
-			<div className="bg-[var(--light-blue)] pb-32">
-				<Header />
-			</div>
-
-			<main className="max-w-[1120px] mx-auto px-5 -mt-24">
-				<section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-					<div className="hidden md:contents">
-						<BalanceCard
-							label={translations.dashboards.shared.incomes}
-							value={paying}
-							icon={CircleArrowUp}
-							iconClassName="text-green-500"
-						/>
-						<BalanceCard
-							label={translations.dashboards.shared.outcomes}
-							value={payed}
-							icon={CircleArrowDown}
-							iconClassName="text-red-500"
-						/>
-					</div>
-
+		<main className="max-w-[1120px] mx-auto px-5">
+			<section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+				<div className="hidden md:contents">
 					<BalanceCard
-						label={translations.common.balance}
-						value={total}
-						icon={DollarSign}
-						variant="total"
+						label={translations.dashboards.shared.incomes}
+						value={paying}
+						icon={CircleArrowUp}
+						iconClassName="text-green-500"
 					/>
-				</section>
+					<BalanceCard
+						label={translations.dashboards.shared.outcomes}
+						value={payed}
+						icon={CircleArrowDown}
+						iconClassName="text-red-500"
+					/>
+				</div>
 
-				<FilterForm onSubmit={handleSearch} initialFilters={params} />
+				<BalanceCard
+					label={translations.common.balance}
+					value={total}
+					icon={DollarSign}
+					variant="total"
+				/>
+			</section>
 
-				{isLoading && !data && (
-					<div className="flex items-center justify-center min-h-[400px]">
-						<Loader size={48} />
-					</div>
-				)}
+			<FilterForm onSubmit={handleSearch} initialFilters={params} />
 
-				{error && (
-					<p className="text-center text-red">
-						{getErrorMessage(error, translations.common.errorLoading)}
-					</p>
-				)}
+			{isLoading && !data && (
+				<div className="flex items-center justify-center min-h-[400px]">
+					<Loader size={48} />
+				</div>
+			)}
 
-				{data && data.expenses.length > 0 && (
-					<div className="animate-in fade-in duration-500">
-						<ExpenseTable
-							expenses={data.expenses}
-							onSort={toggleSort}
-							getSortIndicator={getSortIndicator}
-						/>
+			{error && (
+				<p className="text-center text-red">
+					{getErrorMessage(error, translations.common.errorLoading)}
+				</p>
+			)}
 
-						<Pagination
-							currentPage={currentPage}
-							setCurrentPage={handlePageChange}
-							pages={pages}
-						/>
-					</div>
-				)}
+			{data && data.expenses.length > 0 && (
+				<div className="animate-in fade-in duration-500">
+					<ExpenseTable
+						expenses={data.expenses}
+						onSort={toggleSort}
+						getSortIndicator={getSortIndicator}
+					/>
 
-				{data && data.expenses.length === 0 && !isLoading && (
-					<p className="text-center text-muted-foreground mt-12 py-12 px-4 bg-white/5 rounded-lg border border-dashed border-white/10">
-						{translations.common.noExpensesFound}
-					</p>
-				)}
-			</main>
-		</div>
+					<Pagination
+						currentPage={currentPage}
+						setCurrentPage={handlePageChange}
+						pages={pages}
+					/>
+				</div>
+			)}
+
+			{data && data.expenses.length === 0 && !isLoading && (
+				<p className="text-center text-muted-foreground mt-12 py-12 px-4 bg-white/5 rounded-lg border border-dashed border-white/10">
+					{translations.common.noExpensesFound}
+				</p>
+			)}
+		</main>
 	)
 }

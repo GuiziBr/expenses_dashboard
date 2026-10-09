@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | In progress: tasks 1 to 4 done (see §10) |
+| **Status** | In progress: tasks 1 to 5 done (see §10) |
 | **Scope** | Header and menu. Content restyling is limited to the shared dashboard screen used as the mock |
 | **Design** | Current UI: `design.pen`. New UI: `design_v2.pen` → *Dashboard / Desktop*, *Dashboard / Mobile* and their *(Dark)* versions |
 | **Code today** | [`src/components/Header.tsx`](../../src/components/Header.tsx), rendered by each page |
@@ -169,11 +169,11 @@ States not yet designed: hover, focus, pressed, expanded Management, open user m
 
 | Breakpoint | Navigation |
 |---|---|
-| `< md` (below 768px) | Bottom tab bar and top bar. No sidebar |
-| `md` to `lg` | Collapsed icon-rail sidebar (to be designed) |
-| `≥ lg` | Full sidebar |
+| `< md` (below 768px) | Bottom tab bar. No sidebar |
+| `md` to `lg` | Bottom tab bar, same as mobile, until the icon-rail sidebar is designed |
+| `≥ lg` (1024px and up) | Full sidebar |
 
-The current code switches at `md`, so the mobile and desktop split stays where it is.
+The old header switched at `md`. The shell switches at `lg` instead, so tablets in portrait keep a usable content width.
 
 ## 9. Accessibility
 
@@ -194,7 +194,7 @@ Suggested order, one small PR each. Branch off `development`.
 | 2 | **Tokens and theme switching.** Light and dark tokens in `globals.css`, a theme provider, a no-flash script and a `ThemeToggle` component. Done, see §6. | The toggle is mounted in the current header, disabled with a "Coming soon" tooltip. The font change waits for §11, Q2. |
 | 3 | **`AppSidebar`.** Desktop sidebar built from the config, with active state via `usePathname`, `aria-current`, and the user menu using the existing `DropdownMenu`. Done: `src/components/AppSidebar.tsx`. | Not mounted yet. Task 5 puts it in the shared layout, and it is hidden below `lg` there. Reuses `signOut` from `useAuth`. The Management section is collapsed unless the current page is under `/management`. |
 | 4 | **`BottomTabBar` and More sheet.** Done: `src/components/BottomTabBar.tsx`, tab and More config in `src/lib/navigation.ts`. | Uses `src/components/ui/sheet.tsx` as a bottom sheet. Not mounted yet. Task 5 renders it below `md`. The tab labelled *Balance* still points to Consolidated Balance (§11, Q4). |
-| 5 | **Shared layout.** A route-group layout (for example `src/app/(app)/layout.tsx`) that renders the shell once. Move the 8 pages under it and remove `<Header />` from each. | `/` and the login page stay outside the group. This is the riskiest step because it moves files. |
+| 5 | **Shared layout.** Done: `src/app/(app)/layout.tsx` renders the shell once. The 8 pages moved under the `(app)` route group (URLs unchanged), and `<Header />`, the purple band and the `-mt-24` overlap were removed from each. | `/` (login) stays outside the group. The sidebar shows from `lg`, the tab bar below `lg`. Header.tsx is now unused and is removed in task 8. |
 | 6 | **Top bar.** Page title from the existing `PAGE_TITLES` map, plus the slot for page actions. | |
 | 7 | **Restyle the shared dashboard.** Metric cards, filters, table. | Then roll out to the other pages. |
 | 8 | **Remove `Header.tsx`** and update tests. | Add tests for the active state, the nav config and logout. |
@@ -232,6 +232,14 @@ Until step 5, a stored `light` value in `localStorage` would still apply. Nothin
 - Tablet icon-rail sidebar (§11, Q5).
 - Designs for the states listed at the end of §7.
 
+### Gaps between task 5 and task 6
+
+The old header is gone but the new top bar does not exist yet, so for now:
+
+- There is no page title on mobile (the old header showed it).
+- The disabled theme toggle is not on screen. It comes back in the top bar.
+- Pages have no top bar actions slot yet.
+
 ## 13. Out of scope
 
 The tablet rail, loading/empty/error states for the new screens, notification or search entries in the top bar, and the content of other pages beyond the shell.
@@ -243,6 +251,7 @@ The tablet rail, loading/empty/error states for the new screens, notification or
 | 2026-10-08 | First draft from `design_v2.pen` mock |
 | 2026-10-08 | Added dark theme tokens and dark screen mocks |
 | 2026-10-08 | Theme toggle mounted disabled with a "Coming soon" tooltip; added Pending items section |
+| 2026-10-08 | Task 5 (shared layout) implemented; sidebar and tab bar are now live |
 | 2026-10-08 | Task 4 (`BottomTabBar` and More sheet) implemented, not yet mounted |
 | 2026-10-08 | Task 3 (`AppSidebar`) implemented, not yet mounted |
 | 2026-10-08 | Task 1 (navigation config) and task 2 (tokens and theme switching) implemented; theme question decided |

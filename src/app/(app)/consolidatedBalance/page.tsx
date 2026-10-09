@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { BalanceCard } from "@/components/BalanceCard"
 import { ConsolidatedFilters } from "@/components/ConsolidatedFilters"
-import { Header } from "@/components/Header"
 import { ReportTables } from "@/components/ReportTables"
 import { translations } from "@/constants/translations"
 import { useConsolidatedBalance } from "@/hooks/use-consolidated-balance"
@@ -40,50 +39,44 @@ export default function ConsolidatedBalance() {
 	}, [error])
 
 	return (
-		<div className="min-h-screen bg-background pb-12">
-			<div className="bg-[var(--light-blue)] pb-32">
-				<Header />
-			</div>
-
-			<main className="max-w-[1120px] mx-auto px-5 -mt-24">
-				<section className="grid grid-cols-1 md:grid-cols-3 gap-8">
-					<div className="hidden md:contents">
-						<BalanceCard
-							label={
-								data?.requester?.name ||
-								translations.dashboards.consolidated.requester
-							}
-							value={formatCurrency(data?.requester?.total ?? 0)}
-							icon={CircleArrowUp}
-							iconClassName="text-green"
-						/>
-						<BalanceCard
-							label={
-								data?.partner?.name ||
-								translations.dashboards.consolidated.partner
-							}
-							value={formatCurrency(data?.partner?.total ?? 0)}
-							icon={CircleArrowDown}
-							iconClassName="text-red"
-						/>
-					</div>
+		<main className="max-w-[1120px] mx-auto px-5 pb-12">
+			<section className="grid grid-cols-1 md:grid-cols-3 gap-8">
+				<div className="hidden md:contents">
 					<BalanceCard
-						label={translations.common.balance}
-						value={formatCurrency(data?.balance ?? 0)}
-						icon={DollarSign}
-						variant="total"
+						label={
+							data?.requester?.name ||
+							translations.dashboards.consolidated.requester
+						}
+						value={formatCurrency(data?.requester?.total ?? 0)}
+						icon={CircleArrowUp}
+						iconClassName="text-green"
 					/>
-				</section>
-
-				<ConsolidatedFilters
-					onSearch={handleSearch}
-					balanceType={balanceType}
-					onBalanceTypeChange={setBalanceType}
-					isLoading={isLoading}
+					<BalanceCard
+						label={
+							data?.partner?.name ||
+							translations.dashboards.consolidated.partner
+						}
+						value={formatCurrency(data?.partner?.total ?? 0)}
+						icon={CircleArrowDown}
+						iconClassName="text-red"
+					/>
+				</div>
+				<BalanceCard
+					label={translations.common.balance}
+					value={formatCurrency(data?.balance ?? 0)}
+					icon={DollarSign}
+					variant="total"
 				/>
+			</section>
 
-				<ReportTables data={data} shareType={balanceType} />
-			</main>
-		</div>
+			<ConsolidatedFilters
+				onSearch={handleSearch}
+				balanceType={balanceType}
+				onBalanceTypeChange={setBalanceType}
+				isLoading={isLoading}
+			/>
+
+			<ReportTables data={data} shareType={balanceType} />
+		</main>
 	)
 }

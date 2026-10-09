@@ -10,7 +10,6 @@ import {
 } from "@/components/BreakdownControls"
 import { BreakdownEmpty, BreakdownError } from "@/components/BreakdownStates"
 import { BreakdownSummary } from "@/components/BreakdownSummary"
-import { Header } from "@/components/Header"
 import { useBalanceBreakdown } from "@/hooks/use-balance-breakdown"
 import { buildBreakdownView } from "@/lib/balance-breakdown"
 import {
@@ -46,7 +45,7 @@ function BalanceBreakdownContent() {
 		})
 
 	return (
-		<main className="max-w-[1120px] mx-auto px-5 -mt-24 pb-16 flex flex-col gap-2 md:gap-8">
+		<main className="max-w-[1120px] mx-auto px-5 pb-16 flex flex-col gap-2 md:gap-8">
 			<BreakdownSummary
 				groupBy={groupBy}
 				month={month}
@@ -89,13 +88,8 @@ function BalanceBreakdownContent() {
 
 export default function BalanceBreakdown() {
 	return (
-		<div className="min-h-screen bg-background pb-12">
-			<div className="bg-[var(--light-blue)] pb-32">
-				<Header />
-			</div>
-			<Suspense>
-				<BalanceBreakdownContent />
-			</Suspense>
-		</div>
+		<Suspense>
+			<BalanceBreakdownContent />
+		</Suspense>
 	)
 }
