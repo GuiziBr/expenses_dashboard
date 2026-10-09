@@ -100,7 +100,7 @@ export default function SharedDashboard() {
 	const currentPage = Math.floor(params.offset / params.limit) + 1
 
 	return (
-		<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5">
+		<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5 lg:h-full">
 			<section className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
 				<BalanceCard
 					label={translations.dashboards.shared.incomes}
@@ -138,7 +138,7 @@ export default function SharedDashboard() {
 			)}
 
 			{data && data.expenses.length > 0 && (
-				<div className="flex flex-col gap-4 animate-in fade-in duration-500">
+				<div className="flex flex-col gap-4 animate-in fade-in duration-500 lg:min-h-0">
 					<ExpenseTable
 						expenses={data.expenses}
 						onSort={toggleSort}

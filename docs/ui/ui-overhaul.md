@@ -172,6 +172,7 @@ Each screen exists in a light and a dark version in `design_v2.pen`, built from 
 
 - **Sidebar (248px):** logo and app name, grouped nav items, user menu pinned to the bottom. The menu shows the user's picture from the API's `avatar` URL, or their initials when there is none or it fails to load.
 - **Top bar:** page title, month picker, theme toggle, primary *New expense* button.
+- **Scrolling:** from `lg` the page scrolls inside the content area beside the sidebar, not the whole window. On the dashboards and the four management lists the table card scrolls on its own, with the header row pinned, so the cards, filters and pagination stay in view. Below `lg` the whole page scrolls as usual.
 - **Content:** three metric cards (Balance highlighted), filter row (search, category, start and end date, *Search*), expenses table with category badges, pagination.
 
 ### Mobile (390px)
@@ -286,6 +287,7 @@ The tablet rail, loading/empty/error states for the new screens, notification or
 | 2026-10-08 | Added dark theme tokens and dark screen mocks |
 | 2026-10-08 | Theme toggle mounted disabled with a "Coming soon" tooltip; added Pending items section |
 | 2026-10-09 | The user menu shows the API avatar picture, with initials as the fallback |
+| 2026-10-09 | On desktop the list tables scroll inside their card instead of the whole page |
 | 2026-10-09 | Task 9 implemented: `Header.tsx` removed. All nine tasks are done |
 | 2026-10-09 | Task 8 (rollout) implemented in five commits: Consolidated Balance, Balance Breakdown, management, dialogs and toasts, login |
 | 2026-10-09 | Task 7 (dashboard restyle) implemented; dark accent switched to purple; the rollout to other pages became task 8 and removing `Header.tsx` became task 9 |

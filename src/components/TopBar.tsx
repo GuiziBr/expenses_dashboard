@@ -19,7 +19,7 @@ export function TopBar() {
 		getPageMeta(usePathname())
 
 	return (
-		<div className="contents md:mx-auto md:flex md:w-full md:max-w-[1120px] md:items-center md:justify-between md:px-5 md:pb-6">
+		<div className="contents md:mx-auto md:flex md:w-full md:max-w-[1120px] md:shrink-0 md:items-center md:justify-between md:px-5 md:pb-6">
 			<h1 className="px-5 pb-4 text-2xl font-bold tracking-tight text-foreground md:p-0">
 				{title}
 			</h1>

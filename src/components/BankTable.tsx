@@ -56,20 +56,20 @@ export function BankTable({ banks }: BankTableProps) {
 	}
 
 	return (
-		<div className="w-full overflow-hidden rounded-xl border border-border bg-card">
+		<div className="w-full overflow-hidden rounded-xl border border-border bg-card lg:min-h-[10rem] lg:overflow-y-auto">
 			<table className="w-full table-fixed">
-				<thead className="bg-background/60">
+				<thead className="bg-card lg:sticky lg:top-0 lg:z-10">
 					<tr>
-						<th className="px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 w-[50%] md:w-[35%]">
+						<th className="bg-background/60 px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 w-[50%] md:w-[35%]">
 							{translations.management.bankColumn}
 						</th>
-						<th className="px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 w-[35%] md:w-[25%]">
+						<th className="bg-background/60 px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 w-[35%] md:w-[25%]">
 							{translations.management.createdColumn}
 						</th>
-						<th className="px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 hidden md:table-cell md:w-[25%]">
+						<th className="bg-background/60 px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 hidden md:table-cell md:w-[25%]">
 							{translations.management.updatedColumn}
 						</th>
-						<th scope="col" className="w-14" />
+						<th scope="col" className="w-14 bg-background/60" />
 					</tr>
 				</thead>
 				<tbody className="w-full">

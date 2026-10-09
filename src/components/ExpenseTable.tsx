@@ -112,9 +112,9 @@ export function ExpenseTable({
 	const hasActions = !!(onDelete || onEdit)
 
 	return (
-		<div className="w-full overflow-hidden rounded-xl border border-border bg-card">
+		<div className="w-full overflow-hidden rounded-xl border border-border bg-card lg:min-h-[10rem] lg:overflow-y-auto">
 			<table className="w-full table-fixed">
-				<thead className="bg-background/60">
+				<thead className="bg-card lg:sticky lg:top-0 lg:z-10">
 					<tr>
 						{COLUMNS.map(({ key, label, width, visibility }) => {
 							const indicator = getSortIndicator(key)
@@ -125,7 +125,7 @@ export function ExpenseTable({
 									scope="col"
 									aria-sort={ARIA_SORT[indicator]}
 									className={cn(
-										"px-2 py-3 text-left md:px-4",
+										"bg-background/60 px-2 py-3 text-left md:px-4",
 										width,
 										visibility
 									)}
@@ -147,7 +147,9 @@ export function ExpenseTable({
 								</th>
 							)
 						})}
-						{hasActions && <th scope="col" className="w-10 md:w-12" />}
+						{hasActions && (
+							<th scope="col" className="w-10 bg-background/60 md:w-12" />
+						)}
 					</tr>
 				</thead>
 				<tbody>

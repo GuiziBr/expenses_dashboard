@@ -30,7 +30,7 @@ export default function PaymentTypesManagementPage() {
 	const currentPage = Math.floor(params.offset / params.limit) + 1
 
 	return (
-		<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5">
+		<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5 lg:h-full">
 			<section className="rounded-xl border border-border bg-card p-6">
 				<h2 className="mb-4 text-lg font-semibold text-foreground">
 					{translations.management.paymentTypes}
@@ -51,7 +51,7 @@ export default function PaymentTypesManagementPage() {
 			)}
 
 			{data && (
-				<div className="flex flex-col gap-4 animate-in fade-in duration-500">
+				<div className="flex flex-col gap-4 animate-in fade-in duration-500 lg:min-h-0">
 					{data.paymentTypes.length > 0 ? (
 						<>
 							<PaymentTypeTable paymentTypes={data.paymentTypes} />
