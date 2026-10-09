@@ -3,7 +3,12 @@ import { render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
 vi.mock("next/navigation", () => ({
-	usePathname: () => "/sharedDashboard"
+	usePathname: () => "/sharedDashboard",
+	useSearchParams: () => new URLSearchParams()
+}))
+
+vi.mock("@/components/TopBar", () => ({
+	TopBar: () => <header>Top bar</header>
 }))
 
 vi.mock("@/contexts/auth-context", () => ({
@@ -27,6 +32,7 @@ describe("AppLayout", () => {
 		expect(
 			screen.getByRole("navigation", { name: "Primary" })
 		).toBeInTheDocument()
+		expect(screen.getByText("Top bar")).toBeInTheDocument()
 		expect(screen.getByRole("main")).toHaveTextContent("Page content")
 	})
 })

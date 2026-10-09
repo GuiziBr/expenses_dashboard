@@ -129,3 +129,21 @@ export const getPageTitle = (pathname: string | null) => {
 		MAIN_NAV_ITEMS.find((item) => item.href === pathname)?.label ?? "Dashboard"
 	)
 }
+
+export const MONTH_ROUTES = [
+	"/sharedDashboard",
+	"/personalDashboard",
+	"/balanceBreakdown"
+]
+
+const CREATE_EXPENSE_ROUTES = ["/sharedDashboard", "/personalDashboard"]
+
+/** Pages that follow the month picked in the top bar. */
+export const isMonthRoute = (pathname: string | null) =>
+	!!pathname && MONTH_ROUTES.includes(pathname)
+
+export const getPageMeta = (pathname: string | null) => ({
+	title: getPageTitle(pathname),
+	hasMonthPicker: isMonthRoute(pathname),
+	canCreateExpense: !!pathname && CREATE_EXPENSE_ROUTES.includes(pathname)
+})

@@ -4,10 +4,12 @@ import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 let pathname = "/sharedDashboard"
+let search = ""
 const signOut = vi.fn()
 
 vi.mock("next/navigation", () => ({
-	usePathname: () => pathname
+	usePathname: () => pathname,
+	useSearchParams: () => new URLSearchParams(search)
 }))
 
 vi.mock("@/contexts/auth-context", () => ({
@@ -18,6 +20,7 @@ import { BottomTabBar } from "./BottomTabBar"
 
 beforeEach(() => {
 	pathname = "/sharedDashboard"
+	search = ""
 	signOut.mockClear()
 })
 
@@ -78,6 +81,22 @@ describe("BottomTabBar tabs", () => {
 		expect(screen.getByRole("button", { name: "More" })).toHaveAttribute(
 			"data-active",
 			"false"
+		)
+	})
+})
+
+describe("BottomTabBar month carry-over", () => {
+	it("keeps the selected month on the month tabs", () => {
+		search = "month=2026-08"
+		render(<BottomTabBar />)
+
+		expect(screen.getByRole("link", { name: "Personal" })).toHaveAttribute(
+			"href",
+			"/personalDashboard?month=2026-08"
+		)
+		expect(screen.getByRole("link", { name: "Balance" })).toHaveAttribute(
+			"href",
+			"/consolidatedBalance"
 		)
 	})
 })

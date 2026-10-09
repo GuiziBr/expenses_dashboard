@@ -2,7 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import {
 	getFirstDayOfMonth,
 	getLastDayOfMonth,
-	getTodayString
+	getMonthRange,
+	getTodayString,
+	isFullMonthRange
 } from "./date-utils"
 
 // Use the local-time constructor (year, month 0-indexed, day) to avoid
@@ -67,5 +69,41 @@ describe("getTodayString", () => {
 	it("returns today's date as yyyy-MM-dd", () => {
 		vi.setSystemTime(new Date(2026, 2, 5)) // March 5 2026 local time
 		expect(getTodayString()).toBe("2026-03-05")
+	})
+})
+
+describe("getMonthRange", () => {
+	it("returns the first and last day of a month", () => {
+		expect(getMonthRange({ year: 2026, month: 9 })).toEqual({
+			startDate: "2026-09-01",
+			endDate: "2026-09-30"
+		})
+	})
+
+	it("handles February in a leap year and a non-leap year", () => {
+		expect(getMonthRange({ year: 2028, month: 2 }).endDate).toBe("2028-02-29")
+		expect(getMonthRange({ year: 2027, month: 2 }).endDate).toBe("2027-02-28")
+	})
+
+	it("handles December", () => {
+		expect(getMonthRange({ year: 2026, month: 12 })).toEqual({
+			startDate: "2026-12-01",
+			endDate: "2026-12-31"
+		})
+	})
+})
+
+describe("isFullMonthRange", () => {
+	const month = { year: 2026, month: 9 }
+
+	it("is true for exactly the whole month", () => {
+		expect(isFullMonthRange("2026-09-01", "2026-09-30", month)).toBe(true)
+	})
+
+	it("is false for a partial range, another month or missing dates", () => {
+		expect(isFullMonthRange("2026-09-05", "2026-09-30", month)).toBe(false)
+		expect(isFullMonthRange("2026-09-01", "2026-09-29", month)).toBe(false)
+		expect(isFullMonthRange("2026-08-01", "2026-08-31", month)).toBe(false)
+		expect(isFullMonthRange(undefined, undefined, month)).toBe(false)
 	})
 })

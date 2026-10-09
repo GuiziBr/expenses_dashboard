@@ -1,5 +1,8 @@
+import { Suspense } from "react"
 import { AppSidebar } from "@/components/AppSidebar"
 import { BottomTabBar } from "@/components/BottomTabBar"
+import { TopBar } from "@/components/TopBar"
+import { PageToolbarProvider } from "@/contexts/page-toolbar-context"
 
 export default function AppLayout({
 	children
@@ -7,10 +10,15 @@ export default function AppLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<div className="min-h-screen bg-background lg:flex">
-			<AppSidebar className="sticky top-0 hidden h-screen lg:flex" />
-			<div className="min-w-0 flex-1 py-8 pb-28 lg:pb-12">{children}</div>
-			<BottomTabBar className="lg:hidden" />
-		</div>
+		<PageToolbarProvider>
+			<div className="min-h-screen bg-background lg:flex">
+				<AppSidebar className="sticky top-0 hidden h-screen lg:flex" />
+				<div className="min-w-0 flex-1 py-8 pb-28 lg:pb-12">
+					<TopBar />
+					<Suspense>{children}</Suspense>
+				</div>
+				<BottomTabBar className="lg:hidden" />
+			</div>
+		</PageToolbarProvider>
 	)
 }

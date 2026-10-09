@@ -1,14 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { HiOutlineSelector, HiPlus } from "react-icons/hi"
+import { HiOutlineSelector } from "react-icons/hi"
 import { toast } from "sonner"
 import { translations } from "@/constants/translations"
 import { useFilterValues } from "@/hooks/use-filter-values"
 import { COLUMN_FILTERS } from "@/lib/constants"
 import { getErrorMessage } from "@/lib/get-error-message"
 import type { ExpenseFilters } from "@/types/expenses"
-import { NewExpenseModal } from "./NewExpenseModal"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { Select, type SelectOption } from "./ui/select"
@@ -25,7 +24,6 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 		initialFilters.startDate || ""
 	)
 	const [endDate, setEndDate] = useState<string>(initialFilters.endDate || "")
-	const [isModalOpen, setIsModalOpen] = useState(false)
 
 	// Date constraints logic
 	const [minEndDate, setMinEndDate] = useState<string>("")
@@ -36,6 +34,14 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 		isLoading: isLoadingOptions,
 		error: filterOptionsError
 	} = useFilterValues(filterBy)
+
+	// The month picker in the top bar resets the range from outside
+	useEffect(() => {
+		setStartDate(initialFilters.startDate || "")
+		setEndDate(initialFilters.endDate || "")
+		setMinEndDate("")
+		setMaxStartDate("")
+	}, [initialFilters.startDate, initialFilters.endDate])
 
 	useEffect(() => {
 		if (filterOptionsError) {
@@ -65,16 +71,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 	}
 
 	return (
-		<section className="mt-6 w-full flex flex-col lg:flex-row justify-between items-center gap-4">
-			<Button
-				type="button"
-				onClick={() => setIsModalOpen(true)}
-				className="h-10 w-full lg:w-auto px-4 bg-orange text-background text-sm md:text-base font-medium hover:brightness-90 transition-all rounded-[0.3rem] border-none flex items-center justify-center gap-2"
-			>
-				<HiPlus className="size-5" />
-				<span>{translations.createExpense.title}</span>
-			</Button>
-
+		<section className="mt-6 w-full flex flex-col lg:flex-row justify-end items-center gap-4">
 			<form
 				onSubmit={handleSubmit}
 				className="flex flex-col lg:flex-row items-center justify-end gap-3 w-full lg:w-auto ml-auto"
@@ -139,11 +136,6 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 					{translations.common.search}
 				</Button>
 			</form>
-
-			<NewExpenseModal
-				isOpen={isModalOpen}
-				onClose={() => setIsModalOpen(false)}
-			/>
 		</section>
 	)
 }

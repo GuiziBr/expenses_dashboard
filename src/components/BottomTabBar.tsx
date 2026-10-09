@@ -1,9 +1,9 @@
 "use client"
 
 import { Ellipsis, LogOut } from "lucide-react"
-import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
+import { MonthAwareLink } from "@/components/MonthAwareLink"
 import {
 	Sheet,
 	SheetContent,
@@ -45,7 +45,7 @@ function SheetLink({
 }) {
 	const Icon = item.icon
 	return (
-		<Link
+		<MonthAwareLink
 			href={item.href}
 			onClick={onNavigate}
 			aria-current={isActive ? "page" : undefined}
@@ -58,7 +58,7 @@ function SheetLink({
 		>
 			<Icon className="size-5 shrink-0" aria-hidden="true" />
 			{item.label}
-		</Link>
+		</MonthAwareLink>
 	)
 }
 
@@ -86,7 +86,7 @@ export function BottomTabBar({ className }: { className?: string }) {
 				const Icon = item.icon
 				const isActive = isNavItemActive(pathname, item.href)
 				return (
-					<Link
+					<MonthAwareLink
 						key={item.href}
 						href={item.href}
 						aria-current={isActive ? "page" : undefined}
@@ -94,7 +94,7 @@ export function BottomTabBar({ className }: { className?: string }) {
 					>
 						<Icon className="size-[22px]" aria-hidden="true" />
 						{item.label}
-					</Link>
+					</MonthAwareLink>
 				)
 			})}
 

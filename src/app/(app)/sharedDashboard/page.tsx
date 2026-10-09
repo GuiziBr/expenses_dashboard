@@ -8,11 +8,14 @@ import { FilterForm } from "@/components/FilterForm"
 import { Pagination } from "@/components/Pagination"
 import { Loader } from "@/components/ui/loader"
 import { translations } from "@/constants/translations"
+import { useCustomRangeIndicator } from "@/contexts/page-toolbar-context"
 import { useBalance } from "@/hooks/use-balance"
 import { useExpenses } from "@/hooks/use-expenses"
+import { useSelectedMonth } from "@/hooks/use-selected-month"
 import { useSortParams } from "@/hooks/use-sort-params"
+import { formatMonthParam } from "@/lib/balance-breakdown-params"
 import { FILTER_VALUE_MAPPING } from "@/lib/constants"
-import { getFirstDayOfMonth, getLastDayOfMonth } from "@/lib/date-utils"
+import { getMonthRange, isFullMonthRange } from "@/lib/date-utils"
 import { formatCurrency } from "@/lib/format-currency"
 import { getErrorMessage } from "@/lib/get-error-message"
 import type {
@@ -26,12 +29,23 @@ const DEFAULT_LIMIT = 8
 export default function SharedDashboard() {
 	const { orderBy, orderType, toggleSort, getSortIndicator } = useSortParams()
 
+	const { month } = useSelectedMonth()
+
 	const [params, setParams] = useState<ExpenseQueryParams>({
 		offset: 0,
 		limit: DEFAULT_LIMIT,
-		startDate: getFirstDayOfMonth(),
-		endDate: getLastDayOfMonth()
+		...getMonthRange(month)
 	})
+
+	// The month picked in the top bar resets the range and the page
+	const monthKey = formatMonthParam(month)
+	useEffect(() => {
+		setParams((prev) => ({ ...prev, ...getMonthRange(month), offset: 0 }))
+	}, [monthKey])
+
+	useCustomRangeIndicator(
+		!isFullMonthRange(params.startDate, params.endDate, month)
+	)
 
 	// React to sort changes
 	useEffect(() => {

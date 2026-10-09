@@ -4,10 +4,12 @@ import userEvent from "@testing-library/user-event"
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
 
 let pathname = "/sharedDashboard"
+let search = ""
 const signOut = vi.fn()
 
 vi.mock("next/navigation", () => ({
-	usePathname: () => pathname
+	usePathname: () => pathname,
+	useSearchParams: () => new URLSearchParams(search)
 }))
 
 vi.mock("@/contexts/auth-context", () => ({
@@ -29,6 +31,7 @@ beforeAll(() => {
 
 beforeEach(() => {
 	pathname = "/sharedDashboard"
+	search = ""
 	signOut.mockClear()
 })
 
@@ -66,6 +69,32 @@ describe("AppSidebar navigation", () => {
 		expect(
 			screen.getByRole("link", { name: "Shared Dashboard" })
 		).not.toHaveAttribute("aria-current")
+	})
+})
+
+describe("AppSidebar month carry-over", () => {
+	it("keeps the selected month on links to month pages only", () => {
+		search = "month=2026-08"
+		render(<AppSidebar />)
+
+		expect(
+			screen.getByRole("link", { name: "Personal Dashboard" })
+		).toHaveAttribute("href", "/personalDashboard?month=2026-08")
+		expect(
+			screen.getByRole("link", { name: "Balance Breakdown" })
+		).toHaveAttribute("href", "/balanceBreakdown?month=2026-08")
+		expect(
+			screen.getByRole("link", { name: "Consolidated Balance" })
+		).toHaveAttribute("href", "/consolidatedBalance")
+	})
+
+	it("ignores an invalid month", () => {
+		search = "month=nope"
+		render(<AppSidebar />)
+
+		expect(
+			screen.getByRole("link", { name: "Personal Dashboard" })
+		).toHaveAttribute("href", "/personalDashboard")
 	})
 })
 

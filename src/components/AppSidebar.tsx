@@ -7,9 +7,9 @@ import {
 	Settings2,
 	Wallet
 } from "lucide-react"
-import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useId, useState } from "react"
+import { MonthAwareLink } from "@/components/MonthAwareLink"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -52,14 +52,14 @@ function SidebarLink({
 }) {
 	const Icon = item.icon
 	return (
-		<Link
+		<MonthAwareLink
 			href={item.href}
 			aria-current={isActive ? "page" : undefined}
 			className={cn(itemClass(isActive), indented && "pl-5")}
 		>
 			<Icon className="size-[18px] shrink-0" aria-hidden="true" />
 			{item.label}
-		</Link>
+		</MonthAwareLink>
 	)
 }
 

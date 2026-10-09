@@ -2,10 +2,10 @@
 
 | | |
 |---|---|
-| **Status** | In progress: tasks 1 to 5 done (see §10) |
+| **Status** | In progress: tasks 1 to 6 done (see §10) |
 | **Scope** | Header and menu. Content restyling is limited to the shared dashboard screen used as the mock |
 | **Design** | Current UI: `design.pen`. New UI: `design_v2.pen` → *Dashboard / Desktop*, *Dashboard / Mobile* and their *(Dark)* versions |
-| **Code today** | [`src/components/Header.tsx`](../../src/components/Header.tsx), rendered by each page |
+| **Code today** | Shell in `src/app/(app)/layout.tsx`. The old [`Header.tsx`](../../src/components/Header.tsx) is unused and is removed in task 8 |
 | **Related** | [Design System](../../DESIGN_SYSTEM.md) · [Feature Specifications](../specs/features.md) |
 
 ---
@@ -15,7 +15,7 @@
 Replace the full-width purple top bar with an app shell:
 
 - **Desktop:** a left sidebar for navigation, plus a slim top bar inside the content area for the page title and page-level actions.
-- **Mobile:** a bottom tab bar for the main destinations, plus a top bar with the page title and the user avatar.
+- **Mobile:** a bottom tab bar for the main destinations, plus the same top bar with the page title and, on month pages, the month picker.
 
 No routes, API calls or business logic change.
 
@@ -56,7 +56,8 @@ Findings from reviewing `design.pen` and `Header.tsx`:
 | Desktop navigation | **Left sidebar** | **B**: a slim top bar with tabs (smaller change, but does not scale and keeps Management hidden). |
 | Mobile navigation | **Bottom tab bar** with 4 tabs | Hamburger menu (today). Needs two taps to switch pages. |
 | Overall approach | **Hybrid (C):** sidebar on desktop, bottom tabs on mobile | **A**: sidebar only, which would still need a mobile pattern. |
-| Primary action | One per page, in the top bar (*New expense*) | Floating button on desktop. |
+| Primary action | One per page, in the top bar (*New expense*); a floating button on mobile | Keeping the button inside the filter row, as before. |
+| Month selection | A month picker in the top bar, shared by the Shared and Personal dashboards and Balance Breakdown, kept in the URL as `?month=YYYY-MM` | Dropping the picker and keeping only the date inputs (**A**). Replacing the date inputs with the picker (**C**). |
 | Logout | Inside the user menu | Top-level button. |
 
 Trade-off accepted: the sidebar takes about 248px of width on desktop.
@@ -85,6 +86,28 @@ Bottom of the sidebar: user menu (avatar, name) containing **Log out**.
 | More | opens a sheet | `ellipsis` |
 
 The **More** sheet holds **Balance Breakdown**, the four **Management** pages and **Log out**. The tab labelled *Balance* points to Consolidated Balance. If that name confuses users next to *Balance Breakdown*, rename it during implementation (see §11).
+
+### Month selection
+
+Before the overhaul the dashboards had no month concept: they held a `startDate` and `endDate`, defaulting to the current month, edited with the two date inputs in the filter row. Balance Breakdown had its own month picker. The top bar now has one month picker for three pages.
+
+| Page | Month picker | Behaviour |
+|---|---|---|
+| Shared Dashboard, Personal Dashboard | Yes | Picking a month sets the start and end date to the first and last day of that month and goes back to page 1. The date inputs in the filter row follow the picker. |
+| Balance Breakdown | Yes | The picker that used to sit in the page's controls moved to the top bar. The group-by tabs stay in the page. |
+| Consolidated Balance, Management | No | Consolidated Balance keeps its own required month field and *Search* button. |
+
+How it works:
+
+- **The URL is the source of truth.** The month lives in `?month=YYYY-MM`, read and written by `useSelectedMonth()`. It survives a refresh and back/forward (each change is a history push), and other query params such as `groupBy` are kept. A missing or invalid value means the current month.
+- **The month is shared between pages.** The sidebar, the tab bar and the More sheet use `MonthAwareLink`. A link to Shared, Personal or Balance Breakdown keeps the current `?month=`, so the month stays the same when you switch between those pages.
+- **Custom ranges still work.** If the user applies dates in the filter row that are not one whole calendar month, the picker shows **Custom range** instead of a month name. Picking another month (arrows or the month input) goes back to a whole month.
+- **The page owns the range.** The dashboard keeps its `startDate` and `endDate` state and resets it when the month changes. It tells the top bar when the range is custom through `useCustomRangeIndicator`.
+
+Known limits:
+
+- The month is not remembered across Consolidated Balance or Management, because those pages do not use `?month=`. Coming back to a dashboard from them starts at the current month.
+- Picking the same month that is already selected while a custom range is showing does nothing. Use an arrow to reset it.
 
 ## 6. Design tokens (from `design_v2.pen`)
 
@@ -145,15 +168,23 @@ Each screen exists in a light and a dark version in `design_v2.pen`, built from 
 ### Desktop (1440px)
 
 - **Sidebar (248px):** logo and app name, grouped nav items, user menu pinned to the bottom.
-- **Top bar:** page title and subtitle, month picker, theme toggle, primary *New expense* button.
+- **Top bar:** page title, month picker, theme toggle, primary *New expense* button.
 - **Content:** three metric cards (Balance highlighted), filter row (search, category, start and end date, *Search*), expenses table with category badges, pagination.
 
 ### Mobile (390px)
 
-- **Top bar:** page title, month, avatar.
+- **Top bar:** page title and the month picker below it. The user menu is in the More sheet.
 - **Content:** large Balance card, Incomes and Outcomes cards side by side, *Recent expenses* list with a *Filter* button.
 - **Floating action button** (*New expense*) above the tab bar.
 - **Bottom tab bar:** Shared, Personal, Balance, More.
+
+### Differences between the build and the mock
+
+- The mock has a subtitle under the page title ("October 2026 · Shared with 2 people"). It is not built: the month is in the picker and the app has no data for the number of people.
+- The mock's month picker is a single "Oct 2026" chip. The build adds previous/next arrows and a native month input, reusing the Balance Breakdown picker's behaviour. On mobile it sits under the title, which the mobile mock does not show.
+- The mock's mobile top bar has an avatar. The build has no avatar there, since the user menu is in the More sheet.
+- The theme toggle is disabled and hidden on mobile (§12).
+- The *New expense* button moved out of the filter row into the top bar. On mobile it is the floating button.
 
 ### Reusable components in the design file
 
@@ -195,7 +226,7 @@ Suggested order, one small PR each. Branch off `development`.
 | 3 | **`AppSidebar`.** Desktop sidebar built from the config, with active state via `usePathname`, `aria-current`, and the user menu using the existing `DropdownMenu`. Done: `src/components/AppSidebar.tsx`. | Not mounted yet. Task 5 puts it in the shared layout, and it is hidden below `lg` there. Reuses `signOut` from `useAuth`. The Management section is collapsed unless the current page is under `/management`. |
 | 4 | **`BottomTabBar` and More sheet.** Done: `src/components/BottomTabBar.tsx`, tab and More config in `src/lib/navigation.ts`. | Uses `src/components/ui/sheet.tsx` as a bottom sheet. Not mounted yet. Task 5 renders it below `md`. The tab labelled *Balance* still points to Consolidated Balance (§11, Q4). |
 | 5 | **Shared layout.** Done: `src/app/(app)/layout.tsx` renders the shell once. The 8 pages moved under the `(app)` route group (URLs unchanged), and `<Header />`, the purple band and the `-mt-24` overlap were removed from each. | `/` (login) stays outside the group. The sidebar shows from `lg`, the tab bar below `lg`. Header.tsx is now unused and is removed in task 8. |
-| 6 | **Top bar.** Page title from the existing `PAGE_TITLES` map, plus the slot for page actions. | |
+| 6 | **Top bar and month selection.** Done. `src/components/TopBar.tsx` shows the page title (`h1`), the month picker, the theme toggle and the *New expense* action. Month state is in the URL (`src/hooks/use-selected-month.ts`) and shared by the Shared and Personal dashboards and Balance Breakdown, see §5. | `MonthPicker`, `NewExpenseAction`, `MonthAwareLink` and a small page-toolbar context are new. `FilterForm` lost its *New expense* button and now follows the month. Balance Breakdown's own month controls were removed. |
 | 7 | **Restyle the shared dashboard.** Metric cards, filters, table. | Then roll out to the other pages. |
 | 8 | **Remove `Header.tsx`** and update tests. | Add tests for the active state, the nav config and logout. |
 
@@ -209,17 +240,18 @@ Existing tools: Tailwind v4, shadcn/ui with Radix, `lucide-react`, and `sheet.ts
 4. **Mobile tab label:** *Balance* for Consolidated Balance, or use its full name?
 5. **Tablet:** is the icon-rail sidebar worth building now?
 6. **Sidebar collapse on desktop:** user-controlled or fixed?
+7. **Month on other pages:** should Consolidated Balance and Management also carry the selected month, so it survives a visit to them?
 
 ## 12. Pending items
 
 ### Theme switching (toggle is built but disabled)
 
-Today the toggle shows in the desktop header as a disabled button with a "Coming soon" tooltip, and the app always uses the dark theme. To turn it on:
+Today the toggle shows in the desktop top bar as a disabled button with a "Coming soon" tooltip, and the app always uses the dark theme. To turn it on:
 
 1. **Audit hard-coded colours.** Many components use fixed colours (`text-white`, `bg-[var(--light-blue)]`, `text-orange`, raw hex values) that only make sense on dark. Replace them with the semantic tokens from §6 so both themes render correctly. Check every page, modal, table state and the Balance Breakdown chart.
 2. **Align the accent.** Switch dark `--primary` from orange to the mock's purple (`#6c4cf0`), or decide to keep orange (§11, Q3), so both themes share one accent.
 3. **Measure contrast in both themes** against the targets in §9, especially `muted` text and the dark `primary-text`.
-4. **Re-home the toggle in the new shell.** Put it in the new top bar (task 6). On mobile, put it in the user menu or the More sheet, because the "Coming soon" tooltip and the desktop header placement do not exist on touch.
+4. **Mobile placement for the toggle.** It is in the top bar on desktop (task 6) and hidden on mobile. Put it in the More sheet, because the "Coming soon" tooltip does not exist on touch.
 5. **Flip `THEME_SWITCHING_ENABLED` to `true`** and remove the disabled state and tooltip from `ThemeToggle`. The tests that cover the working toggle already exist.
 6. **Update `DESIGN_SYSTEM.md`**, which still describes a dark-only app.
 7. **Decide on "follow the system theme".** Not planned. It would add a third option and a `prefers-color-scheme` listener.
@@ -231,14 +263,7 @@ Until step 5, a stored `light` value in `localStorage` would still apply. Nothin
 - Inter font (§11, Q2).
 - Tablet icon-rail sidebar (§11, Q5).
 - Designs for the states listed at the end of §7.
-
-### Gaps between task 5 and task 6
-
-The old header is gone but the new top bar does not exist yet, so for now:
-
-- There is no page title on mobile (the old header showed it).
-- The disabled theme toggle is not on screen. It comes back in the top bar.
-- Pages have no top bar actions slot yet.
+- Updating `design_v2.pen` to match the top bar as built (see *Differences between the build and the mock* in §7).
 
 ## 13. Out of scope
 
@@ -251,6 +276,7 @@ The tablet rail, loading/empty/error states for the new screens, notification or
 | 2026-10-08 | First draft from `design_v2.pen` mock |
 | 2026-10-08 | Added dark theme tokens and dark screen mocks |
 | 2026-10-08 | Theme toggle mounted disabled with a "Coming soon" tooltip; added Pending items section |
+| 2026-10-08 | Task 6 (top bar and month selection) implemented; month picker shared by the dashboards and Balance Breakdown |
 | 2026-10-08 | Task 5 (shared layout) implemented; sidebar and tab bar are now live |
 | 2026-10-08 | Task 4 (`BottomTabBar` and More sheet) implemented, not yet mounted |
 | 2026-10-08 | Task 3 (`AppSidebar`) implemented, not yet mounted |

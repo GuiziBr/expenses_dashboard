@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest"
 import {
+	getPageMeta,
 	getPageTitle,
 	isManagementPath,
+	isMonthRoute,
 	isMoreTabActive,
 	isNavItemActive,
 	MAIN_NAV_ITEMS,
@@ -108,5 +110,41 @@ describe("mobile tabs", () => {
 		expect(isMoreTabActive("/management/stores")).toBe(true)
 		expect(isMoreTabActive("/sharedDashboard")).toBe(false)
 		expect(isMoreTabActive(null)).toBe(false)
+	})
+})
+
+describe("month pages", () => {
+	it("follow the month only on the shared, personal and breakdown pages", () => {
+		expect(isMonthRoute("/sharedDashboard")).toBe(true)
+		expect(isMonthRoute("/personalDashboard")).toBe(true)
+		expect(isMonthRoute("/balanceBreakdown")).toBe(true)
+		expect(isMonthRoute("/consolidatedBalance")).toBe(false)
+		expect(isMonthRoute("/management/banks")).toBe(false)
+		expect(isMonthRoute(null)).toBe(false)
+	})
+})
+
+describe("getPageMeta", () => {
+	it("describes the top bar for each kind of page", () => {
+		expect(getPageMeta("/sharedDashboard")).toEqual({
+			title: "Shared Dashboard",
+			hasMonthPicker: true,
+			canCreateExpense: true
+		})
+		expect(getPageMeta("/balanceBreakdown")).toEqual({
+			title: "Balance Breakdown",
+			hasMonthPicker: true,
+			canCreateExpense: false
+		})
+		expect(getPageMeta("/consolidatedBalance")).toEqual({
+			title: "Consolidated Balance",
+			hasMonthPicker: false,
+			canCreateExpense: false
+		})
+		expect(getPageMeta("/management/stores")).toEqual({
+			title: "Management",
+			hasMonthPicker: false,
+			canCreateExpense: false
+		})
 	})
 })

@@ -14,6 +14,12 @@ export const translations = {
 		management: "Management",
 		cancel: "Cancel"
 	},
+	monthPicker: {
+		label: "Month",
+		previous: "Previous month",
+		next: "Next month",
+		customRange: "Custom range"
+	},
 	theme: {
 		switchToLight: "Switch to light theme",
 		switchToDark: "Switch to dark theme",
@@ -53,9 +59,6 @@ export const translations = {
 				banks: "Bank",
 				stores: "Store"
 			},
-			month: "Month",
-			previousMonth: "Previous month",
-			nextMonth: "Next month",
 			summary: {
 				top: {
 					categories: "Top category",

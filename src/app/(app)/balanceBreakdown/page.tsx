@@ -11,15 +11,13 @@ import {
 import { BreakdownEmpty, BreakdownError } from "@/components/BreakdownStates"
 import { BreakdownSummary } from "@/components/BreakdownSummary"
 import { useBalanceBreakdown } from "@/hooks/use-balance-breakdown"
+import { useSelectedMonth } from "@/hooks/use-selected-month"
 import { buildBreakdownView } from "@/lib/balance-breakdown"
 import {
-	type BreakdownMonth,
 	buildBreakdownQuery,
 	formatMonthLabel,
 	formatMonthParam,
-	parseGroupBy,
-	parseMonth,
-	shiftMonth
+	parseGroupBy
 } from "@/lib/balance-breakdown-params"
 import type { BalanceFilterKey } from "@/types/expenses"
 
@@ -28,7 +26,7 @@ function BalanceBreakdownContent() {
 	const pathname = usePathname()
 	const searchParams = useSearchParams()
 	const groupBy = parseGroupBy(searchParams.get("groupBy"))
-	const month = parseMonth(searchParams.get("month"))
+	const { month } = useSelectedMonth()
 
 	const { data, isLoading, error, refetch } = useBalanceBreakdown(
 		month.year,
@@ -39,8 +37,8 @@ function BalanceBreakdownContent() {
 	const view = useMemo(() => buildBreakdownView(data ?? []), [data])
 
 	// A push (not replace) so back/forward restore the previous view
-	const navigate = (nextGroupBy: BalanceFilterKey, nextMonth: BreakdownMonth) =>
-		router.push(`${pathname}?${buildBreakdownQuery(nextGroupBy, nextMonth)}`, {
+	const changeGroupBy = (nextGroupBy: BalanceFilterKey) =>
+		router.push(`${pathname}?${buildBreakdownQuery(nextGroupBy, month)}`, {
 			scroll: false
 		})
 
@@ -54,13 +52,7 @@ function BalanceBreakdownContent() {
 				hasError={!!error}
 			/>
 
-			<BreakdownControls
-				groupBy={groupBy}
-				month={month}
-				onGroupByChange={(next) => navigate(next, month)}
-				onMonthChange={(next) => navigate(groupBy, next)}
-				onShiftMonth={(delta) => navigate(groupBy, shiftMonth(month, delta))}
-			/>
+			<BreakdownControls groupBy={groupBy} onGroupByChange={changeGroupBy} />
 
 			<div
 				role="tabpanel"

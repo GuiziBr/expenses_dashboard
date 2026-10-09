@@ -37,6 +37,14 @@ export function parseGroupBy(
 }
 
 /**
+ * Whether a `?month=` value is a well-formed `YYYY-MM` the app accepts.
+ */
+export function isValidMonthParam(value: string | null | undefined): boolean {
+	const match = value ? MONTH_PARAM_PATTERN.exec(value) : null
+	return !!match && Number(match[1]) >= MIN_YEAR
+}
+
+/**
  * Read `?month=YYYY-MM` from the URL. Missing, malformed or out-of-range
  * values (month outside 1–12, year below 1900) fall back to the current month.
  * @example parseMonth("2026-09") → { year: 2026, month: 9 }
