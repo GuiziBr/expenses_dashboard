@@ -39,7 +39,7 @@ export default function ConsolidatedBalance() {
 	}, [error])
 
 	return (
-		<main className="max-w-[1120px] mx-auto px-5 pb-12">
+		<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5">
 			<section className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
 				<BalanceCard
 					label={
