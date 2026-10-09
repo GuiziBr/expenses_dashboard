@@ -10,6 +10,7 @@ export const translations = {
 		previous: "Previous",
 		next: "Next",
 		logout: "Logout",
+		appName: "Expenses",
 		management: "Management",
 		cancel: "Cancel"
 	},
@@ -21,7 +22,10 @@ export const translations = {
 	navigation: {
 		dashboards: "Dashboards",
 		reports: "Reports",
-		manage: "Manage"
+		manage: "Manage",
+		mainLabel: "Main",
+		userMenu: "Account menu",
+		account: "Account"
 	},
 	dashboards: {
 		personal: {

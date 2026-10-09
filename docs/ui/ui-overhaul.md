@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | In progress: tasks 1 and 2 done (see §10) |
+| **Status** | In progress: tasks 1 to 3 done (see §10) |
 | **Scope** | Header and menu. Content restyling is limited to the shared dashboard screen used as the mock |
 | **Design** | Current UI: `design.pen`. New UI: `design_v2.pen` → *Dashboard / Desktop*, *Dashboard / Mobile* and their *(Dark)* versions |
 | **Code today** | [`src/components/Header.tsx`](../../src/components/Header.tsx), rendered by each page |
@@ -192,7 +192,7 @@ Suggested order, one small PR each. Branch off `development`.
 |---|---|---|
 | 1 | **Navigation config.** A single typed list of groups and items (label from `translations`, route, icon). | Removes the duplicated markup in `Header.tsx` and fixes the missing Stores entry on mobile. |
 | 2 | **Tokens and theme switching.** Light and dark tokens in `globals.css`, a theme provider, a no-flash script and a `ThemeToggle` component. Done, see §6. | The toggle is mounted in the current header, disabled with a "Coming soon" tooltip. The font change waits for §11, Q2. |
-| 3 | **`AppSidebar`.** Desktop sidebar built from the config, with active state via `usePathname`, `aria-current`, and the user menu using the existing `DropdownMenu`. | Reuse `signOut` from `useAuth`. |
+| 3 | **`AppSidebar`.** Desktop sidebar built from the config, with active state via `usePathname`, `aria-current`, and the user menu using the existing `DropdownMenu`. Done: `src/components/AppSidebar.tsx`. | Not mounted yet. Task 5 puts it in the shared layout, and it is hidden below `lg` there. Reuses `signOut` from `useAuth`. The Management section is collapsed unless the current page is under `/management`. |
 | 4 | **`BottomTabBar` and More sheet.** | `src/components/ui/sheet.tsx` already exists. |
 | 5 | **Shared layout.** A route-group layout (for example `src/app/(app)/layout.tsx`) that renders the shell once. Move the 8 pages under it and remove `<Header />` from each. | `/` and the login page stay outside the group. This is the riskiest step because it moves files. |
 | 6 | **Top bar.** Page title from the existing `PAGE_TITLES` map, plus the slot for page actions. | |
@@ -243,4 +243,5 @@ The tablet rail, loading/empty/error states for the new screens, notification or
 | 2026-10-08 | First draft from `design_v2.pen` mock |
 | 2026-10-08 | Added dark theme tokens and dark screen mocks |
 | 2026-10-08 | Theme toggle mounted disabled with a "Coming soon" tooltip; added Pending items section |
+| 2026-10-08 | Task 3 (`AppSidebar`) implemented, not yet mounted |
 | 2026-10-08 | Task 1 (navigation config) and task 2 (tokens and theme switching) implemented; theme question decided |
