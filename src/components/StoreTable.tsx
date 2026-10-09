@@ -73,6 +73,7 @@ export function StoreTable({ stores }: StoreTableProps) {
 						<th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground md:px-4 hidden md:table-cell md:w-[25%]">
 							{translations.management.updatedColumn}
 						</th>
+						<th scope="col" className="w-14" />
 					</tr>
 				</thead>
 				<tbody className="w-full">
