@@ -38,7 +38,7 @@ const COLUMNS: Column[] = [
 	{
 		key: EXPENSE_COLUMNS.description,
 		label: translations.table.expense,
-		width: "w-[22%] md:w-[33%] lg:w-[29%] xl:w-[26%]"
+		width: "w-[22%] md:w-[33%] lg:w-[27%] xl:w-[23%]"
 	},
 	{
 		key: EXPENSE_COLUMNS.category,
@@ -54,7 +54,7 @@ const COLUMNS: Column[] = [
 	{
 		key: EXPENSE_COLUMNS.paymentType,
 		label: translations.table.method,
-		width: "lg:w-[14%] xl:w-[10%]",
+		width: "lg:w-[16%] xl:w-[13%]",
 		visibility: "hidden lg:table-cell"
 	},
 	{
