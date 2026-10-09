@@ -99,7 +99,7 @@ export function ExpenseTable({
 	const hasActions = !!(onDelete || onEdit)
 
 	return (
-		<div className="min-h-[20rem] w-full overflow-hidden rounded-xl border border-border bg-card md:min-h-[40rem]">
+		<div className="w-full overflow-hidden rounded-xl border border-border bg-card">
 			<table className="w-full table-fixed">
 				<thead className="bg-background/60">
 					<tr>
