@@ -10,6 +10,7 @@ import {
 import { usePathname } from "next/navigation"
 import { useEffect, useId, useState } from "react"
 import { MonthAwareLink } from "@/components/MonthAwareLink"
+import { UserAvatar } from "@/components/UserAvatar"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -20,7 +21,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { translations } from "@/constants/translations"
 import { useAuth } from "@/contexts/auth-context"
-import { getInitials } from "@/lib/get-initials"
 import {
 	isManagementPath,
 	isNavItemActive,
@@ -138,12 +138,7 @@ function UserMenu() {
 				aria-label={translations.navigation.userMenu}
 				className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl border border-sidebar-border p-2.5 text-left outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-ring"
 			>
-				<span
-					aria-hidden="true"
-					className="flex size-[34px] shrink-0 items-center justify-center rounded-full bg-primary-soft text-xs font-bold text-primary-text"
-				>
-					{getInitials(user?.name)}
-				</span>
+				<UserAvatar name={user?.name} src={user?.avatar} />
 				<span className="min-w-0 flex-1">
 					<span className="block truncate text-[13px] font-semibold text-sidebar-foreground">
 						{user?.name}

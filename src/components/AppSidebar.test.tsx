@@ -12,9 +12,11 @@ vi.mock("next/navigation", () => ({
 	useSearchParams: () => new URLSearchParams(search)
 }))
 
+let avatar: string | null = null
+
 vi.mock("@/contexts/auth-context", () => ({
 	useAuth: () => ({
-		user: { id: "1", name: "Ricardo Guizi", email: "ricardo@test.com" },
+		user: { id: "1", name: "Ricardo Guizi", email: "ricardo@test.com", avatar },
 		signOut
 	})
 }))
@@ -33,6 +35,7 @@ beforeEach(() => {
 	pathname = "/sharedDashboard"
 	search = ""
 	signOut.mockClear()
+	avatar = null
 })
 
 describe("AppSidebar navigation", () => {
@@ -147,6 +150,18 @@ describe("AppSidebar user menu", () => {
 
 		expect(trigger).toHaveTextContent("RG")
 		expect(trigger).toHaveTextContent("Ricardo Guizi")
+	})
+
+	it("shows the user's picture instead of the initials when there is one", () => {
+		avatar = "https://example.com/me.png"
+		render(<AppSidebar />)
+		const trigger = screen.getByRole("button", { name: "Account menu" })
+
+		expect(trigger.querySelector("img")).toHaveAttribute(
+			"src",
+			"https://example.com/me.png"
+		)
+		expect(trigger).not.toHaveTextContent("RG")
 	})
 
 	it("signs out from the menu", async () => {
