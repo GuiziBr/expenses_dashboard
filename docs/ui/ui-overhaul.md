@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Design mocked, not implemented |
+| **Status** | In progress: tasks 1 and 2 done (see §10) |
 | **Scope** | Header and menu. Content restyling is limited to the shared dashboard screen used as the mock |
 | **Design** | Current UI: `design.pen`. New UI: `design_v2.pen` → *Dashboard / Desktop*, *Dashboard / Mobile* and their *(Dark)* versions |
 | **Code today** | [`src/components/Header.tsx`](../../src/components/Header.tsx), rendered by each page |
@@ -105,6 +105,35 @@ Defined as variables in the design file with a `mode` theme (light and dark). Th
 
 `primary` and `primary-text` are separate because one purple cannot work both as a fill behind white text and as text on a dark surface.
 
+### How the tokens map to code
+
+The design tokens are CSS variables in `src/app/globals.css`: light values in `:root`, dark values in `.dark`. Names that already existed as shadcn variables are reused instead of duplicated.
+
+| Design token | CSS variable | Tailwind utility |
+|---|---|---|
+| `bg` | `--background` | `bg-background` |
+| `surface` | `--card` | `bg-card` |
+| `border` | `--border` | `border-border` |
+| `ink` | `--foreground` | `text-foreground` |
+| `muted` | `--muted-foreground` | `text-muted-foreground` |
+| `primary` | `--primary` | `bg-primary` |
+| `primary-text` | `--primary-text` (new) | `text-primary-text` |
+| `primary-soft` | `--primary-soft` (new) | `bg-primary-soft` |
+| `success`, `success-soft` | `--success`, `--success-soft` (new) | `text-success`, `bg-success-soft` |
+| `danger`, `danger-soft` | `--danger`, `--danger-soft` (new) | `text-danger`, `bg-danger-soft` |
+
+**Not applied yet, on purpose.** The `.dark` block still holds the app's original values, so nothing changes visually while the dark theme is the default. Two differences from the mock remain until the restyle task (§10, task 7):
+
+- Dark `--primary` is still orange (`#ff872c`), not the mock's purple (`#6c4cf0`), and light `--primary` is already purple. Align them when the pages are restyled.
+- The font stays Roboto and Roboto Slab (open question 2). Inter is not loaded yet.
+
+### Theme switching
+
+- `src/lib/theme.ts` holds the theme helpers and the inline script that sets the `dark` class before first paint, so a stored light preference does not flash dark.
+- `src/providers/theme-provider.tsx` exposes `useTheme()` (`theme`, `setTheme`, `toggleTheme`).
+- `src/components/ThemeToggle.tsx` is the toggle button. It is **not mounted yet**: the current purple header was designed for dark only, and many pages use hard-coded colours, so light mode is not safe to expose until the shell and restyle tasks land. It goes in the new top bar (task 6).
+- Default is dark. The choice is stored in `localStorage` under `theme`. There is no "follow the system" option.
+
 Typography: **Inter** at 14px/500 for navigation and body, 26px/700 for the page title, 30px/600 for metric values. Radii: 8px for controls, 12px for cards. Orange is no longer used.
 
 > **Differences from the current app.** [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md) defines a **dark-only** UI with Roboto and Roboto Slab and orange as the only accent. The mock uses Inter and purple, and adds a light theme. The dark theme is the closest to today's look. See §11, questions 1 to 3.
@@ -162,7 +191,7 @@ Suggested order, one small PR each. Branch off `development`.
 | # | Task | Notes |
 |---|---|---|
 | 1 | **Navigation config.** A single typed list of groups and items (label from `translations`, route, icon). | Removes the duplicated markup in `Header.tsx` and fixes the missing Stores entry on mobile. |
-| 2 | **Tokens.** Add the new colours and the font to `globals.css`. | Depends on the theme decision (§11, Q1). |
+| 2 | **Tokens and theme switching.** Light and dark tokens in `globals.css`, a theme provider, a no-flash script and a `ThemeToggle` component. Done, see §6. | The toggle is built but not mounted until task 6. The font change waits for §11, Q2. |
 | 3 | **`AppSidebar`.** Desktop sidebar built from the config, with active state via `usePathname`, `aria-current`, and the user menu using the existing `DropdownMenu`. | Reuse `signOut` from `useAuth`. |
 | 4 | **`BottomTabBar` and More sheet.** | `src/components/ui/sheet.tsx` already exists. |
 | 5 | **Shared layout.** A route-group layout (for example `src/app/(app)/layout.tsx`) that renders the shell once. Move the 8 pages under it and remove `<Header />` from each. | `/` and the login page stay outside the group. This is the riskiest step because it moves files. |
@@ -174,7 +203,7 @@ Existing tools: Tailwind v4, shadcn/ui with Radix, `lucide-react`, and `sheet.ts
 
 ## 11. Open questions
 
-1. **Theme:** both themes are mocked. Keep dark-only (as `DESIGN_SYSTEM.md` states today), or support light and dark with a toggle? The toggle in the top bar is drawn, but the app has no theme switching now (the `<html>` element is always `dark`). Supporting both means a user preference and a persisted choice. `DESIGN_SYSTEM.md` needs updating either way.
+1. ~~**Theme.**~~ **Decided:** light and dark with a toggle, dark by default. `DESIGN_SYSTEM.md` still describes a dark-only app and needs updating when the restyle lands.
 2. **Fonts:** switch to Inter or keep Roboto and Roboto Slab for amounts, as the Balance Breakdown plan decided?
 3. **Brand colour:** drop orange, or keep it as a secondary accent for the balance highlight?
 4. **Mobile tab label:** *Balance* for Consolidated Balance, or use its full name?
@@ -191,3 +220,4 @@ The tablet rail, loading/empty/error states for the new screens, notification or
 |---|---|
 | 2026-10-08 | First draft from `design_v2.pen` mock |
 | 2026-10-08 | Added dark theme tokens and dark screen mocks |
+| 2026-10-08 | Task 1 (navigation config) and task 2 (tokens and theme switching) implemented; theme question decided |

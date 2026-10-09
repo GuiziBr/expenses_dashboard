@@ -13,6 +13,10 @@ export const translations = {
 		management: "Management",
 		cancel: "Cancel"
 	},
+	theme: {
+		switchToLight: "Switch to light theme",
+		switchToDark: "Switch to dark theme"
+	},
 	navigation: {
 		dashboards: "Dashboards",
 		reports: "Reports",

@@ -3,10 +3,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+	color-scheme: light;
 	--radius: 0.625rem;
-	--background: #312e38;
-	--container-background: #232129;
-	--input-text: #f4ede8;
 
 	--light-orange: #ff9000;
 	--iron-gray: #666360;
@@ -25,7 +23,57 @@
 	--green: #12a454;
 	--pink: #e83f5b;
 
-	/* shadcn/ui variables adjusted for default dark background */
+	/* Light theme */
+	--background: #f6f6fa;
+	--container-background: #ffffff;
+	--input-text: #15152b;
+	--foreground: #15152b;
+	--card: #ffffff;
+	--card-foreground: #15152b;
+	--popover: #ffffff;
+	--popover-foreground: #15152b;
+	--primary: #5636d3;
+	--primary-foreground: #ffffff;
+	--secondary: #ececf3;
+	--secondary-foreground: #15152b;
+	--muted: #ececf3;
+	--muted-foreground: #6b6b82;
+	--accent: #eeeafc;
+	--accent-foreground: #15152b;
+	--destructive: #d23b3b;
+	--destructive-foreground: #ffffff;
+	--border: #e6e6ef;
+	--input: #ffffff;
+	--ring: #5636d3;
+	--chart-1: oklch(0.646 0.222 41.116);
+	--chart-2: oklch(0.6 0.118 184.704);
+	--chart-3: oklch(0.398 0.07 227.392);
+	--chart-4: oklch(0.828 0.189 84.429);
+	--chart-5: oklch(0.769 0.188 70.08);
+	--sidebar: #ffffff;
+	--sidebar-foreground: #15152b;
+	--sidebar-primary: #5636d3;
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: #eeeafc;
+	--sidebar-accent-foreground: #5636d3;
+	--sidebar-border: #e6e6ef;
+	--sidebar-ring: #5636d3;
+
+	/* Navigation overhaul tokens (see docs/ui/ui-overhaul.md) */
+	--primary-text: #5636d3;
+	--primary-soft: #eeeafc;
+	--success: #12875a;
+	--success-soft: #e3f5ec;
+	--danger: #d23b3b;
+	--danger-soft: #fce9e9;
+}
+
+/* Dark theme: the app's original look and the default */
+.dark {
+	color-scheme: dark;
+	--background: #312e38;
+	--container-background: #232129;
+	--input-text: #f4ede8;
 	--foreground: #f4ede8;
 	--card: #232129;
 	--card-foreground: #f4ede8;
@@ -44,11 +92,6 @@
 	--border: #3e3b47;
 	--input: #232129;
 	--ring: #ff872c;
-	--chart-1: oklch(0.646 0.222 41.116);
-	--chart-2: oklch(0.6 0.118 184.704);
-	--chart-3: oklch(0.398 0.07 227.392);
-	--chart-4: oklch(0.828 0.189 84.429);
-	--chart-5: oklch(0.769 0.188 70.08);
 	--sidebar: #28262e;
 	--sidebar-foreground: #f4ede8;
 	--sidebar-primary: #ff872c;
@@ -57,6 +100,13 @@
 	--sidebar-accent-foreground: #f4ede8;
 	--sidebar-border: #3e3b47;
 	--sidebar-ring: #ff872c;
+
+	--primary-text: #b9abff;
+	--primary-soft: #2f2760;
+	--success: #3dd68c;
+	--success-soft: #173a2b;
+	--danger: #ff7d7d;
+	--danger-soft: #4a2226;
 }
 
 @theme {
@@ -92,6 +142,12 @@
 	--color-popover: var(--popover);
 	--color-card-foreground: var(--card-foreground);
 	--color-card: var(--card);
+	--color-primary-text: var(--primary-text);
+	--color-primary-soft: var(--primary-soft);
+	--color-success: var(--success);
+	--color-success-soft: var(--success-soft);
+	--color-danger: var(--danger);
+	--color-danger-soft: var(--danger-soft);
 
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
