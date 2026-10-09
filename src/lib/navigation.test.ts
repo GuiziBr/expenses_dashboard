@@ -129,21 +129,25 @@ describe("getPageMeta", () => {
 		expect(getPageMeta("/sharedDashboard")).toEqual({
 			title: "Shared Dashboard",
 			hasMonthPicker: true,
+			hasStickyMonthPicker: true,
 			canCreateExpense: true
 		})
 		expect(getPageMeta("/balanceBreakdown")).toEqual({
 			title: "Balance Breakdown",
 			hasMonthPicker: true,
+			hasStickyMonthPicker: false,
 			canCreateExpense: false
 		})
 		expect(getPageMeta("/consolidatedBalance")).toEqual({
 			title: "Consolidated Balance",
 			hasMonthPicker: false,
+			hasStickyMonthPicker: false,
 			canCreateExpense: false
 		})
 		expect(getPageMeta("/management/stores")).toEqual({
 			title: "Management",
 			hasMonthPicker: false,
+			hasStickyMonthPicker: false,
 			canCreateExpense: false
 		})
 	})

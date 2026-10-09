@@ -138,6 +138,9 @@ export const MONTH_ROUTES = [
 
 const CREATE_EXPENSE_ROUTES = ["/sharedDashboard", "/personalDashboard"]
 
+/** Balance Breakdown is left out: its group-by tabs are already sticky on mobile. */
+const STICKY_MONTH_ROUTES = ["/sharedDashboard", "/personalDashboard"]
+
 /** Pages that follow the month picked in the top bar. */
 export const isMonthRoute = (pathname: string | null) =>
 	!!pathname && MONTH_ROUTES.includes(pathname)
@@ -145,5 +148,6 @@ export const isMonthRoute = (pathname: string | null) =>
 export const getPageMeta = (pathname: string | null) => ({
 	title: getPageTitle(pathname),
 	hasMonthPicker: isMonthRoute(pathname),
+	hasStickyMonthPicker: !!pathname && STICKY_MONTH_ROUTES.includes(pathname),
 	canCreateExpense: !!pathname && CREATE_EXPENSE_ROUTES.includes(pathname)
 })

@@ -63,4 +63,20 @@ describe("TopBar", () => {
 			screen.getByRole("button", { name: "Switch to light theme" })
 		).toHaveAttribute("aria-disabled", "true")
 	})
+
+	it("keeps the month picker pinned on the shared and personal dashboards", () => {
+		for (const path of ["/sharedDashboard", "/personalDashboard"]) {
+			const { container, unmount } = renderBar(path)
+			expect(container.querySelector(".sticky")).toContainElement(
+				screen.getByLabelText("Month")
+			)
+			unmount()
+		}
+	})
+
+	it("does not pin the month picker on Balance Breakdown", () => {
+		const { container } = renderBar("/balanceBreakdown")
+
+		expect(container.querySelector(".sticky")).not.toBeInTheDocument()
+	})
 })
