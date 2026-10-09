@@ -132,7 +132,7 @@ export function ReportTables({ data, shareType }: ReportTablesProps) {
 	if (!data) return null
 
 	return (
-		<section className="flex flex-col justify-center gap-5 md:flex-row">
+		<section className="flex flex-col justify-center gap-5 md:flex-row md:items-start">
 			{data.requester && (
 				<Table report={data.requester} shareType={shareType} type="requester" />
 			)}
