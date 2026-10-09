@@ -34,9 +34,9 @@ export function CheckboxGroup({
   }
 
   return (
-    <div className={cn("flex gap-3 p-3 bg-container-background rounded-md border-2 border-container-background focus-within:border-orange", className)}>
+    <div className={cn("flex gap-3 rounded-lg border border-border bg-card p-3 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30", className)}>
       <div className="flex items-center gap-2 mb-1">
-        {Icon && <Icon className="size-5 text-iron-gray" />}
+        {Icon && <Icon className="size-5 text-muted-foreground" />}
       </div>
       <div className="flex flex-wrap gap-4">
         {options.map((option) => {
@@ -50,13 +50,13 @@ export function CheckboxGroup({
                 className={cn(
                   "size-5 rounded border-2 flex items-center justify-center transition-colors shrink-0",
                   isChecked
-                    ? "bg-orange border-orange"
-                    : "border-iron-gray group-hover:border-orange"
+                    ? "bg-primary border-primary"
+                    : "border-muted-foreground group-hover:border-primary"
                 )}
               >
                 {isChecked && (
                   <svg
-                    className="size-3.5 text-background"
+                    className="size-3.5 text-primary-foreground"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -76,7 +76,7 @@ export function CheckboxGroup({
                 checked={isChecked}
                 onChange={() => toggleOption(option.value)}
               />
-              <span className="text-base font-medium text-input-text">
+              <span className="text-sm font-medium text-foreground">
                 {option.label}
               </span>
             </label>
