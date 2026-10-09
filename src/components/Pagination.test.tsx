@@ -6,6 +6,20 @@ import { Pagination } from "./Pagination"
 const pagesOf = (count: number) =>
 	Array.from({ length: count }, (_, i) => i + 1)
 
+const setup = (currentPage: number, total: number) => {
+	const setCurrentPage = vi.fn()
+	render(
+		<Pagination
+			currentPage={currentPage}
+			setCurrentPage={setCurrentPage}
+			pages={pagesOf(total)}
+		/>
+	)
+	return setCurrentPage
+}
+
+const button = (name: string) => screen.getByRole("button", { name })
+
 describe("Pagination", () => {
 	it("renders nothing for a single page", () => {
 		const { container } = render(
@@ -15,54 +29,43 @@ describe("Pagination", () => {
 		expect(container).toBeEmptyDOMElement()
 	})
 
-	it("marks the current page and changes page on click", () => {
-		const setCurrentPage = vi.fn()
-		render(
-			<Pagination
-				currentPage={2}
-				setCurrentPage={setCurrentPage}
-				pages={pagesOf(3)}
-			/>
-		)
+	it("shows the current page and the total", () => {
+		setup(3, 12)
 
-		expect(screen.getByRole("button", { name: "2" })).toHaveAttribute(
-			"aria-current",
-			"page"
-		)
-		fireEvent.click(screen.getByRole("button", { name: "3" }))
-		expect(setCurrentPage).toHaveBeenCalledWith(3)
+		expect(screen.getByText(/^Page/)).toHaveTextContent("Page 3 of 12")
 	})
 
-	it("disables previous on the first page and next on the last", () => {
-		const { rerender } = render(
-			<Pagination currentPage={1} setCurrentPage={vi.fn()} pages={pagesOf(3)} />
-		)
-		expect(screen.getByRole("button", { name: "Previous" })).toBeDisabled()
-		expect(screen.getByRole("button", { name: "Next" })).toBeEnabled()
+	it("goes to the first, previous, next and last page", () => {
+		const setCurrentPage = setup(5, 12)
 
-		rerender(
-			<Pagination currentPage={3} setCurrentPage={vi.fn()} pages={pagesOf(3)} />
-		)
-		expect(screen.getByRole("button", { name: "Next" })).toBeDisabled()
+		fireEvent.click(button("First page"))
+		fireEvent.click(button("Previous page"))
+		fireEvent.click(button("Next page"))
+		fireEvent.click(button("Last page"))
+
+		expect(setCurrentPage.mock.calls).toEqual([[1], [4], [6], [12]])
 	})
 
-	it("collapses long ranges with ellipses", () => {
-		render(
-			<Pagination
-				currentPage={5}
-				setCurrentPage={vi.fn()}
-				pages={pagesOf(20)}
-			/>
-		)
+	it("disables first and previous on the first page", () => {
+		setup(1, 5)
 
-		expect(screen.getAllByText("…")).toHaveLength(2)
-		expect(screen.getByRole("button", { name: "20" })).toBeInTheDocument()
+		expect(button("First page")).toBeDisabled()
+		expect(button("Previous page")).toBeDisabled()
+		expect(button("Next page")).toBeEnabled()
+		expect(button("Last page")).toBeEnabled()
+	})
+
+	it("disables next and last on the last page", () => {
+		setup(5, 5)
+
+		expect(button("Next page")).toBeDisabled()
+		expect(button("Last page")).toBeDisabled()
+		expect(button("First page")).toBeEnabled()
+		expect(button("Previous page")).toBeEnabled()
 	})
 
 	it("is pinned to the viewport bottom on desktop only", () => {
-		render(
-			<Pagination currentPage={1} setCurrentPage={vi.fn()} pages={pagesOf(3)} />
-		)
+		setup(1, 3)
 		const nav = screen.getByRole("navigation", { name: "Pagination" })
 
 		expect(nav).toHaveClass("lg:fixed", "lg:bottom-4")

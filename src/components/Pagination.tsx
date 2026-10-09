@@ -1,8 +1,13 @@
 "use client"
 
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
+import {
+	ChevronLeft,
+	ChevronRight,
+	ChevronsLeft,
+	ChevronsRight
+} from "lucide-react"
 import { translations } from "@/constants/translations"
-import { cn } from "@/lib/utils"
 
 interface PaginationProps {
 	currentPage: number
@@ -10,29 +15,28 @@ interface PaginationProps {
 	pages: number[]
 }
 
-function getVisiblePages(
-	currentPage: number,
-	totalPages: number
-): (number | "...")[] {
-	if (totalPages <= 7) {
-		return Array.from({ length: totalPages }, (_, i) => i + 1)
-	}
-
-	const delta = 1
-	const left = currentPage - delta
-	const right = currentPage + delta
-	const result: (number | "...")[] = [1]
-
-	if (left > 2) result.push("...")
-
-	for (let i = Math.max(2, left); i <= Math.min(totalPages - 1, right); i++) {
-		result.push(i)
-	}
-
-	if (right < totalPages - 1) result.push("...")
-
-	result.push(totalPages)
-	return result
+function PageButton({
+	icon: Icon,
+	label,
+	disabled,
+	onClick
+}: {
+	icon: LucideIcon
+	label: string
+	disabled: boolean
+	onClick: () => void
+}) {
+	return (
+		<button
+			type="button"
+			onClick={onClick}
+			disabled={disabled}
+			aria-label={label}
+			className="flex size-8 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40"
+		>
+			<Icon className="size-4" aria-hidden="true" />
+		</button>
+	)
 }
 
 export function Pagination({
@@ -44,7 +48,9 @@ export function Pagination({
 
 	if (totalPages <= 1) return null
 
-	const visiblePages = getVisiblePages(currentPage, totalPages)
+	const isFirst = currentPage <= 1
+	const isLast = currentPage >= totalPages
+	const { common } = translations
 
 	return (
 		<>
@@ -52,65 +58,42 @@ export function Pagination({
 			<div aria-hidden="true" className="hidden h-14 lg:block" />
 			{/* On desktop the bar is pinned to the bottom of the viewport, centred in the area beside the sidebar (248px) */}
 			<nav
-				aria-label={translations.common.pagination}
+				aria-label={common.pagination}
 				className="flex w-full justify-center lg:pointer-events-none lg:fixed lg:right-0 lg:bottom-4 lg:left-[248px] lg:z-30 lg:w-auto"
 			>
-				<div className="flex items-center gap-2 lg:pointer-events-auto lg:rounded-xl lg:border lg:border-border lg:bg-card lg:px-2 lg:py-1 lg:shadow-md">
-					<button
-						type="button"
-						onClick={() => setCurrentPage(currentPage - 1)}
-						disabled={currentPage <= 1}
-						aria-label={translations.common.previous}
-						className="flex h-8 cursor-pointer items-center rounded-lg px-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-					>
-						<ChevronLeft className="h-4 w-4 md:hidden" />
-						<span className="hidden md:inline">
-							{translations.common.previous}
-						</span>
-					</button>
-
-					{visiblePages.map((page, index) => {
-						if (page === "...") {
-							return (
-								<span
-									// biome-ignore lint/suspicious/noArrayIndexKey: ellipsis markers have no stable key
-									key={`ellipsis-${index}`}
-									className="px-1 text-muted-foreground select-none"
-								>
-									&hellip;
-								</span>
-							)
-						}
-
-						const isSelected = page === currentPage
-						return (
-							<button
-								type="button"
-								key={page}
-								onClick={() => setCurrentPage(page)}
-								aria-current={isSelected ? "page" : undefined}
-								className={cn(
-									"h-8 min-w-8 cursor-pointer rounded-lg px-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-									isSelected
-										? "pointer-events-none bg-primary font-semibold text-primary-foreground"
-										: "text-muted-foreground hover:bg-accent hover:text-foreground"
-								)}
-							>
-								{page}
-							</button>
-						)
-					})}
-
-					<button
-						type="button"
-						onClick={() => setCurrentPage(currentPage + 1)}
-						disabled={currentPage === totalPages}
-						aria-label={translations.common.next}
-						className="flex h-8 cursor-pointer items-center rounded-lg px-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-					>
-						<ChevronRight className="h-4 w-4 md:hidden" />
-						<span className="hidden md:inline">{translations.common.next}</span>
-					</button>
+				<div className="flex items-center gap-3 lg:pointer-events-auto lg:rounded-xl lg:border lg:border-border lg:bg-card lg:px-3 lg:py-1 lg:shadow-md">
+					<p className="px-1 text-sm text-muted-foreground" aria-live="polite">
+						{common.page}{" "}
+						<span className="font-semibold text-foreground">{currentPage}</span>{" "}
+						{common.of}{" "}
+						<span className="font-semibold text-foreground">{totalPages}</span>
+					</p>
+					<div className="flex items-center gap-1">
+						<PageButton
+							icon={ChevronsLeft}
+							label={common.firstPage}
+							disabled={isFirst}
+							onClick={() => setCurrentPage(1)}
+						/>
+						<PageButton
+							icon={ChevronLeft}
+							label={common.previousPage}
+							disabled={isFirst}
+							onClick={() => setCurrentPage(currentPage - 1)}
+						/>
+						<PageButton
+							icon={ChevronRight}
+							label={common.nextPage}
+							disabled={isLast}
+							onClick={() => setCurrentPage(currentPage + 1)}
+						/>
+						<PageButton
+							icon={ChevronsRight}
+							label={common.lastPage}
+							disabled={isLast}
+							onClick={() => setCurrentPage(totalPages)}
+						/>
+					</div>
 				</div>
 			</nav>
 		</>
