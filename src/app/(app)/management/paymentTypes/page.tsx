@@ -51,18 +51,16 @@ export default function PaymentTypesManagementPage() {
 			)}
 
 			{data && (
-				<div className="animate-in fade-in duration-500">
+				<div className="flex flex-col gap-4 animate-in fade-in duration-500">
 					{data.paymentTypes.length > 0 ? (
 						<>
 							<PaymentTypeTable paymentTypes={data.paymentTypes} />
 							{totalPages > 1 && (
-								<div className="mt-4">
-									<Pagination
-										currentPage={currentPage}
-										setCurrentPage={handlePageChange}
-										pages={pages}
-									/>
-								</div>
+								<Pagination
+									currentPage={currentPage}
+									setCurrentPage={handlePageChange}
+									pages={pages}
+								/>
 							)}
 						</>
 					) : (

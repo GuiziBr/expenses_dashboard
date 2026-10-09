@@ -47,8 +47,8 @@ export function Pagination({
 	const visiblePages = getVisiblePages(currentPage, totalPages)
 
 	return (
-		<div className="flex w-full justify-center">
-			<div className="flex items-center gap-2">
+		<div className="flex w-full justify-center lg:sticky lg:bottom-4 lg:z-10">
+			<div className="flex items-center gap-2 lg:rounded-xl lg:border lg:border-border lg:bg-card lg:px-2 lg:py-1 lg:shadow-md">
 				<button
 					type="button"
 					onClick={() => setCurrentPage(currentPage - 1)}

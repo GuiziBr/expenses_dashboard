@@ -58,4 +58,13 @@ describe("Pagination", () => {
 		expect(screen.getAllByText("…")).toHaveLength(2)
 		expect(screen.getByRole("button", { name: "20" })).toBeInTheDocument()
 	})
+
+	it("sticks to the bottom of the viewport on desktop only", () => {
+		const { container } = render(
+			<Pagination currentPage={1} setCurrentPage={vi.fn()} pages={pagesOf(3)} />
+		)
+
+		expect(container.firstChild).toHaveClass("lg:sticky", "lg:bottom-4")
+		expect(container.firstChild).not.toHaveClass("sticky")
+	})
 })

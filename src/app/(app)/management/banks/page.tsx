@@ -51,18 +51,16 @@ export default function BanksManagementPage() {
 			)}
 
 			{data && (
-				<div className="animate-in fade-in duration-500">
+				<div className="flex flex-col gap-4 animate-in fade-in duration-500">
 					{data.banks.length > 0 ? (
 						<>
 							<BankTable banks={data.banks} />
 							{totalPages > 1 && (
-								<div className="mt-4">
-									<Pagination
-										currentPage={currentPage}
-										setCurrentPage={handlePageChange}
-										pages={pages}
-									/>
-								</div>
+								<Pagination
+									currentPage={currentPage}
+									setCurrentPage={handlePageChange}
+									pages={pages}
+								/>
 							)}
 						</>
 					) : (
