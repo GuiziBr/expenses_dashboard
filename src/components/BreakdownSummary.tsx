@@ -77,7 +77,7 @@ function SummaryCard({
 				<p
 					className={cn(
 						"text-[13px] font-medium",
-						isTotal ? "text-primary-foreground/80" : "text-muted-foreground"
+						isTotal ? "text-primary-foreground/90" : "text-muted-foreground"
 					)}
 				>
 					{label}
@@ -105,7 +105,7 @@ function SummaryCard({
 				<p
 					className={cn(
 						"text-xs md:text-sm",
-						isTotal ? "text-primary-foreground/80" : "text-muted-foreground"
+						isTotal ? "text-primary-foreground/90" : "text-muted-foreground"
 					)}
 				>
 					{isLoading

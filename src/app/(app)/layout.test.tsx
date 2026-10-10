@@ -18,14 +18,17 @@ vi.mock("@/contexts/auth-context", () => ({
 	})
 }))
 
+import { ThemeProvider } from "@/providers/theme-provider"
 import AppLayout from "./layout"
 
 describe("AppLayout", () => {
 	it("renders the sidebar, the tab bar and the page content", () => {
 		render(
-			<AppLayout>
-				<main>Page content</main>
-			</AppLayout>
+			<ThemeProvider>
+				<AppLayout>
+					<main>Page content</main>
+				</AppLayout>
+			</ThemeProvider>
 		)
 
 		expect(screen.getByRole("navigation", { name: "Main" })).toBeInTheDocument()

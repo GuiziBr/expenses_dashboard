@@ -134,7 +134,7 @@ export default function PersonalDashboard() {
 	const currentPage = Math.floor(params.offset / params.limit) + 1
 
 	return (
-		<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5 lg:h-full">
+		<main className="mx-auto flex max-w-[1120px] flex-col gap-3 px-5 lg:h-full">
 			<section className="grid grid-cols-1 md:grid-cols-3 md:gap-5">
 				<BalanceCard
 					label={translations.common.balance}

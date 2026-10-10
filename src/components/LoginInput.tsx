@@ -26,8 +26,8 @@ const LoginInput = forwardRef<HTMLInputElement, LoginInputProps>(
 		return (
 			<div
 				className={cn(
-					"flex items-center w-full p-3.5 rounded-lg border border-border bg-card text-muted-foreground transition-colors duration-300",
-					error && "border-destructive text-destructive",
+					"flex items-center w-full p-3.5 rounded-lg border border-input bg-card text-muted-foreground transition-colors duration-300",
+					error && "border-danger text-danger",
 					isFocused && "border-primary ring-2 ring-ring/30 text-primary-text",
 					!error && isFilled && "text-primary-text",
 					containerClassName
@@ -64,11 +64,11 @@ const LoginInput = forwardRef<HTMLInputElement, LoginInputProps>(
 				/>
 				{error && (
 					<div className="relative flex items-center group ml-4 h-5">
-						<AlertCircle className="h-5 w-5 shrink-0 text-destructive" />
+						<AlertCircle className="h-5 w-5 shrink-0 text-danger" />
 						<span
 							id={`${name}-error`}
 							role="alert"
-							className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 bg-destructive text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
+							className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 bg-destructive text-destructive-foreground px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
 						>
 							{error.message as string}
 							<div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-t-destructive border-x-transparent border-b-transparent" />

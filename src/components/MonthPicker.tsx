@@ -14,7 +14,7 @@ const focusRing =
 	"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 
 const arrowClass = cn(
-	"flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-border bg-card text-foreground transition-colors hover:bg-accent",
+	"flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-input bg-card text-foreground transition-colors hover:bg-accent",
 	focusRing
 )
 
@@ -39,7 +39,7 @@ export function MonthPicker({ className }: { className?: string }) {
 				<ChevronLeft className="size-4" aria-hidden="true" />
 			</button>
 
-			<div className="relative flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground focus-within:ring-2 focus-within:ring-ring md:w-[190px] md:flex-none">
+			<div className="relative flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border border-input bg-card px-3 text-sm font-medium text-foreground focus-within:ring-2 focus-within:ring-ring md:w-[190px] md:flex-none">
 				<Calendar
 					className="size-4 shrink-0 text-muted-foreground"
 					aria-hidden="true"

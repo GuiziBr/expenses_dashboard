@@ -8,8 +8,7 @@ import {
 	isTheme,
 	storeTheme,
 	THEME_INIT_SCRIPT,
-	THEME_STORAGE_KEY,
-	THEME_SWITCHING_ENABLED
+	THEME_STORAGE_KEY
 } from "./theme"
 
 beforeEach(() => {
@@ -21,10 +20,6 @@ describe("theme helpers", () => {
 	it("defaults to dark, the app's original look", () => {
 		expect(DEFAULT_THEME).toBe("dark")
 		expect(getStoredTheme()).toBe("dark")
-	})
-
-	it("keeps switching off until the feature ships", () => {
-		expect(THEME_SWITCHING_ENABLED).toBe(false)
 	})
 
 	it("reads and writes the stored theme", () => {
@@ -71,6 +66,14 @@ describe("THEME_INIT_SCRIPT", () => {
 		window.localStorage.setItem(THEME_STORAGE_KEY, "light")
 		run()
 		expect(document.documentElement).not.toHaveClass("dark")
+	})
+
+	it("applies the same default as DEFAULT_THEME when nothing is stored", () => {
+		document.documentElement.className = DEFAULT_THEME === "dark" ? "" : "dark"
+		run()
+		expect(document.documentElement.classList.contains("dark")).toBe(
+			DEFAULT_THEME === "dark"
+		)
 	})
 
 	it("falls back to dark for an invalid stored value", () => {

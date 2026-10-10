@@ -1,7 +1,7 @@
-import { AlertCircle, Calendar, ChevronDown, Loader2 } from "lucide-react"
+import { AlertCircle, Calendar, Loader2 } from "lucide-react"
 import * as React from "react"
 import { Button } from "@/components/ui/button"
-import { Select } from "@/components/ui/select"
+import { SelectMenu } from "@/components/ui/select-menu"
 import { translations } from "@/constants/translations"
 import { SHARED_BALANCE_TYPES } from "@/lib/constants"
 import { cn } from "@/lib/utils"
@@ -51,32 +51,30 @@ export function ConsolidatedFilters({
 				<div className="flex flex-row gap-2 w-full md:w-auto">
 					{/* Select Container */}
 					<div className="flex-1 md:w-[15rem]">
-						<Select
-							icon={ChevronDown}
+						<SelectMenu
 							name="balanceType"
 							options={SHARED_BALANCE_TYPES}
 							placeholder={translations.dashboards.consolidated.selectType}
 							value={balanceType}
-							onChange={(e) => {
-								onBalanceTypeChange(e.target.value)
+							onValueChange={(value) => {
+								onBalanceTypeChange(value)
 								if (errors.balanceType)
 									setErrors((prev) => ({ ...prev, balanceType: "" }))
 							}}
 							error={errors.balanceType}
-							className="px-2 md:px-3"
 						/>
 					</div>
 
 					{/* Input Container */}
 					<div
 						className={cn(
-							"relative flex h-10 flex-1 items-center rounded-lg border border-border bg-card px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30 md:w-[14rem]",
-							errors.date && "border-destructive text-destructive"
+							"relative flex h-10 flex-1 items-center rounded-lg border border-input bg-card px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30 md:w-[14rem]",
+							errors.date && "border-danger text-danger"
 						)}
 					>
 						<div className="text-muted-foreground">
 							<Calendar
-								className={cn("size-4", errors.date && "text-destructive")}
+								className={cn("size-4", errors.date && "text-danger")}
 							/>
 						</div>
 						<input
@@ -91,10 +89,10 @@ export function ConsolidatedFilters({
 						/>
 						{errors.date && (
 							<div className="relative flex items-center group h-5">
-								<AlertCircle className="h-5 w-5 shrink-0 text-destructive" />
+								<AlertCircle className="h-5 w-5 shrink-0 text-danger" />
 								<span
 									role="alert"
-									className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 bg-destructive text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
+									className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 bg-destructive text-destructive-foreground px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
 								>
 									{errors.date}
 									<div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-t-destructive border-x-transparent border-b-transparent" />

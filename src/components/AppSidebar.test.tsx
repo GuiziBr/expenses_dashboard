@@ -21,6 +21,8 @@ vi.mock("@/contexts/auth-context", () => ({
 	})
 }))
 
+import { THEME_STORAGE_KEY } from "@/lib/theme"
+import { ThemeProvider } from "@/providers/theme-provider"
 import { AppSidebar } from "./AppSidebar"
 
 beforeAll(() => {
@@ -31,7 +33,16 @@ beforeAll(() => {
 	}
 })
 
+const renderSidebar = () =>
+	render(
+		<ThemeProvider>
+			<AppSidebar />
+		</ThemeProvider>
+	)
+
 beforeEach(() => {
+	window.localStorage.clear()
+	document.documentElement.className = "dark"
 	pathname = "/sharedDashboard"
 	search = ""
 	signOut.mockClear()
@@ -40,7 +51,7 @@ beforeEach(() => {
 
 describe("AppSidebar navigation", () => {
 	it("renders the main navigation with grouped links", () => {
-		render(<AppSidebar />)
+		renderSidebar()
 		const nav = screen.getByRole("navigation", { name: "Main" })
 
 		for (const [label, href] of [
@@ -64,7 +75,7 @@ describe("AppSidebar navigation", () => {
 
 	it("marks only the current page with aria-current", () => {
 		pathname = "/balanceBreakdown"
-		render(<AppSidebar />)
+		renderSidebar()
 
 		expect(
 			screen.getByRole("link", { name: "Balance Breakdown" })
@@ -78,7 +89,7 @@ describe("AppSidebar navigation", () => {
 describe("AppSidebar month carry-over", () => {
 	it("keeps the selected month on links to month pages only", () => {
 		search = "month=2026-08"
-		render(<AppSidebar />)
+		renderSidebar()
 
 		expect(
 			screen.getByRole("link", { name: "Personal Dashboard" })
@@ -93,7 +104,7 @@ describe("AppSidebar month carry-over", () => {
 
 	it("ignores an invalid month", () => {
 		search = "month=nope"
-		render(<AppSidebar />)
+		renderSidebar()
 
 		expect(
 			screen.getByRole("link", { name: "Personal Dashboard" })
@@ -104,7 +115,7 @@ describe("AppSidebar month carry-over", () => {
 describe("AppSidebar management section", () => {
 	it("is collapsed by default and expands on click", async () => {
 		const user = userEvent.setup()
-		render(<AppSidebar />)
+		renderSidebar()
 		const toggle = screen.getByRole("button", { name: "Management" })
 
 		expect(toggle).toHaveAttribute("aria-expanded", "false")
@@ -130,7 +141,7 @@ describe("AppSidebar management section", () => {
 
 	it("starts expanded with the current page marked on a management route", () => {
 		pathname = "/management/stores"
-		render(<AppSidebar />)
+		renderSidebar()
 
 		expect(screen.getByRole("button", { name: "Management" })).toHaveAttribute(
 			"aria-expanded",
@@ -145,7 +156,7 @@ describe("AppSidebar management section", () => {
 
 describe("AppSidebar user menu", () => {
 	it("shows the user's initials and name", () => {
-		render(<AppSidebar />)
+		renderSidebar()
 		const trigger = screen.getByRole("button", { name: "Account menu" })
 
 		expect(trigger).toHaveTextContent("RG")
@@ -154,7 +165,7 @@ describe("AppSidebar user menu", () => {
 
 	it("shows the user's picture instead of the initials when there is one", () => {
 		avatar = "https://example.com/me.png"
-		render(<AppSidebar />)
+		renderSidebar()
 		const trigger = screen.getByRole("button", { name: "Account menu" })
 
 		expect(trigger.querySelector("img")).toHaveAttribute(
@@ -166,12 +177,42 @@ describe("AppSidebar user menu", () => {
 
 	it("signs out from the menu", async () => {
 		const user = userEvent.setup()
-		render(<AppSidebar />)
+		renderSidebar()
 
 		await user.click(screen.getByRole("button", { name: "Account menu" }))
 		expect(await screen.findByText("ricardo@test.com")).toBeInTheDocument()
 		await user.click(screen.getByRole("menuitem", { name: "Logout" }))
 
 		expect(signOut).toHaveBeenCalledTimes(1)
+	})
+})
+
+describe("AppSidebar theme item", () => {
+	it("offers the light theme while dark is active", async () => {
+		const user = userEvent.setup()
+		renderSidebar()
+
+		await user.click(screen.getByRole("button", { name: "Account menu" }))
+
+		expect(
+			await screen.findByRole("menuitem", { name: "Switch to light theme" })
+		).toBeInTheDocument()
+	})
+
+	it("switches the theme, keeps the choice and leaves the menu open", async () => {
+		const user = userEvent.setup()
+		renderSidebar()
+		await user.click(screen.getByRole("button", { name: "Account menu" }))
+
+		await user.click(
+			await screen.findByRole("menuitem", { name: "Switch to light theme" })
+		)
+
+		expect(document.documentElement).not.toHaveClass("dark")
+		expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("light")
+		expect(
+			screen.getByRole("menuitem", { name: "Switch to dark theme" })
+		).toBeInTheDocument()
+		expect(signOut).not.toHaveBeenCalled()
 	})
 })

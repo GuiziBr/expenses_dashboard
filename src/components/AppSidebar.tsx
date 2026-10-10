@@ -4,7 +4,9 @@ import {
 	ChevronDown,
 	ChevronsUpDown,
 	LogOut,
+	Moon,
 	Settings2,
+	Sun,
 	Wallet
 } from "lucide-react"
 import { usePathname } from "next/navigation"
@@ -29,6 +31,7 @@ import {
 	type NavItem
 } from "@/lib/navigation"
 import { cn } from "@/lib/utils"
+import { useTheme } from "@/providers/theme-provider"
 
 const ITEM_CLASS =
 	"flex h-10 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium no-underline transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -131,6 +134,8 @@ function ManagementSection({ pathname }: { pathname: string | null }) {
 
 function UserMenu() {
 	const { user, signOut } = useAuth()
+	const { theme, toggleTheme } = useTheme()
+	const isDark = theme === "dark"
 
 	return (
 		<DropdownMenu>
@@ -165,6 +170,19 @@ function UserMenu() {
 						<DropdownMenuSeparator />
 					</>
 				)}
+				{/* Keeps the menu open so the change is visible right away */}
+				<DropdownMenuItem
+					onSelect={(event) => {
+						event.preventDefault()
+						toggleTheme()
+					}}
+					className="cursor-pointer"
+				>
+					{isDark ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
+					{isDark
+						? translations.theme.switchToLight
+						: translations.theme.switchToDark}
+				</DropdownMenuItem>
 				<DropdownMenuItem onSelect={() => signOut()} className="cursor-pointer">
 					<LogOut aria-hidden="true" />
 					{translations.common.logout}

@@ -4,7 +4,7 @@ import {
 	createContext,
 	useCallback,
 	useContext,
-	useEffect,
+	useLayoutEffect,
 	useMemo,
 	useState
 } from "react"
@@ -28,7 +28,10 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
 	const [theme, setThemeState] = useState<Theme>(DEFAULT_THEME)
 
-	useEffect(() => {
+	// The server and the first client render must both be DEFAULT_THEME (no
+	// hydration mismatch). A layout effect syncs the stored choice before the
+	// browser paints, so a light user never sees the dark toggle state.
+	useLayoutEffect(() => {
 		setThemeState(getStoredTheme())
 	}, [])
 
