@@ -69,6 +69,7 @@ export default function Home() {
 							width={180}
 							height={40}
 							priority
+							className="dark:invert"
 						/>
 					</header>
 
