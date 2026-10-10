@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| **Status** | Implemented: all nine tasks done (see §10). Remaining follow-ups are in §12 |
+| **Status** | Implemented: all nine tasks done and the light/dark switch is live (see §10 and §12). Remaining follow-ups are in §12 |
 | **Scope** | Header and menu, plus the restyle of the Shared and Personal dashboards (task 7). The other pages followed in task 8 |
-| **Design** | Current UI: `design.pen`. New UI: `design_v2.pen` → *Dashboard / Desktop*, *Dashboard / Mobile* and their *(Dark)* versions |
+| **Design** | Current UI: `design.pen`. New UI: `design_v2.pen` (on the `feature/theme` branch) → *Dashboard / Desktop*, *Dashboard / Mobile* and their *(Dark)* versions |
 | **Code today** | Shell in `src/app/(app)/layout.tsx`. The old `Header.tsx` was removed in task 9 |
 | **Related** | [Design System](../../DESIGN_SYSTEM.md) · [Feature Specifications](../specs/features.md) |
 
@@ -151,18 +151,28 @@ The design tokens are CSS variables in `src/app/globals.css`: light values in `:
 
 - The font stays Roboto and Roboto Slab (open question 2). Inter is not loaded yet.
 - The Balance Breakdown chart keeps its categorical slice colours (`--orange`, `--blue-sky`, `--green`, `--pink`, `--light-blue`, `--light-gray`). They are data colours, not the accent, and they are the same in both themes. The purple slice (`--light-blue`) has low contrast on the dark card, see §12.
-- The login logo is a black SVG, which is hard to see on the dark page. It was like that before the overhaul.
+- The chart palette and the Sonner toast colours are not token-driven. Toasts use Sonner's own light and dark "rich" colours and are legible in both themes.
 
 ### Theme switching
 
-- `src/lib/theme.ts` holds the theme helpers and the inline script that sets the `dark` class before first paint, so a stored light preference does not flash dark.
-- `src/providers/theme-provider.tsx` exposes `useTheme()` (`theme`, `setTheme`, `toggleTheme`).
-- `src/components/ThemeToggle.tsx` is the toggle button. It is mounted in the current header (desktop only) but **disabled**, with a "Coming soon" tooltip on hover or keyboard focus. `THEME_SWITCHING_ENABLED` in `src/lib/theme.ts` controls this. See *Pending items* in §12.
+The switch is live. Users choose Light or Dark and the choice is remembered.
+
+- `src/lib/theme.ts` holds the theme helpers and the inline script that sets the `dark` class before first paint, so a stored light choice does not flash dark.
+- `src/providers/theme-provider.tsx` exposes `useTheme()` (`theme`, `setTheme`, `toggleTheme`). The first render always uses the default (dark), so it matches the server. A layout effect then reads the stored choice before the browser paints, so the toggle icon and the toast theme are right on the first frame.
+- `src/components/ThemeToggle.tsx` is an icon button in the top bar from `md` up.
+- On phones the toggle is a **Theme** row in the More sheet, above Log out. It does not close the sheet, so the change is visible straight away.
+- `src/components/ui/sonner.tsx` passes the active theme to Sonner, so toasts follow it.
 - Default is dark. The choice is stored in `localStorage` under `theme`. There is no "follow the system" option.
+
+Contrast fixes made when the switch went live:
+
+- Light `--input` is a mid grey (`#8a8aa3`, 3.4:1 on white) and every input-like control uses `border-input`. Dark `--input` is the old dark border colour, so dark looks the same.
+- Dark `--ring` is the light purple (`#b9abff`, 6.5:1). Dark `--destructive` is slightly darker (`#d4344f`, white text 4.8:1), and error text, icons and the Log out row use the `danger` token, which reads well on both themes.
+- The total-card label is at 90% opacity. The login logo is inverted in dark.
 
 Typography: **Inter** at 14px/500 for navigation and body, 26px/700 for the page title, 30px/600 for metric values. Radii: 8px for controls, 12px for cards. Orange is no longer used on the restyled screens.
 
-> **Differences from the current app.** [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md) defines a **dark-only** UI with Roboto and Roboto Slab and orange as the only accent. The mock uses Inter and purple, and adds a light theme. The dark theme is the closest to today's look. See §11, questions 1 to 3.
+> **Differences from the mock.** The mock uses Inter. The app keeps Roboto and Roboto Slab (§11, Q2). Light and dark both ship, with dark as the default.
 
 ## 7. Screens and components
 
@@ -187,7 +197,7 @@ Each screen exists in a light and a dark version in `design_v2.pen`, built from 
 - The mock has a subtitle under the page title ("October 2026 · Shared with 2 people"). It is not built: the month is in the picker and the app has no data for the number of people.
 - The mock's month picker is a single "Oct 2026" chip. The build adds previous/next arrows and a native month input, reusing the Balance Breakdown picker's behaviour. On mobile it sits under the title, which the mobile mock does not show.
 - The mock's mobile top bar has an avatar. The build has no avatar there, since the user menu is in the More sheet.
-- The theme toggle is disabled and hidden on mobile (§12).
+- The theme toggle is a top-bar button from 768px up. On phones it is a row in the More sheet.
 - The *New expense* button moved out of the filter row into the top bar. On mobile it is the floating button.
 
 - The mock's metric cards show a delta ("+8% vs last month"). It is not built, because the app has no previous-month figures.
@@ -217,7 +227,7 @@ The old header switched at `md`. The shell switches at `lg` instead, so tablets 
 
 ## 9. Accessibility
 
-- Text and icon contrast of at least 4.5:1 (3:1 for large text and UI borders). Check `muted` on `bg` and the white-on-`primary` balance card in both themes. The dark values have not been measured yet.
+- Text and icon contrast of at least 4.5:1 (3:1 for large text and UI borders). Check `muted` on `bg` and the white-on-`primary` balance card in both themes. The contrast of both themes was measured against these targets when the switch went live, and the fixes are listed in §6. Known exceptions: dark input borders (about 1.5:1), the chart palette, and muted text on `accent` hover states in light (about 4.4:1).
 - Wrap navigation in `<nav aria-label="Main">` and mark the current page with `aria-current="page"`. Today the active link has no programmatic marker.
 - Visible focus ring on all nav items, tabs and buttons.
 - Keyboard: tab through items in order, Enter or Space opens the user menu and the More sheet, Esc closes them.
@@ -231,7 +241,7 @@ Suggested order, one small PR each. Branch off `development`.
 | # | Task | Notes |
 |---|---|---|
 | 1 | **Navigation config.** A single typed list of groups and items (label from `translations`, route, icon). | Removes the duplicated markup in `Header.tsx` and fixes the missing Stores entry on mobile. |
-| 2 | **Tokens and theme switching.** Light and dark tokens in `globals.css`, a theme provider, a no-flash script and a `ThemeToggle` component. Done, see §6. | The toggle is mounted in the current header, disabled with a "Coming soon" tooltip. The font change waits for §11, Q2. |
+| 2 | **Tokens and theme switching.** Light and dark tokens in `globals.css`, a theme provider, a no-flash script and a `ThemeToggle` component. Done, see §6. | The toggle was first shown disabled with a "Coming soon" tooltip. It was enabled in a follow-up, see §12. The font change waits for §11, Q2. |
 | 3 | **`AppSidebar`.** Desktop sidebar built from the config, with active state via `usePathname`, `aria-current`, and the user menu using the existing `DropdownMenu`. Done: `src/components/AppSidebar.tsx`. | Not mounted yet. Task 5 puts it in the shared layout, and it is hidden below `lg` there. Reuses `signOut` from `useAuth`. The Management section is collapsed unless the current page is under `/management`. |
 | 4 | **`BottomTabBar` and More sheet.** Done: `src/components/BottomTabBar.tsx`, tab and More config in `src/lib/navigation.ts`. | Uses `src/components/ui/sheet.tsx` as a bottom sheet. Not mounted yet. Task 5 renders it below `md`. The tab labelled *Balance* still points to Consolidated Balance (§11, Q4). |
 | 5 | **Shared layout.** Done: `src/app/(app)/layout.tsx` renders the shell once. The 8 pages moved under the `(app)` route group (URLs unchanged), and `<Header />`, the purple band and the `-mt-24` overlap were removed from each. | `/` (login) stays outside the group. The sidebar shows from `lg`, the tab bar below `lg`. `Header.tsx` was left unused and is removed in task 9. |
@@ -254,19 +264,25 @@ Existing tools: Tailwind v4, shadcn/ui with Radix, `lucide-react`, and `sheet.ts
 
 ## 12. Pending items
 
-### Theme switching (toggle is built but disabled)
+### Theme switching (done) and what is left
 
-Today the toggle shows in the desktop top bar as a disabled button with a "Coming soon" tooltip, and the app always uses the dark theme. To turn it on:
+The switch is live (see §6). The steps that were pending are done:
 
-1. **Check light mode on every screen.** The fixed colours are gone (task 8), but only the dashboards were looked at in light. Go through Consolidated Balance, Balance Breakdown, the management pages, the dialogs, the toasts and the login page in light. Also check the chart palette: the purple slice has low contrast on the dark card, and the login logo is black.
-2. **Accent.** Done: dark `--primary` is purple and the remaining orange was removed in task 8.
-3. **Measure contrast in both themes** against the targets in §9, especially `muted` text and the dark `primary-text`.
-4. **Mobile placement for the toggle.** It is in the top bar on desktop (task 6) and hidden on mobile. Put it in the More sheet, because the "Coming soon" tooltip does not exist on touch.
-5. **Flip `THEME_SWITCHING_ENABLED` to `true`** and remove the disabled state and tooltip from `ThemeToggle`. The tests that cover the working toggle already exist.
-6. **Update `DESIGN_SYSTEM.md`**, which still describes a dark-only app.
-7. **Decide on "follow the system theme".** Not planned. It would add a third option and a `prefers-color-scheme` listener.
+- Light mode was checked visually on the dashboards, Consolidated Balance, Balance Breakdown, the management pages, the dialogs, toasts and the login page.
+- Contrast was measured and the fixes are in §6.
+- The toggle is on desktop (top bar) and on mobile (More sheet), and the disabled state and "Coming soon" tooltip are gone.
+- `DESIGN_SYSTEM.md` was updated.
 
-Until step 5, a stored `light` value in `localStorage` would still apply. Nothing writes it today, so this only matters if someone sets it by hand.
+Still open, none of it blocks the switch:
+
+1. **Chart palette.** The slice colours (`--orange`, `--blue-sky`, `--green`, `--pink`, `--light-blue`, `--light-gray`) are the same in both themes. The purple slice is about 2.2:1 on the dark card and orange about 2.4:1 on the light card. Move to theme-aware `--chart-*` tokens.
+2. **Login photo.** The same bright photo is used in both themes. A themed overlay would settle it.
+3. **`global-error.tsx`** renders its own `<html className="dark">` without the init script, so a light user who hits a root error sees dark.
+4. **Overlays.** The dialog and sheet scrims use a literal `bg-black/50`. A token would be cleaner.
+5. **Cross-tab sync.** Changing the theme in one tab does not update other open tabs until they reload.
+6. **Dead variables.** The legacy colour variables and `@theme` aliases in `globals.css` that no component uses can be deleted.
+7. **"Follow the system theme".** Not planned. It would add a third choice and a `prefers-color-scheme` listener.
+8. **Muted text on hover.** `text-muted-foreground` on `accent` hover states in light is about 4.4:1.
 
 ### Other pending items
 
@@ -286,6 +302,7 @@ The tablet rail, loading/empty/error states for the new screens, notification or
 | 2026-10-08 | First draft from `design_v2.pen` mock |
 | 2026-10-08 | Added dark theme tokens and dark screen mocks |
 | 2026-10-08 | Theme toggle mounted disabled with a "Coming soon" tooltip; added Pending items section |
+| 2026-10-09 | Light/dark switch enabled: toggle works on desktop and mobile, first-render flicker fixed, light input borders and dark focus/error contrast improved, logo visible in dark |
 | 2026-10-09 | The user menu shows the API avatar picture, with initials as the fallback |
 | 2026-10-09 | On desktop the list tables scroll inside their card instead of the whole page |
 | 2026-10-09 | Task 9 implemented: `Header.tsx` removed. All nine tasks are done |
