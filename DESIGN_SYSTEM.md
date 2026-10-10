@@ -161,7 +161,7 @@ Tailwind's 4px grid. Do not invent spacing values.
 | Use | Class |
 |---|---|
 | Page column | `mx-auto max-w-[1120px] px-5` |
-| Space between page sections | `gap-6` |
+| Space between page sections | `gap-3` (list pages), `gap-6` (Consolidated Balance) |
 | Card padding | `p-4 md:p-5` (metric cards), `p-6` (form sections) |
 | Space between a table and its pagination | `gap-4` |
 | Control height | `h-10` (inputs, selects, buttons in rows), `h-9` (default `Button`) |
@@ -195,7 +195,7 @@ Every authenticated page lives in the `(app)` route group, whose layout renders 
 Page content pattern:
 
 ```tsx
-<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5 lg:h-full">
+<main className="mx-auto flex max-w-[1120px] flex-col gap-3 px-5 lg:h-full">
   <section className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">{/* metric cards */}</section>
   <FilterForm />
   <div className="flex flex-col gap-4 lg:min-h-[12rem]">
