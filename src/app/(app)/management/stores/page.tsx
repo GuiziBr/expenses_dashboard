@@ -1,33 +1,18 @@
 "use client"
 
-import { useState } from "react"
 import { Pagination } from "@/components/Pagination"
 import { StoreForm } from "@/components/StoreForm"
 import { StoreTable } from "@/components/StoreTable"
 import { Loader } from "@/components/ui/loader"
 import { translations } from "@/constants/translations"
+import { usePagedList } from "@/hooks/use-paged-list"
 import { useStores } from "@/hooks/use-stores"
 
 const DEFAULT_LIMIT = 8
 
 export default function StoresManagementPage() {
-	const [params, setParams] = useState({
-		offset: 0,
-		limit: DEFAULT_LIMIT
-	})
-
-	const { data, isLoading, error } = useStores(params)
-
-	const handlePageChange = (page: number) => {
-		setParams((prev) => ({
-			...prev,
-			offset: (page - 1) * prev.limit
-		}))
-	}
-
-	const totalPages = data ? Math.ceil(data.totalCount / params.limit) : 0
-	const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
-	const currentPage = Math.floor(params.offset / params.limit) + 1
+	const { data, isLoading, error, pages, totalPages, currentPage, setPage } =
+		usePagedList(useStores, DEFAULT_LIMIT)
 
 	return (
 		<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5 lg:h-full">
@@ -58,7 +43,7 @@ export default function StoresManagementPage() {
 							{totalPages > 1 && (
 								<Pagination
 									currentPage={currentPage}
-									setCurrentPage={handlePageChange}
+									setCurrentPage={setPage}
 									pages={pages}
 								/>
 							)}

@@ -1,33 +1,18 @@
 "use client"
 
-import { useState } from "react"
 import { Pagination } from "@/components/Pagination"
 import { PaymentTypeForm } from "@/components/PaymentTypeForm"
 import { PaymentTypeTable } from "@/components/PaymentTypeTable"
 import { Loader } from "@/components/ui/loader"
 import { translations } from "@/constants/translations"
+import { usePagedList } from "@/hooks/use-paged-list"
 import { usePaymentTypes } from "@/hooks/use-payment-types"
 
 const DEFAULT_LIMIT = 8
 
 export default function PaymentTypesManagementPage() {
-	const [params, setParams] = useState({
-		offset: 0,
-		limit: DEFAULT_LIMIT
-	})
-
-	const { data, isLoading, error } = usePaymentTypes(params)
-
-	const handlePageChange = (page: number) => {
-		setParams((prev) => ({
-			...prev,
-			offset: (page - 1) * prev.limit
-		}))
-	}
-
-	const totalPages = data ? Math.ceil(data.totalCount / params.limit) : 0
-	const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
-	const currentPage = Math.floor(params.offset / params.limit) + 1
+	const { data, isLoading, error, pages, totalPages, currentPage, setPage } =
+		usePagedList(usePaymentTypes, DEFAULT_LIMIT)
 
 	return (
 		<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5 lg:h-full">
@@ -58,7 +43,7 @@ export default function PaymentTypesManagementPage() {
 							{totalPages > 1 && (
 								<Pagination
 									currentPage={currentPage}
-									setCurrentPage={handlePageChange}
+									setCurrentPage={setPage}
 									pages={pages}
 								/>
 							)}
