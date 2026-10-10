@@ -16,9 +16,20 @@ vi.mock("@/contexts/auth-context", () => ({
 	useAuth: () => ({ user: null, signOut })
 }))
 
+import { THEME_STORAGE_KEY } from "@/lib/theme"
+import { ThemeProvider } from "@/providers/theme-provider"
 import { BottomTabBar } from "./BottomTabBar"
 
+const renderBar = () =>
+	render(
+		<ThemeProvider>
+			<BottomTabBar />
+		</ThemeProvider>
+	)
+
 beforeEach(() => {
+	window.localStorage.clear()
+	document.documentElement.className = "dark"
 	pathname = "/sharedDashboard"
 	search = ""
 	signOut.mockClear()
@@ -26,14 +37,14 @@ beforeEach(() => {
 
 const openMore = async () => {
 	const user = userEvent.setup()
-	render(<BottomTabBar />)
+	renderBar()
 	await user.click(screen.getByRole("button", { name: "More" }))
 	return { user, dialog: await screen.findByRole("dialog") }
 }
 
 describe("BottomTabBar tabs", () => {
 	it("renders the three primary tabs and More", () => {
-		render(<BottomTabBar />)
+		renderBar()
 		const nav = screen.getByRole("navigation", { name: "Primary" })
 
 		for (const [label, href] of [
@@ -53,7 +64,7 @@ describe("BottomTabBar tabs", () => {
 
 	it("marks the current tab with aria-current", () => {
 		pathname = "/personalDashboard"
-		render(<BottomTabBar />)
+		renderBar()
 
 		expect(screen.getByRole("link", { name: "Personal" })).toHaveAttribute(
 			"aria-current",
@@ -67,7 +78,7 @@ describe("BottomTabBar tabs", () => {
 	it("highlights More for pages that live inside it", () => {
 		for (const path of ["/balanceBreakdown", "/management/banks"]) {
 			pathname = path
-			const { unmount } = render(<BottomTabBar />)
+			const { unmount } = renderBar()
 			expect(screen.getByRole("button", { name: "More" })).toHaveAttribute(
 				"data-active",
 				"true"
@@ -77,7 +88,7 @@ describe("BottomTabBar tabs", () => {
 	})
 
 	it("does not highlight More on a primary tab", () => {
-		render(<BottomTabBar />)
+		renderBar()
 		expect(screen.getByRole("button", { name: "More" })).toHaveAttribute(
 			"data-active",
 			"false"
@@ -88,7 +99,7 @@ describe("BottomTabBar tabs", () => {
 describe("BottomTabBar month carry-over", () => {
 	it("keeps the selected month on the month tabs", () => {
 		search = "month=2026-08"
-		render(<BottomTabBar />)
+		renderBar()
 
 		expect(screen.getByRole("link", { name: "Personal" })).toHaveAttribute(
 			"href",
@@ -142,5 +153,30 @@ describe("BottomTabBar More sheet", () => {
 		await user.click(within(dialog).getByRole("button", { name: "Logout" }))
 
 		expect(signOut).toHaveBeenCalledTimes(1)
+	})
+
+	it("offers the light theme while dark is active", async () => {
+		const { dialog } = await openMore()
+
+		expect(
+			within(dialog).getByRole("button", { name: "Switch to light theme" })
+		).toBeInTheDocument()
+	})
+
+	it("switches the theme, keeps the choice and stays open", async () => {
+		const { user, dialog } = await openMore()
+
+		await user.click(
+			within(dialog).getByRole("button", { name: "Switch to light theme" })
+		)
+
+		expect(document.documentElement).not.toHaveClass("dark")
+		expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("light")
+		expect(screen.getByRole("dialog")).toBeInTheDocument()
+		expect(
+			within(screen.getByRole("dialog")).getByRole("button", {
+				name: "Switch to dark theme"
+			})
+		).toBeInTheDocument()
 	})
 })
