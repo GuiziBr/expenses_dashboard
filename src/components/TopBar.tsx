@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation"
 import { Suspense } from "react"
 import { MonthPicker } from "@/components/MonthPicker"
 import { NewExpenseAction } from "@/components/NewExpenseAction"
-import { ThemeToggle } from "@/components/ThemeToggle"
 import { getPageMeta } from "@/lib/navigation"
 import { cn } from "@/lib/utils"
 
@@ -37,7 +36,6 @@ export function TopBar() {
 					</Suspense>
 				)}
 				{canCreateExpense && <NewExpenseAction />}
-				<ThemeToggle className="hidden border border-border bg-card md:inline-flex" />
 			</div>
 		</div>
 	)

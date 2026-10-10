@@ -159,8 +159,7 @@ The switch is live. Users choose Light or Dark and the choice is remembered.
 
 - `src/lib/theme.ts` holds the theme helpers and the inline script that sets the `dark` class before first paint, so a stored light choice does not flash dark.
 - `src/providers/theme-provider.tsx` exposes `useTheme()` (`theme`, `setTheme`, `toggleTheme`). The first render always uses the default (dark), so it matches the server. A layout effect then reads the stored choice before the browser paints, so the toggle icon and the toast theme are right on the first frame.
-- `src/components/ThemeToggle.tsx` is an icon button in the top bar from `md` up.
-- On phones the toggle is a **Theme** row in the More sheet, above Log out. It does not close the sheet, so the change is visible straight away.
+- From `lg` the switch is a **Theme** item in the sidebar user menu, above Log out. Below `lg` it is a **Theme** row in the More sheet, above Log out. Both stay open when used, so the change is visible straight away. It is in the same place on every page; the top bar no longer has a toggle, because its contents change per page.
 - `src/components/ui/sonner.tsx` passes the active theme to Sonner, so toasts follow it.
 - Default is dark. The choice is stored in `localStorage` under `theme`. There is no "follow the system" option.
 
@@ -197,7 +196,7 @@ Each screen exists in a light and a dark version in `design_v2.pen`, built from 
 - The mock has a subtitle under the page title ("October 2026 · Shared with 2 people"). It is not built: the month is in the picker and the app has no data for the number of people.
 - The mock's month picker is a single "Oct 2026" chip. The build adds previous/next arrows and a native month input, reusing the Balance Breakdown picker's behaviour. On mobile it sits under the title, which the mobile mock does not show.
 - The mock's mobile top bar has an avatar. The build has no avatar there, since the user menu is in the More sheet.
-- The theme toggle is a top-bar button from 768px up. On phones it is a row in the More sheet.
+- The theme switch is a Theme item in the sidebar user menu (and a row in the More sheet below 1024px), not a button in the top bar.
 - The *New expense* button moved out of the filter row into the top bar. On mobile it is the floating button.
 
 - The mock's metric cards show a delta ("+8% vs last month"). It is not built, because the app has no previous-month figures.
@@ -241,7 +240,7 @@ Suggested order, one small PR each. Branch off `development`.
 | # | Task | Notes |
 |---|---|---|
 | 1 | **Navigation config.** A single typed list of groups and items (label from `translations`, route, icon). | Removes the duplicated markup in `Header.tsx` and fixes the missing Stores entry on mobile. |
-| 2 | **Tokens and theme switching.** Light and dark tokens in `globals.css`, a theme provider, a no-flash script and a `ThemeToggle` component. Done, see §6. | The toggle was first shown disabled with a "Coming soon" tooltip. It was enabled in a follow-up, see §12. The font change waits for §11, Q2. |
+| 2 | **Tokens and theme switching.** Light and dark tokens in `globals.css`, a theme provider, a no-flash script and a theme switch. Done, see §6. | The toggle was first shown disabled with a "Coming soon" tooltip. It was enabled in a follow-up, see §12. The font change waits for §11, Q2. |
 | 3 | **`AppSidebar`.** Desktop sidebar built from the config, with active state via `usePathname`, `aria-current`, and the user menu using the existing `DropdownMenu`. Done: `src/components/AppSidebar.tsx`. | Not mounted yet. Task 5 puts it in the shared layout, and it is hidden below `lg` there. Reuses `signOut` from `useAuth`. The Management section is collapsed unless the current page is under `/management`. |
 | 4 | **`BottomTabBar` and More sheet.** Done: `src/components/BottomTabBar.tsx`, tab and More config in `src/lib/navigation.ts`. | Uses `src/components/ui/sheet.tsx` as a bottom sheet. Not mounted yet. Task 5 renders it below `md`. The tab labelled *Balance* still points to Consolidated Balance (§11, Q4). |
 | 5 | **Shared layout.** Done: `src/app/(app)/layout.tsx` renders the shell once. The 8 pages moved under the `(app)` route group (URLs unchanged), and `<Header />`, the purple band and the `-mt-24` overlap were removed from each. | `/` (login) stays outside the group. The sidebar shows from `lg`, the tab bar below `lg`. `Header.tsx` was left unused and is removed in task 9. |
@@ -270,7 +269,7 @@ The switch is live (see §6). The steps that were pending are done:
 
 - Light mode was checked visually on the dashboards, Consolidated Balance, Balance Breakdown, the management pages, the dialogs, toasts and the login page.
 - Contrast was measured and the fixes are in §6.
-- The toggle is on desktop (top bar) and on mobile (More sheet), and the disabled state and "Coming soon" tooltip are gone.
+- The switch is in the sidebar user menu (desktop) and the More sheet (below 1024px), and the disabled state and "Coming soon" tooltip are gone.
 - `DESIGN_SYSTEM.md` was updated.
 
 Still open, none of it blocks the switch:
@@ -302,6 +301,7 @@ The tablet rail, loading/empty/error states for the new screens, notification or
 | 2026-10-08 | First draft from `design_v2.pen` mock |
 | 2026-10-08 | Added dark theme tokens and dark screen mocks |
 | 2026-10-08 | Theme toggle mounted disabled with a "Coming soon" tooltip; added Pending items section |
+| 2026-10-09 | The theme switch moved from the top bar to the sidebar user menu so it stays in one place |
 | 2026-10-09 | Light/dark switch enabled: toggle works on desktop and mobile, first-render flicker fixed, light input borders and dark focus/error contrast improved, logo visible in dark |
 | 2026-10-09 | The user menu shows the API avatar picture, with initials as the fallback |
 | 2026-10-09 | On desktop the list tables scroll inside their card instead of the whole page |

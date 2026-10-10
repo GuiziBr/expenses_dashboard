@@ -76,8 +76,8 @@ const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: [
 
 ### Switching
 
-- Desktop: `ThemeToggle` (an icon button) in the top bar, from `md` up.
-- Mobile: a **Theme** row in the More sheet of the bottom tab bar, above Log out. It does not close the sheet.
+- From `lg`: a **Theme** item in the sidebar user menu, above Log out. It keeps the menu open.
+- Below `lg`: a **Theme** row in the More sheet of the bottom tab bar, above Log out. It does not close the sheet.
 - The choice is stored in `localStorage` under `theme` (`"light"` or `"dark"`). Anything else means the default (dark). There is no "follow the system" option.
 
 ### Rules for components
@@ -187,7 +187,7 @@ Every authenticated page lives in the `(app)` route group, whose layout renders 
 
 - **Sidebar** (`AppSidebar`): logo and name, groups Dashboards / Reports / Manage (Management is collapsible), user menu pinned to the bottom with the avatar or initials. The current page uses `bg-primary-soft text-primary-text` and `aria-current="page"`.
 - **Bottom tab bar** (`BottomTabBar`): fixed, 44px-high targets, safe-area padding. **More** opens a bottom sheet with Balance Breakdown, the Management pages, **Theme** and **Logout**.
-- **Top bar** (`TopBar`): the page title (`h1`), the month picker on month pages, the theme toggle (from `md`), and the page action (`New expense`; a floating button on phones).
+- **Top bar** (`TopBar`): the page title (`h1`), the month picker on month pages, and the page action (`New expense`; a floating button on phones).
 - **Month picker**: the month lives in the URL (`?month=YYYY-MM`) and is shared by the Shared and Personal dashboards and Balance Breakdown. On phones it is sticky at the top of the Shared and Personal dashboards.
 - **Scrolling**: from `lg` the page scrolls inside a fixed-height region beside the sidebar. On the dashboards and management lists the table card scrolls on its own with a pinned header, so the metric cards, filters and pagination stay in view. Below `lg` the whole page scrolls.
 - **Pagination** is pinned to the bottom of the viewport on desktop, centred in the area beside the sidebar. On smaller screens it sits under the table.
