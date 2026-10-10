@@ -4,6 +4,7 @@ import {
 	formatMonthLabel,
 	formatMonthParam,
 	getCurrentMonth,
+	isValidMonthParam,
 	parseGroupBy,
 	parseMonth,
 	shiftMonth
@@ -145,5 +146,24 @@ describe("formatMonthLabel", () => {
 	it("does not shift months with the local timezone", () => {
 		expect(formatMonthLabel({ year: 2027, month: 1 })).toBe("January 2027")
 		expect(formatMonthLabel({ year: 2026, month: 12 })).toBe("December 2026")
+	})
+})
+
+describe("isValidMonthParam", () => {
+	it("accepts a well-formed month", () => {
+		expect(isValidMonthParam("2026-09")).toBe(true)
+	})
+
+	it.each([
+		null,
+		undefined,
+		"",
+		"2026-9",
+		"2026-13",
+		"2026-00",
+		"1899-12",
+		"nope"
+	])("rejects %s", (value) => {
+		expect(isValidMonthParam(value)).toBe(false)
 	})
 })

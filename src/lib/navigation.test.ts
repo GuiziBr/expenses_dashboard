@@ -1,0 +1,154 @@
+import { describe, expect, it } from "vitest"
+import {
+	getPageMeta,
+	getPageTitle,
+	isManagementPath,
+	isMonthRoute,
+	isMoreTabActive,
+	isNavItemActive,
+	MAIN_NAV_ITEMS,
+	MANAGEMENT_NAV_ITEMS,
+	MOBILE_TAB_ITEMS,
+	MORE_NAV_ITEMS,
+	NAV_GROUPS
+} from "./navigation"
+
+describe("navigation config", () => {
+	it("groups the dashboards and reports in order", () => {
+		expect(NAV_GROUPS.map((group) => group.id)).toEqual([
+			"dashboards",
+			"reports"
+		])
+		expect(MAIN_NAV_ITEMS.map((item) => item.href)).toEqual([
+			"/sharedDashboard",
+			"/personalDashboard",
+			"/consolidatedBalance",
+			"/balanceBreakdown"
+		])
+	})
+
+	it("lists every management page, including stores", () => {
+		expect(MANAGEMENT_NAV_ITEMS.map((item) => item.href)).toEqual([
+			"/management/banks",
+			"/management/categories",
+			"/management/paymentTypes",
+			"/management/stores"
+		])
+	})
+
+	it("has a unique href and an icon for every item", () => {
+		const items = [...MAIN_NAV_ITEMS, ...MANAGEMENT_NAV_ITEMS]
+		expect(new Set(items.map((item) => item.href)).size).toBe(items.length)
+		for (const item of items) {
+			expect(item.label).not.toBe("")
+			expect(item.icon).toBeDefined()
+		}
+	})
+})
+
+describe("isNavItemActive", () => {
+	it("matches only the exact path", () => {
+		expect(isNavItemActive("/sharedDashboard", "/sharedDashboard")).toBe(true)
+		expect(isNavItemActive("/personalDashboard", "/sharedDashboard")).toBe(
+			false
+		)
+		expect(isNavItemActive(null, "/sharedDashboard")).toBe(false)
+	})
+})
+
+describe("isManagementPath", () => {
+	it("matches the management section and its pages", () => {
+		expect(isManagementPath("/management")).toBe(true)
+		expect(isManagementPath("/management/banks")).toBe(true)
+	})
+
+	it("does not match other paths", () => {
+		expect(isManagementPath("/managementFoo")).toBe(false)
+		expect(isManagementPath("/sharedDashboard")).toBe(false)
+		expect(isManagementPath(null)).toBe(false)
+	})
+})
+
+describe("getPageTitle", () => {
+	it("returns the label of the matching main item", () => {
+		expect(getPageTitle("/balanceBreakdown")).toBe("Balance Breakdown")
+		expect(getPageTitle("/sharedDashboard")).toBe("Shared Dashboard")
+	})
+
+	it("returns Management for management pages", () => {
+		expect(getPageTitle("/management/stores")).toBe("Management")
+	})
+
+	it("falls back to Dashboard", () => {
+		expect(getPageTitle("/unknown")).toBe("Dashboard")
+		expect(getPageTitle(null)).toBe("Dashboard")
+	})
+})
+
+describe("mobile tabs", () => {
+	it("uses short labels for the three primary tabs", () => {
+		expect(MOBILE_TAB_ITEMS.map((tab) => tab.label)).toEqual([
+			"Shared",
+			"Personal",
+			"Balance"
+		])
+		expect(MOBILE_TAB_ITEMS.map((tab) => tab.href)).toEqual([
+			"/sharedDashboard",
+			"/personalDashboard",
+			"/consolidatedBalance"
+		])
+	})
+
+	it("moves the remaining main items into More", () => {
+		expect(MORE_NAV_ITEMS.map((item) => item.href)).toEqual([
+			"/balanceBreakdown"
+		])
+	})
+
+	it("flags More as active for its pages and management only", () => {
+		expect(isMoreTabActive("/balanceBreakdown")).toBe(true)
+		expect(isMoreTabActive("/management/stores")).toBe(true)
+		expect(isMoreTabActive("/sharedDashboard")).toBe(false)
+		expect(isMoreTabActive(null)).toBe(false)
+	})
+})
+
+describe("month pages", () => {
+	it("follow the month only on the shared, personal and breakdown pages", () => {
+		expect(isMonthRoute("/sharedDashboard")).toBe(true)
+		expect(isMonthRoute("/personalDashboard")).toBe(true)
+		expect(isMonthRoute("/balanceBreakdown")).toBe(true)
+		expect(isMonthRoute("/consolidatedBalance")).toBe(false)
+		expect(isMonthRoute("/management/banks")).toBe(false)
+		expect(isMonthRoute(null)).toBe(false)
+	})
+})
+
+describe("getPageMeta", () => {
+	it("describes the top bar for each kind of page", () => {
+		expect(getPageMeta("/sharedDashboard")).toEqual({
+			title: "Shared Dashboard",
+			hasMonthPicker: true,
+			hasStickyMonthPicker: true,
+			canCreateExpense: true
+		})
+		expect(getPageMeta("/balanceBreakdown")).toEqual({
+			title: "Balance Breakdown",
+			hasMonthPicker: true,
+			hasStickyMonthPicker: false,
+			canCreateExpense: false
+		})
+		expect(getPageMeta("/consolidatedBalance")).toEqual({
+			title: "Consolidated Balance",
+			hasMonthPicker: false,
+			hasStickyMonthPicker: false,
+			canCreateExpense: false
+		})
+		expect(getPageMeta("/management/stores")).toEqual({
+			title: "Management",
+			hasMonthPicker: false,
+			hasStickyMonthPicker: false,
+			canCreateExpense: false
+		})
+	})
+})

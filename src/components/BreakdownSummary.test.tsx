@@ -94,9 +94,9 @@ describe("BreakdownSummary", () => {
 		const { container } = renderSummary("categories", [], { isLoading: true })
 		const bars = Array.from(container.querySelectorAll(".animate-pulse"))
 		expect(
-			bars.slice(0, 3).every((b) => b.classList.contains("bg-blue-wood/15"))
+			bars.slice(0, 3).every((b) => b.classList.contains("bg-foreground/10"))
 		).toBe(true)
-		expect(bars[3]).toHaveClass("bg-white/30") // the orange Total spent card
+		expect(bars[3]).toHaveClass("bg-white/30") // the Total spent card
 	})
 
 	it("marks the cards as busy only while loading", () => {

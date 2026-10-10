@@ -7,11 +7,43 @@ export const translations = {
 		errorLoadingOptions: "Failed to load options. Please try again.",
 		noExpensesFound: "No expenses found for this criteria.",
 		balance: "Balance",
-		previous: "Previous",
-		next: "Next",
+		page: "Page",
+		of: "of",
+		firstPage: "First page",
+		previousPage: "Previous page",
+		nextPage: "Next page",
+		lastPage: "Last page",
 		logout: "Logout",
+		pagination: "Pagination",
+		appName: "Expenses",
 		management: "Management",
 		cancel: "Cancel"
+	},
+	monthPicker: {
+		label: "Month",
+		previous: "Previous month",
+		next: "Next month",
+		customRange: "Custom range"
+	},
+	theme: {
+		switchToLight: "Switch to light theme",
+		switchToDark: "Switch to dark theme",
+		comingSoon: "Coming soon"
+	},
+	navigation: {
+		dashboards: "Dashboards",
+		reports: "Reports",
+		manage: "Manage",
+		mainLabel: "Main",
+		userMenu: "Account menu",
+		account: "Account",
+		tabBarLabel: "Primary",
+		tabs: {
+			shared: "Shared",
+			personal: "Personal",
+			balance: "Balance",
+			more: "More"
+		}
 	},
 	dashboards: {
 		personal: {
@@ -32,9 +64,6 @@ export const translations = {
 				banks: "Bank",
 				stores: "Store"
 			},
-			month: "Month",
-			previousMonth: "Previous month",
-			nextMonth: "Next month",
 			summary: {
 				top: {
 					categories: "Top category",

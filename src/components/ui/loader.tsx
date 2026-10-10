@@ -12,7 +12,7 @@ export function Loader({ className, size = 24 }: LoaderProps) {
 	return (
 		<div className={cn("flex items-center justify-center p-4", className)}>
 			<Loader2
-				className="animate-spin text-orange"
+				className="animate-spin text-primary-text"
 				size={size}
 				strokeWidth={2}
 			/>
