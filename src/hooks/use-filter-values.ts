@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import type { SelectOption } from "@/components/ui/select"
+import type { SelectOption } from "@/components/ui/select-menu"
 import { api } from "@/lib/api"
 
 /**

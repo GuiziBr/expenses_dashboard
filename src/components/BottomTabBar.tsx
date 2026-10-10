@@ -1,6 +1,6 @@
 "use client"
 
-import { Ellipsis, LogOut } from "lucide-react"
+import { Ellipsis, LogOut, Moon, Sun } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { MonthAwareLink } from "@/components/MonthAwareLink"
@@ -22,6 +22,7 @@ import {
 	type NavItem
 } from "@/lib/navigation"
 import { cn } from "@/lib/utils"
+import { useTheme } from "@/providers/theme-provider"
 
 const TAB_CLASS =
 	"flex min-h-11 flex-col items-center justify-center gap-1 rounded-lg text-[11px] no-underline outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring"
@@ -65,6 +66,8 @@ function SheetLink({
 export function BottomTabBar({ className }: { className?: string }) {
 	const pathname = usePathname()
 	const { signOut } = useAuth()
+	const { theme, toggleTheme } = useTheme()
+	const isDark = theme === "dark"
 	const [isMoreOpen, setIsMoreOpen] = useState(false)
 	const isMoreActive = isMoreTabActive(pathname)
 
@@ -149,13 +152,28 @@ export function BottomTabBar({ className }: { className?: string }) {
 					</ul>
 
 					<div className="mt-3 border-t border-border pt-3">
+						{/* Stays open on tap so the change is visible right away */}
+						<button
+							type="button"
+							onClick={toggleTheme}
+							className="flex h-12 w-full cursor-pointer items-center gap-3 rounded-lg px-3 text-base font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+						>
+							{isDark ? (
+								<Sun className="size-5 shrink-0" aria-hidden="true" />
+							) : (
+								<Moon className="size-5 shrink-0" aria-hidden="true" />
+							)}
+							{isDark
+								? translations.theme.switchToLight
+								: translations.theme.switchToDark}
+						</button>
 						<button
 							type="button"
 							onClick={() => {
 								closeSheet()
 								signOut()
 							}}
-							className="flex h-12 w-full cursor-pointer items-center gap-3 rounded-lg px-3 text-base font-medium text-destructive outline-none focus-visible:ring-2 focus-visible:ring-ring"
+							className="flex h-12 w-full cursor-pointer items-center gap-3 rounded-lg px-3 text-base font-medium text-danger outline-none focus-visible:ring-2 focus-visible:ring-ring"
 						>
 							<LogOut className="size-5 shrink-0" aria-hidden="true" />
 							{translations.common.logout}

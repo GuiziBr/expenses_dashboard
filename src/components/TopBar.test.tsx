@@ -15,17 +15,14 @@ vi.mock("@/components/NewExpenseAction", () => ({
 }))
 
 import { PageToolbarProvider } from "@/contexts/page-toolbar-context"
-import { ThemeProvider } from "@/providers/theme-provider"
 import { TopBar } from "./TopBar"
 
 const renderBar = (path: string) => {
 	pathname = path
 	return render(
-		<ThemeProvider>
-			<PageToolbarProvider>
-				<TopBar />
-			</PageToolbarProvider>
-		</ThemeProvider>
+		<PageToolbarProvider>
+			<TopBar />
+		</PageToolbarProvider>
 	)
 }
 
@@ -56,12 +53,12 @@ describe("TopBar", () => {
 		}
 	})
 
-	it("shows the disabled theme toggle", () => {
+	it("has no theme toggle, which lives in the user menu", () => {
 		renderBar("/sharedDashboard")
 
 		expect(
-			screen.getByRole("button", { name: "Switch to light theme" })
-		).toHaveAttribute("aria-disabled", "true")
+			screen.queryByRole("button", { name: /switch to (light|dark) theme/i })
+		).not.toBeInTheDocument()
 	})
 
 	it("keeps the month picker pinned on the shared and personal dashboards", () => {

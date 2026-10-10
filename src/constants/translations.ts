@@ -27,8 +27,7 @@ export const translations = {
 	},
 	theme: {
 		switchToLight: "Switch to light theme",
-		switchToDark: "Switch to dark theme",
-		comingSoon: "Coming soon"
+		switchToDark: "Switch to dark theme"
 	},
 	navigation: {
 		dashboards: "Dashboards",

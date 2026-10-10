@@ -22,12 +22,12 @@ const Toaster = ({ ...props }: ToasterProps) => {
 					cancelButton:
 						"group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
 					success: "group-[.toast]:text-success",
-					error: "group-[.toast]:text-destructive"
+					error: "group-[.toast]:text-danger"
 				}
 			}}
 			icons={{
 				success: <CheckCircle2 className="h-5 w-5 text-success" />,
-				error: <XCircle className="h-5 w-5 text-destructive" />
+				error: <XCircle className="h-5 w-5 text-danger" />
 			}}
 			{...props}
 		/>

@@ -34,7 +34,7 @@ export function CheckboxGroup({
   }
 
   return (
-    <div className={cn("flex gap-3 rounded-lg border border-border bg-card p-3 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30", className)}>
+    <div className={cn("flex gap-3 rounded-lg border border-input bg-card p-3 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30", className)}>
       <div className="flex items-center gap-2 mb-1">
         {Icon && <Icon className="size-5 text-muted-foreground" />}
       </div>

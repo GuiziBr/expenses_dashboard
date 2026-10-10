@@ -15,7 +15,7 @@ export default function BanksManagementPage() {
 		usePagedList(useBanks, DEFAULT_LIMIT)
 
 	return (
-		<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5 lg:h-full">
+		<main className="mx-auto flex max-w-[1120px] flex-col gap-3 px-5 lg:h-full">
 			<section className="rounded-xl border border-border bg-card p-6">
 				<h2 className="mb-4 text-lg font-semibold text-foreground">
 					{translations.management.banks}

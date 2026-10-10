@@ -3,8 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Info, Loader2 } from "lucide-react"
 import * as React from "react"
-import { useForm } from "react-hook-form"
-import { HiOutlineCurrencyDollar, HiOutlineSelector } from "react-icons/hi"
+import { Controller, type FieldErrors, useForm } from "react-hook-form"
+import { HiOutlineCurrencyDollar } from "react-icons/hi"
 import { IoMdCheckboxOutline } from "react-icons/io"
 import { MdDateRange, MdTitle } from "react-icons/md"
 import { toast } from "sonner"
@@ -23,13 +23,25 @@ import { Button } from "./ui/button"
 import { CheckboxGroup } from "./ui/checkbox-group"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog"
 import { Input } from "./ui/input"
-import { Select } from "./ui/select"
+import { SelectMenu } from "./ui/select-menu"
 
 interface NewExpenseModalProps {
 	isOpen: boolean
 	onClose: () => void
 	expense?: FormattedExpense
 }
+
+// The order the fields appear in the form. react-hook-form would focus the first
+// invalid field by registration order, which changes after a reset.
+const FOCUS_ORDER = [
+	"description",
+	"category",
+	"paymentType",
+	"bank",
+	"store",
+	"date",
+	"amount"
+] as const
 
 export function NewExpenseModal({
 	isOpen,
@@ -109,17 +121,25 @@ export function NewExpenseModal({
 	const form = useForm<NewExpenseFormValues>({
 		resolver: zodResolver(schema),
 		mode: "onSubmit",
+		shouldFocusError: false,
 		defaultValues: buildDefaultValues(expense)
 	})
 
 	const {
 		register,
+		control,
 		handleSubmit,
+		setFocus,
 		formState: { errors },
 		watch,
 		setValue,
 		reset
 	} = form
+
+	const focusFirstInvalid = (formErrors: FieldErrors<NewExpenseFormValues>) => {
+		const first = FOCUS_ORDER.find((name) => formErrors[name])
+		if (first) setFocus(first)
+	}
 
 	const selectedPaymentTypeId = watch("paymentType")
 	const currentMonth = watch("currentMonth")
@@ -221,7 +241,10 @@ export function NewExpenseModal({
 					</DialogTitle>
 				</DialogHeader>
 
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
+				<form
+					onSubmit={handleSubmit(onSubmit, focusFirstInvalid)}
+					className="space-y-4 mt-4"
+				>
 					{/* Description */}
 					<Input
 						icon={MdTitle}
@@ -233,40 +256,76 @@ export function NewExpenseModal({
 
 					<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 						{/* Category */}
-						<Select
-							icon={HiOutlineSelector}
-							options={categories}
-							placeholder={translations.createExpense.category}
-							{...register("category")}
-							error={errors.category?.message}
+						<Controller
+							name="category"
+							control={control}
+							render={({ field }) => (
+								<SelectMenu
+									options={categories}
+									placeholder={translations.createExpense.category}
+									name={field.name}
+									value={field.value ?? ""}
+									onValueChange={field.onChange}
+									onBlur={field.onBlur}
+									ref={field.ref}
+									error={errors.category?.message}
+								/>
+							)}
 						/>
 
 						{/* Payment Type */}
-						<Select
-							icon={HiOutlineSelector}
-							options={paymentTypes}
-							placeholder={translations.createExpense.paymentType}
-							{...register("paymentType")}
-							error={errors.paymentType?.message}
+						<Controller
+							name="paymentType"
+							control={control}
+							render={({ field }) => (
+								<SelectMenu
+									options={paymentTypes}
+									placeholder={translations.createExpense.paymentType}
+									name={field.name}
+									value={field.value ?? ""}
+									onValueChange={field.onChange}
+									onBlur={field.onBlur}
+									ref={field.ref}
+									error={errors.paymentType?.message}
+								/>
+							)}
 						/>
 					</div>
 
 					<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 						{/* Bank */}
-						<Select
-							icon={HiOutlineSelector}
-							options={banks}
-							placeholder={translations.createExpense.bank}
-							{...register("bank")}
-							error={errors.bank?.message}
+						<Controller
+							name="bank"
+							control={control}
+							render={({ field }) => (
+								<SelectMenu
+									options={banks}
+									placeholder={translations.createExpense.bank}
+									name={field.name}
+									value={field.value ?? ""}
+									onValueChange={field.onChange}
+									onBlur={field.onBlur}
+									ref={field.ref}
+									error={errors.bank?.message}
+								/>
+							)}
 						/>
 
 						{/* Store */}
-						<Select
-							icon={HiOutlineSelector}
-							options={stores}
-							placeholder={translations.createExpense.store}
-							{...register("store")}
+						<Controller
+							name="store"
+							control={control}
+							render={({ field }) => (
+								<SelectMenu
+									options={stores}
+									placeholder={translations.createExpense.store}
+									name={field.name}
+									value={field.value ?? ""}
+									onValueChange={field.onChange}
+									onBlur={field.onBlur}
+									ref={field.ref}
+								/>
+							)}
 						/>
 					</div>
 
@@ -311,7 +370,7 @@ export function NewExpenseModal({
 							}
 						/>
 						{hasNoStatement && (
-							<div className="flex flex-1 items-center gap-3 rounded-lg border border-border bg-card px-3 py-3 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
+							<div className="flex flex-1 items-center gap-3 rounded-lg border border-input bg-card px-3 py-3 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
 								<IoMdCheckboxOutline className="size-5 text-muted-foreground shrink-0" />
 								<label
 									htmlFor="current-month"
