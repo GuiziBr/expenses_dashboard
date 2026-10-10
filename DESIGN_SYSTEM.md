@@ -13,7 +13,7 @@ A professional, data-dense interface for financial dashboards, in **light and da
 - **Tokens, not colours.** Every colour in a component comes from a semantic token (`bg-card`, `text-muted-foreground`, `border-input`, `bg-primary`). Components never use raw hex values, Tailwind palette colours (`text-white`, `bg-slate-200`) or `dark:` variants. The theme changes by redefining the tokens under `.dark`.
 - **One accent.** Purple (`--primary`) is the only action colour: primary buttons, the current page number, the active nav item, focus rings, the total card.
 - **Layered surfaces.** A page background (`--background`), cards and inputs on `--card`, subtle borders (`--border`), and tinted fills for state (`*-soft`).
-- **Legibility first.** Text and UI meet WCAG contrast (4.5:1 for text, 3:1 for control boundaries) in both themes. See Section 5.
+- **Legibility first.** The target is WCAG contrast (4.5:1 for text, 3:1 for control boundaries) in both themes, and nearly everything meets it. Two known exceptions: muted text on hover fills in light mode (about 4.4:1) and input borders in dark mode (about 1.5:1, a deliberately subtle look). Section 5 has the measurements.
 
 ---
 
