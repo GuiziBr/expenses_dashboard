@@ -97,32 +97,28 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 
 				{/* Inputs Group */}
 				<div className="flex gap-2 w-full lg:w-auto">
-					<div className="relative flex-1 lg:w-44 h-10 flex items-center bg-card rounded-lg border border-input px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
-						<Input
-							type="date"
-							name="startDate"
-							className="bg-transparent border-none p-0 h-full w-full text-foreground focus-visible:ring-0 text-sm"
-							value={startDate}
-							max={maxStartDate}
-							onChange={(e) => {
-								setStartDate(e.target.value)
-								setMinEndDate(e.target.value)
-							}}
-						/>
-					</div>
-					<div className="relative flex-1 lg:w-44 h-10 flex items-center bg-card rounded-lg border border-input px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
-						<Input
-							type="date"
-							name="endDate"
-							className="bg-transparent border-none p-0 h-full w-full text-foreground focus-visible:ring-0 text-sm"
-							value={endDate}
-							min={minEndDate}
-							onChange={(e) => {
-								setEndDate(e.target.value)
-								setMaxStartDate(e.target.value)
-							}}
-						/>
-					</div>
+					<Input
+						type="date"
+						name="startDate"
+						className="flex-1 lg:w-44"
+						value={startDate}
+						max={maxStartDate}
+						onChange={(e) => {
+							setStartDate(e.target.value)
+							setMinEndDate(e.target.value)
+						}}
+					/>
+					<Input
+						type="date"
+						name="endDate"
+						className="flex-1 lg:w-44"
+						value={endDate}
+						min={minEndDate}
+						onChange={(e) => {
+							setEndDate(e.target.value)
+							setMaxStartDate(e.target.value)
+						}}
+					/>
 				</div>
 
 				<Button
