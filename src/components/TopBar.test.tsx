@@ -56,12 +56,12 @@ describe("TopBar", () => {
 		}
 	})
 
-	it("shows the disabled theme toggle", () => {
+	it("shows a working theme toggle", () => {
 		renderBar("/sharedDashboard")
 
-		expect(
-			screen.getByRole("button", { name: "Switch to light theme" })
-		).toHaveAttribute("aria-disabled", "true")
+		const toggle = screen.getByRole("button", { name: "Switch to light theme" })
+		expect(toggle).not.toHaveAttribute("aria-disabled")
+		expect(toggle).toBeEnabled()
 	})
 
 	it("keeps the month picker pinned on the shared and personal dashboards", () => {
