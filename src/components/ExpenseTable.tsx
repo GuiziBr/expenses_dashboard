@@ -1,5 +1,12 @@
 "use client"
-import { MoreVertical, Pencil, Trash2 } from "lucide-react"
+import {
+	ChevronDown,
+	ChevronsUpDown,
+	ChevronUp,
+	MoreVertical,
+	Pencil,
+	Trash2
+} from "lucide-react"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -20,6 +27,80 @@ interface ExpenseTableProps {
 	currentUserId?: string
 }
 
+interface Column {
+	key: string
+	label: React.ReactNode
+	width: string
+	visibility?: string
+}
+
+const COLUMNS: Column[] = [
+	{
+		key: EXPENSE_COLUMNS.description,
+		label: translations.table.expense,
+		width: "w-[22%] md:w-[33%] lg:w-[27%] xl:w-[23%]"
+	},
+	{
+		key: EXPENSE_COLUMNS.category,
+		label: translations.table.category,
+		width: "md:w-[20%] lg:w-[15%] xl:w-[14%]",
+		visibility: "hidden md:table-cell"
+	},
+	{
+		key: EXPENSE_COLUMNS.amount,
+		label: translations.table.amount,
+		width: "w-[24%] md:w-[15%] lg:w-[12%] xl:w-[10%]"
+	},
+	{
+		key: EXPENSE_COLUMNS.paymentType,
+		label: translations.table.method,
+		width: "lg:w-[16%] xl:w-[13%]",
+		visibility: "hidden lg:table-cell"
+	},
+	{
+		key: EXPENSE_COLUMNS.dueDate,
+		label: (
+			<>
+				<span className="md:hidden">{translations.table.due}</span>
+				<span className="hidden md:inline">{translations.table.dueDate}</span>
+			</>
+		),
+		width: "w-[15%] md:w-[16%] lg:w-[15%] xl:w-[11%]"
+	},
+	{
+		key: EXPENSE_COLUMNS.date,
+		label: translations.table.purchase,
+		width: "w-[27%] md:w-[16%] lg:w-[15%] xl:w-[11%]"
+	},
+	{
+		key: EXPENSE_COLUMNS.bank,
+		label: translations.table.bank,
+		width: "xl:w-[9%]",
+		visibility: "hidden xl:table-cell"
+	},
+	{
+		key: EXPENSE_COLUMNS.store,
+		label: translations.table.store,
+		width: "xl:w-[9%]",
+		visibility: "hidden xl:table-cell"
+	}
+]
+
+const CELL = "px-2 py-4 text-[13px] md:px-4 md:text-sm"
+const MUTED_CELL = cn(CELL, "text-muted-foreground")
+
+const SORT_ICON = {
+	"↑": ChevronUp,
+	"↓": ChevronDown,
+	"": ChevronsUpDown
+} as const
+
+const ARIA_SORT = {
+	"↑": "ascending",
+	"↓": "descending",
+	"": "none"
+} as const
+
 export function ExpenseTable({
 	expenses,
 	onSort,
@@ -28,131 +109,82 @@ export function ExpenseTable({
 	onEdit,
 	currentUserId
 }: ExpenseTableProps) {
+	const hasActions = !!(onDelete || onEdit)
+
 	return (
-		<div className="mt-2 w-full min-h-[20rem] md:min-h-[40rem]">
-			<table className="w-full border-separate border-spacing-y-2 table-fixed">
-				<thead>
+		<div className="w-full overflow-hidden rounded-xl border border-border bg-card lg:overflow-y-auto">
+			<table className="w-full table-fixed">
+				<thead className="bg-card lg:sticky lg:top-0 lg:z-10">
 					<tr>
-						<th
-							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all pl-2 w-[35%] md:w-[30%] lg:w-[25%] xl:w-[20%]"
-							onClick={() => onSort(EXPENSE_COLUMNS.description)}
-						>
-							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								{translations.table.expense}{" "}
-								<span className="text-[0.6em] opacity-70 ml-1">
-									{getSortIndicator(EXPENSE_COLUMNS.description)}
-								</span>
-							</div>
-						</th>
-						<th
-							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all hidden md:table-cell md:w-[20%] lg:w-[15%] xl:w-[12%]"
-							onClick={() => onSort(EXPENSE_COLUMNS.category)}
-						>
-							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								{translations.table.category}{" "}
-								<span className="text-[0.6em] opacity-70 ml-1">
-									{getSortIndicator(EXPENSE_COLUMNS.category)}
-								</span>
-							</div>
-						</th>
-						<th
-							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all w-[20%] md:w-[15%] lg:w-[12%] xl:w-[10%]"
-							onClick={() => onSort(EXPENSE_COLUMNS.amount)}
-						>
-							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								{translations.table.amount}{" "}
-								<span className="text-[0.6em] opacity-70 ml-1">
-									{getSortIndicator(EXPENSE_COLUMNS.amount)}
-								</span>
-							</div>
-						</th>
-						<th
-							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all hidden lg:table-cell lg:w-[14%] xl:w-[10%]"
-							onClick={() => onSort(EXPENSE_COLUMNS.paymentType)}
-						>
-							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								{translations.table.method}{" "}
-								<span className="text-[0.6em] opacity-70 ml-1">
-									{getSortIndicator(EXPENSE_COLUMNS.paymentType)}
-								</span>
-							</div>
-						</th>
-						<th
-							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all w-[22%] md:w-[17%] lg:w-[17%] xl:w-[14%]"
-							onClick={() => onSort(EXPENSE_COLUMNS.dueDate)}
-						>
-							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								<span className="md:hidden">{translations.table.due}</span>
-								<span className="hidden md:inline">
-									{translations.table.dueDate}
-								</span>
-								<span className="text-[0.6em] opacity-70 ml-1">
-									{getSortIndicator(EXPENSE_COLUMNS.dueDate)}
-								</span>
-							</div>
-						</th>
-						<th
-							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all w-[23%] md:w-[18%] lg:w-[17%] xl:w-[14%]"
-							onClick={() => onSort(EXPENSE_COLUMNS.date)}
-						>
-							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								{translations.table.purchase}{" "}
-								<span className="text-[0.6em] opacity-70 ml-1">
-									{getSortIndicator(EXPENSE_COLUMNS.date)}
-								</span>
-							</div>
-						</th>
-						<th
-							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all hidden xl:table-cell xl:w-[10%]"
-							onClick={() => onSort(EXPENSE_COLUMNS.bank)}
-						>
-							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								{translations.table.bank}{" "}
-								<span className="text-[0.6em] opacity-70 ml-1">
-									{getSortIndicator(EXPENSE_COLUMNS.bank)}
-								</span>
-							</div>
-						</th>
-						<th
-							className="text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl cursor-pointer hover:brightness-75 transition-all hidden xl:table-cell pr-2 xl:w-[10%]"
-							onClick={() => onSort(EXPENSE_COLUMNS.store)}
-						>
-							<div className="flex items-center gap-1 flex-nowrap whitespace-nowrap">
-								{translations.table.store}{" "}
-								<span className="text-[0.6em] opacity-70 ml-1">
-									{getSortIndicator(EXPENSE_COLUMNS.store)}
-								</span>
-							</div>
-						</th>
-						{(onDelete || onEdit) && <th className="w-10" />}
+						{COLUMNS.map(({ key, label, width, visibility }) => {
+							const indicator = getSortIndicator(key)
+							const SortIcon = SORT_ICON[indicator]
+							return (
+								<th
+									key={key}
+									scope="col"
+									aria-sort={ARIA_SORT[indicator]}
+									className={cn(
+										"bg-background/60 px-2 py-3 text-left md:px-4",
+										width,
+										visibility
+									)}
+								>
+									<button
+										type="button"
+										onClick={() => onSort(key)}
+										className="flex cursor-pointer items-center gap-1 whitespace-nowrap text-xs font-semibold text-muted-foreground transition-colors md:text-[13px] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+									>
+										{label}
+										<SortIcon
+											aria-hidden="true"
+											className={cn(
+												"size-3.5 shrink-0",
+												indicator ? "text-foreground" : "opacity-50"
+											)}
+										/>
+									</button>
+								</th>
+							)
+						})}
+						{hasActions && (
+							<th scope="col" className="w-10 bg-background/60 md:w-12" />
+						)}
 					</tr>
 				</thead>
-				<tbody className="w-full">
+				<tbody>
 					{expenses.map((expense) => (
-						<tr key={expense.id} className="group">
+						<tr
+							key={expense.id}
+							className="border-t border-border transition-colors hover:bg-accent/40"
+						>
 							<td
-								className="bg-white py-5 px-1 md:px-2 text-blue-wood first:rounded-l-lg pl-2 truncate max-w-[80px] md:max-w-[200px] md:text-base"
+								className={cn(CELL, "truncate font-medium text-foreground")}
 								title={expense.description}
 							>
 								{expense.description}
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray hidden md:table-cell md:text-base">
-								{expense.category}
+							<td className={cn(CELL, "hidden md:table-cell")}>
+								<span className="inline-block max-w-full truncate rounded-full bg-background px-2.5 py-0.5 align-middle text-xs font-medium text-muted-foreground">
+									{expense.category}
+								</span>
 							</td>
 							<td
-								className={`bg-white py-5 px-1 md:px-2 font-normal whitespace-nowrap md:text-base ${
-									expense.type === "outcome" ? "text-pink" : "text-green"
-								}`}
+								className={cn(
+									CELL,
+									"whitespace-nowrap font-medium",
+									expense.type === "outcome" ? "text-danger" : "text-success"
+								)}
 							>
 								{expense.formattedAmount}
 							</td>
 							<td
-								className="bg-white py-5 px-1 md:px-2 text-light-gray hidden lg:table-cell truncate max-w-[120px] md:text-base"
+								className={cn(MUTED_CELL, "hidden truncate lg:table-cell")}
 								title={expense.paymentType}
 							>
 								{expense.paymentType}
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray whitespace-nowrap md:text-base last:rounded-r-lg">
+							<td className={cn(MUTED_CELL, "whitespace-nowrap")}>
 								<span className="md:hidden">
 									{expense.mobileFormattedDueDate || "—"}
 								</span>
@@ -160,57 +192,48 @@ export function ExpenseTable({
 									{expense.formattedDueDate || "—"}
 								</span>
 							</td>
-							<td
-								className={cn(
-									"bg-white py-5 px-1 md:px-2 text-light-gray whitespace-nowrap md:text-base",
-									onDelete || onEdit
-										? "rounded-r-none"
-										: "rounded-r-lg xl:rounded-r-none"
-								)}
-							>
+							<td className={cn(MUTED_CELL, "whitespace-nowrap")}>
 								<span className="md:hidden">{expense.mobileFormattedDate}</span>
 								<span className="hidden md:inline">
 									{expense.formattedDate}
 								</span>
 							</td>
-							<td className="bg-white py-5 px-1 md:px-2 text-light-gray hidden xl:table-cell md:text-base last:rounded-r-lg">
+							<td className={cn(MUTED_CELL, "hidden truncate xl:table-cell")}>
 								{expense.bank || "—"}
 							</td>
 							<td
-								className="bg-white py-5 px-1 md:px-2 text-light-gray hidden xl:table-cell truncate last:rounded-r-lg"
+								className={cn(MUTED_CELL, "hidden truncate xl:table-cell")}
 								title={expense.store || ""}
 							>
 								{expense.store || "—"}
 							</td>
-							{(onDelete || onEdit) && (
-								<td className="bg-white py-5 px-1 text-right last:rounded-r-lg pr-4">
+							{hasActions && (
+								<td className="px-1 py-2 text-right md:px-2">
 									{currentUserId === expense.ownerId && (
 										<DropdownMenu>
 											<DropdownMenuTrigger
 												aria-label={translations.management.expenseActions}
-												className="p-2 hover:bg-light-blue/10 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+												className="cursor-pointer rounded-full p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 											>
-												<MoreVertical className="h-5 w-5 text-light-gray" />
+												<MoreVertical className="size-5" />
 											</DropdownMenuTrigger>
-											<DropdownMenuContent
-												align="end"
-												className="bg-background border-white/10"
-											>
+											<DropdownMenuContent align="end">
 												{onEdit && (
 													<DropdownMenuItem
 														onClick={() => onEdit(expense)}
-														className="flex items-center gap-2 cursor-pointer text-white focus:bg-white/5"
+														className="cursor-pointer"
 													>
-														<Pencil className="h-4 w-4" />
+														<Pencil />
 														{translations.management.edit}
 													</DropdownMenuItem>
 												)}
 												{onDelete && (
 													<DropdownMenuItem
+														variant="destructive"
 														onClick={() => onDelete(expense)}
-														className="flex items-center gap-2 cursor-pointer text-pink focus:bg-red/5"
+														className="cursor-pointer"
 													>
-														<Trash2 className="h-4 w-4" />
+														<Trash2 />
 														{translations.management.delete}
 													</DropdownMenuItem>
 												)}

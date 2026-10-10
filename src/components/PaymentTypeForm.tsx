@@ -47,21 +47,21 @@ export function PaymentTypeForm() {
 				placeholder={translations.management.paymentTypePlaceholder}
 				value={description}
 				onChange={(e) => setDescription(e.target.value)}
-				className="w-full md:flex-1 h-12"
+				className="w-full md:flex-1"
 			/>
 			<label className="flex items-center gap-2 cursor-pointer select-none shrink-0">
 				<div
 					className={cn(
 						"size-5 rounded border-2 flex items-center justify-center transition-colors",
 						hasStatement
-							? "bg-orange border-orange"
-							: "border-iron-gray hover:border-orange"
+							? "bg-primary border-primary"
+							: "border-muted-foreground hover:border-primary"
 					)}
 				>
 					{hasStatement && (
 						<svg
 							aria-hidden="true"
-							className="size-3.5 text-background"
+							className="size-3.5 text-primary-foreground"
 							fill="none"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
@@ -81,14 +81,14 @@ export function PaymentTypeForm() {
 					checked={hasStatement}
 					onChange={(e) => setHasStatement(e.target.checked)}
 				/>
-				<span className="text-sm font-medium text-white">
+				<span className="text-sm font-medium text-foreground">
 					{translations.management.hasStatementLabel}
 				</span>
 			</label>
 			<Button
 				type="submit"
 				disabled={!description.trim() || isPending}
-				className="h-12 w-full md:w-32 bg-orange text-background font-medium hover:brightness-95 transition-all"
+				className="h-10 w-full font-semibold md:w-32"
 			>
 				{isPending ? (
 					<Loader2 className="h-5 w-5 animate-spin" />

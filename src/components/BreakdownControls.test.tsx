@@ -6,17 +6,9 @@ import { BREAKDOWN_PANEL_ID, BreakdownControls } from "./BreakdownControls"
 
 function setup(groupBy: BalanceFilterKey = "categories") {
 	const handlers = {
-		onGroupByChange: vi.fn(),
-		onMonthChange: vi.fn(),
-		onShiftMonth: vi.fn()
+		onGroupByChange: vi.fn()
 	}
-	render(
-		<BreakdownControls
-			groupBy={groupBy}
-			month={{ year: 2026, month: 9 }}
-			{...handlers}
-		/>
-	)
+	render(<BreakdownControls groupBy={groupBy} {...handlers} />)
 	return handlers
 }
 
@@ -89,34 +81,5 @@ describe("BreakdownControls – tabs (A11Y-01)", () => {
 		const { onGroupByChange } = setup()
 		fireEvent.keyDown(tab(/Category/), { key: "a" })
 		expect(onGroupByChange).not.toHaveBeenCalled()
-	})
-})
-
-describe("BreakdownControls – month buttons (A11Y-02)", () => {
-	it("names the previous and next buttons and shifts by one month", () => {
-		const { onShiftMonth } = setup()
-		fireEvent.click(screen.getByRole("button", { name: "Previous month" }))
-		fireEvent.click(screen.getByRole("button", { name: "Next month" }))
-		expect(onShiftMonth).toHaveBeenNthCalledWith(1, -1)
-		expect(onShiftMonth).toHaveBeenNthCalledWith(2, 1)
-	})
-
-	it("shows the month as MMMM YYYY", () => {
-		setup()
-		expect(screen.getByText("September 2026")).toBeInTheDocument()
-	})
-
-	it("changes the month from the native input", () => {
-		const { onMonthChange } = setup()
-		fireEvent.change(screen.getByLabelText("Month"), {
-			target: { value: "2027-01" }
-		})
-		expect(onMonthChange).toHaveBeenCalledWith({ year: 2027, month: 1 })
-	})
-
-	it("ignores a cleared native input", () => {
-		const { onMonthChange } = setup()
-		fireEvent.change(screen.getByLabelText("Month"), { target: { value: "" } })
-		expect(onMonthChange).not.toHaveBeenCalled()
 	})
 })

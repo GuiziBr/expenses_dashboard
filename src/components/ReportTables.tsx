@@ -14,42 +14,50 @@ interface ReportTablesProps {
 	shareType: string
 }
 
+type ReportType = "requester" | "partner"
+
+const TOTAL_TONE: Record<ReportType, { text: string; soft: string }> = {
+	requester: { text: "text-success", soft: "bg-success-soft" },
+	partner: { text: "text-danger", soft: "bg-danger-soft" }
+}
+
 const PaymentsList = ({
 	payments,
-	className
+	type
 }: {
 	payments: ReportPayment[]
-	className: string
+	type: ReportType
 }) => (
 	<>
 		{payments.map((payment) => (
 			<Fragment key={payment.id}>
-				<tr>
-					<td
-						className="py-3 px-4 text-[var(--blue-wood)] font-normal text-center bg-white rounded-md mb-2"
+				<tr className="border-t border-border bg-background/60">
+					<th
+						scope="colgroup"
 						colSpan={2}
+						className="px-4 py-3 text-left text-sm font-semibold text-foreground"
 					>
 						{payment.description}
-					</td>
+					</th>
 				</tr>
 				{payment.banks.map((bank) => (
-					<tr key={bank.id} className="border-spacing-0">
-						<td className="py-4 px-2 text-[var(--light-gray)] bg-white rounded-l-md text-center border-r">
+					<tr key={bank.id} className="border-t border-border">
+						<td className="px-4 py-3 text-sm text-muted-foreground">
 							{bank.name}
 						</td>
-						<td className="py-4 px-2 text-[var(--light-gray)] bg-white rounded-r-md text-center">
+						<td className="px-4 py-3 text-right text-sm text-foreground">
 							{formatCurrency(bank.total)}
 						</td>
 					</tr>
 				))}
-				<tr>
-					<td
-						className={cn(
-							"py-4 px-2 bg-[var(--cleared-blue)] rounded-md font-medium text-center",
-							className
-						)}
-						colSpan={2}
-					>
+				<tr
+					className={cn(
+						"border-t border-border font-semibold",
+						TOTAL_TONE[type].soft,
+						TOTAL_TONE[type].text
+					)}
+				>
+					<td colSpan={2} className="px-4 py-3 text-right text-sm">
 						{translations.dashboards.consolidated.totalPrefix}
 						{formatCurrency(payment.total)}
 					</td>
@@ -61,29 +69,27 @@ const PaymentsList = ({
 
 const CategoriesList = ({
 	categories,
-	className
+	type
 }: {
 	categories: ReportCategory[]
-	className: string
+	type: ReportType
 }) => (
 	<>
 		{categories.map((category) => (
-			<Fragment key={category.id}>
-				<tr>
-					<td className="py-4 px-2 text-[var(--blue-wood)] bg-white rounded-l-md text-center border-r">
-						{category.description}
-					</td>
-					<td
-						className={cn(
-							"py-4 px-2 bg-[var(--cleared-blue)] rounded-r-md font-medium text-center",
-							className
-						)}
-					>
-						{translations.dashboards.consolidated.totalPrefix}
-						{formatCurrency(category.total)}
-					</td>
-				</tr>
-			</Fragment>
+			<tr key={category.id} className="border-t border-border">
+				<td className="px-4 py-3 text-sm text-foreground">
+					{category.description}
+				</td>
+				<td
+					className={cn(
+						"px-4 py-3 text-right text-sm font-semibold",
+						TOTAL_TONE[type].text
+					)}
+				>
+					{translations.dashboards.consolidated.totalPrefix}
+					{formatCurrency(category.total)}
+				</td>
+			</tr>
 		))}
 	</>
 )
@@ -95,12 +101,8 @@ const Table = ({
 }: {
 	report: ConsolidatedReport
 	shareType: string
-	type: "requester" | "partner"
+	type: ReportType
 }) => {
-	const className =
-		type === "requester"
-			? "text-[var(--green)] font-normal"
-			: "text-[var(--red)] font-normal"
 	const hasData =
 		shareType === "payments"
 			? (report.payments?.length ?? 0) > 0
@@ -109,29 +111,16 @@ const Table = ({
 	if (!hasData) return null
 
 	return (
-		<div className="flex-1 min-w-0">
-			<table className="w-full border-separate border-spacing-y-2">
-				<thead>
-					<tr>
-						<th
-							colSpan={2}
-							className="text-[var(--light-gray)] font-normal text-xl pb-2 text-center"
-						>
-							{report.name}
-						</th>
-					</tr>
-				</thead>
+		<div className="min-w-0 flex-1 overflow-hidden rounded-xl border border-border bg-card">
+			<table className="w-full">
+				<caption className="px-4 py-3 text-center text-base font-semibold text-foreground">
+					{report.name}
+				</caption>
 				<tbody>
 					{shareType === "payments" ? (
-						<PaymentsList
-							payments={report.payments || []}
-							className={className}
-						/>
+						<PaymentsList payments={report.payments || []} type={type} />
 					) : (
-						<CategoriesList
-							categories={report.categories || []}
-							className={className}
-						/>
+						<CategoriesList categories={report.categories || []} type={type} />
 					)}
 				</tbody>
 			</table>
@@ -143,7 +132,7 @@ export function ReportTables({ data, shareType }: ReportTablesProps) {
 	if (!data) return null
 
 	return (
-		<section className="mt-8 flex flex-col md:flex-row gap-8 justify-center">
+		<section className="flex flex-col justify-center gap-5 md:flex-row md:items-start">
 			{data.requester && (
 				<Table report={data.requester} shareType={shareType} type="requester" />
 			)}

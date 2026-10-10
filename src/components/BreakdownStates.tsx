@@ -10,7 +10,7 @@ export function BreakdownError({ onRetry }: { onRetry: () => void }) {
 			role="alert"
 			className="flex flex-col items-center justify-center gap-3 py-16"
 		>
-			<TriangleAlert className="h-8 w-8 text-pink" />
+			<TriangleAlert className="h-8 w-8 text-danger" />
 			<p className="text-sm text-muted-foreground">{breakdown.error}</p>
 			<Button variant="outline" size="sm" onClick={onRetry}>
 				{breakdown.retry}

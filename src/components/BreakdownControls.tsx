@@ -1,22 +1,9 @@
 "use client"
 
-import {
-	Calendar,
-	ChevronLeft,
-	ChevronRight,
-	CreditCard,
-	Landmark,
-	Store,
-	Tag
-} from "lucide-react"
+import { CreditCard, Landmark, Store, Tag } from "lucide-react"
 import type React from "react"
 import { useRef } from "react"
 import { translations } from "@/constants/translations"
-import {
-	type BreakdownMonth,
-	formatMonthLabel,
-	formatMonthParam
-} from "@/lib/balance-breakdown-params"
 import { cn } from "@/lib/utils"
 import type { BalanceFilterKey } from "@/types/expenses"
 
@@ -47,18 +34,12 @@ const focusRing =
 
 interface BreakdownControlsProps {
 	groupBy: BalanceFilterKey
-	month: BreakdownMonth
 	onGroupByChange: (groupBy: BalanceFilterKey) => void
-	onMonthChange: (month: BreakdownMonth) => void
-	onShiftMonth: (delta: number) => void
 }
 
 export function BreakdownControls({
 	groupBy,
-	month,
-	onGroupByChange,
-	onMonthChange,
-	onShiftMonth
+	onGroupByChange
 }: BreakdownControlsProps) {
 	const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({})
 
@@ -86,19 +67,13 @@ export function BreakdownControls({
 		onGroupByChange(key)
 	}
 
-	const handleMonthInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-		// A cleared native picker keeps the previous month (never request without one)
-		const [year, monthNumber] = e.target.value.split("-").map(Number)
-		if (year && monthNumber) onMonthChange({ year, month: monthNumber })
-	}
-
 	return (
 		// Mobile: sticks to the top once the summary cards scroll away (spec section 8)
-		<section className="sticky top-0 z-20 -mx-5 flex flex-col gap-3 bg-background px-5 py-3 md:static md:mx-0 md:flex-row md:items-center md:justify-between md:bg-transparent md:p-0">
+		<section className="sticky top-0 z-20 -mx-5 flex flex-col gap-3 bg-background px-5 py-3 md:static md:mx-0 md:bg-transparent md:p-0">
 			<div
 				role="tablist"
 				aria-label={translations.dashboards.breakdown.groupingLabel}
-				className="flex gap-1 rounded-md bg-container-background p-1"
+				className="flex gap-1 rounded-lg border border-border bg-card p-1"
 			>
 				{TABS.map(({ key, label, shortLabel, icon: Icon }, index) => {
 					const isActive = key === groupBy
@@ -117,11 +92,11 @@ export function BreakdownControls({
 							onClick={() => onGroupByChange(key)}
 							onKeyDown={(e) => handleTabKeyDown(e, index)}
 							className={cn(
-								"flex flex-1 md:flex-none flex-col md:flex-row items-center justify-center gap-1 md:gap-2 h-14 md:h-10 md:px-4 rounded-[0.25rem] text-xs md:text-[0.9375rem] transition-colors cursor-pointer",
+								"flex flex-1 md:flex-none flex-col md:flex-row items-center justify-center gap-1 md:gap-2 h-14 md:h-10 md:px-4 rounded-md text-xs md:text-sm transition-colors cursor-pointer",
 								focusRing,
 								isActive
-									? "bg-orange text-background font-bold"
-									: "text-light-gray font-medium hover:text-input-text"
+									? "bg-primary font-semibold text-primary-foreground"
+									: "text-muted-foreground font-medium hover:text-foreground"
 							)}
 						>
 							<Icon className="w-[18px] h-[18px]" />
@@ -136,46 +111,6 @@ export function BreakdownControls({
 						</button>
 					)
 				})}
-			</div>
-
-			<div className="flex items-center gap-2">
-				<button
-					type="button"
-					aria-label={translations.dashboards.breakdown.previousMonth}
-					onClick={() => onShiftMonth(-1)}
-					className={cn(
-						"flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-container-background text-input-text hover:text-orange transition-colors cursor-pointer",
-						focusRing
-					)}
-				>
-					<ChevronLeft className="w-5 h-5" />
-				</button>
-
-				<div className="relative flex h-12 flex-1 md:w-[220px] md:flex-none items-center gap-2 rounded-md bg-container-background px-3 text-input-text focus-within:ring-1 focus-within:ring-ring">
-					<Calendar className="w-5 h-5 shrink-0 text-orange" />
-					<span>{formatMonthLabel(month)}</span>
-					<input
-						type="month"
-						aria-label={translations.dashboards.breakdown.month}
-						min="1900-01"
-						value={formatMonthParam(month)}
-						onChange={handleMonthInput}
-						onClick={(e) => e.currentTarget.showPicker?.()}
-						className="absolute inset-0 h-full w-full cursor-pointer opacity-0 outline-none"
-					/>
-				</div>
-
-				<button
-					type="button"
-					aria-label={translations.dashboards.breakdown.nextMonth}
-					onClick={() => onShiftMonth(1)}
-					className={cn(
-						"flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-container-background text-input-text hover:text-orange transition-colors cursor-pointer",
-						focusRing
-					)}
-				>
-					<ChevronRight className="w-5 h-5" />
-				</button>
 			</div>
 		</section>
 	)
