@@ -36,8 +36,8 @@ export function TopBar() {
 						</div>
 					</Suspense>
 				)}
-				<ThemeToggle className="hidden border border-border bg-card md:inline-flex" />
 				{canCreateExpense && <NewExpenseAction />}
+				<ThemeToggle className="hidden border border-border bg-card md:inline-flex" />
 			</div>
 		</div>
 	)
