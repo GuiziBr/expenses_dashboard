@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { createRef } from "react"
 import { describe, expect, it, vi } from "vitest"
 import { Dialog, DialogContent, DialogTitle } from "./dialog"
 import { SelectMenu } from "./select-menu"
@@ -110,5 +111,22 @@ describe("SelectMenu", () => {
 		await user.click(await screen.findByRole("option", { name: "Bank" }))
 
 		expect(onValueChange).toHaveBeenCalledWith("banks")
+	})
+
+	it("points the ref at the trigger so it can be focused", () => {
+		const ref = createRef<HTMLButtonElement>()
+		render(
+			<SelectMenu
+				ref={ref}
+				options={options}
+				value=""
+				onValueChange={vi.fn()}
+				placeholder="Filter by"
+			/>
+		)
+
+		expect(ref.current).toBe(screen.getByRole("combobox"))
+		ref.current?.focus()
+		expect(screen.getByRole("combobox")).toHaveFocus()
 	})
 })

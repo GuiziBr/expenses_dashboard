@@ -116,6 +116,56 @@ describe("NewExpenseModal — bank required rule", () => {
 		} as unknown as ReturnType<typeof useUpdateExpense>)
 	})
 
+	it("focuses the category select when it is missing on save", async () => {
+		setupFilterValues(PT_WITH_STATEMENT)
+		render(<NewExpenseModal isOpen={true} onClose={vi.fn()} />)
+
+		await userEvent.type(
+			screen.getByPlaceholderText("Expense description"),
+			"Groceries"
+		)
+		await userEvent.click(screen.getByRole("button", { name: /save/i }))
+
+		await waitFor(() => {
+			expect(screen.getAllByRole("combobox")[0]).toHaveFocus()
+		})
+	})
+
+	it("focuses the payment type select when only it is missing on save", async () => {
+		setupFilterValues(PT_WITH_STATEMENT)
+		render(<NewExpenseModal isOpen={true} onClose={vi.fn()} />)
+		const user = userEvent.setup()
+
+		await user.type(
+			screen.getByPlaceholderText("Expense description"),
+			"Groceries"
+		)
+		await chooseOption(
+			user,
+			screen.getAllByRole("combobox")[0],
+			CATEGORY.description
+		)
+		await user.click(screen.getByRole("button", { name: /save/i }))
+
+		await waitFor(() => {
+			expect(screen.getAllByRole("combobox")[1]).toHaveFocus()
+		})
+	})
+
+	it("focuses the bank select when a statement payment type has no bank", async () => {
+		setupFilterValues(PT_WITH_STATEMENT)
+		const { container } = render(
+			<NewExpenseModal isOpen={true} onClose={vi.fn()} />
+		)
+
+		await fillBaseFields(container, "pt-cc")
+		await userEvent.click(screen.getByRole("button", { name: /save/i }))
+
+		await waitFor(() => {
+			expect(screen.getAllByRole("combobox")[2]).toHaveFocus()
+		})
+	})
+
 	it("shows a bank error when a has_statement payment type is selected without a bank", async () => {
 		setupFilterValues(PT_WITH_STATEMENT)
 		const { container } = render(

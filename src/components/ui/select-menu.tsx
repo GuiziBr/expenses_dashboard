@@ -2,6 +2,7 @@
 
 import { AlertCircle, Check, ChevronDown } from "lucide-react"
 import { Select as SelectPrimitive } from "radix-ui"
+import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -30,20 +31,27 @@ const getLabel = (option: SelectOption) => option.description || option.name
 /**
  * A select that renders its own popover list (Radix Select) instead of the
  * operating system's picker, so the menu follows the app theme. `className`
- * sizes the whole field (width, flex).
+ * sizes the whole field (width, flex). The ref points at the trigger button, so
+ * react-hook-form can focus it when the field is invalid.
  */
-export function SelectMenu({
-	options,
-	value,
-	onValueChange,
-	onBlur,
-	placeholder,
-	name,
-	id,
-	disabled,
-	error,
-	className
-}: SelectMenuProps) {
+export const SelectMenu = React.forwardRef<
+	HTMLButtonElement,
+	SelectMenuProps
+>(function SelectMenu(
+	{
+		options,
+		value,
+		onValueChange,
+		onBlur,
+		placeholder,
+		name,
+		id,
+		disabled,
+		error,
+		className
+	},
+	ref
+) {
 	return (
 		<div className={cn("relative w-full min-w-0", className)}>
 			<SelectPrimitive.Root
@@ -53,6 +61,7 @@ export function SelectMenu({
 				disabled={disabled}
 			>
 				<SelectPrimitive.Trigger
+					ref={ref}
 					id={id}
 					onBlur={onBlur}
 					aria-invalid={!!error}
@@ -122,4 +131,4 @@ export function SelectMenu({
 			)}
 		</div>
 	)
-}
+})

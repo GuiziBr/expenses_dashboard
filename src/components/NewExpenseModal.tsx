@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Info, Loader2 } from "lucide-react"
 import * as React from "react"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, type FieldErrors, useForm } from "react-hook-form"
 import { HiOutlineCurrencyDollar } from "react-icons/hi"
 import { IoMdCheckboxOutline } from "react-icons/io"
 import { MdDateRange, MdTitle } from "react-icons/md"
@@ -30,6 +30,18 @@ interface NewExpenseModalProps {
 	onClose: () => void
 	expense?: FormattedExpense
 }
+
+// The order the fields appear in the form. react-hook-form would focus the first
+// invalid field by registration order, which changes after a reset.
+const FOCUS_ORDER = [
+	"description",
+	"category",
+	"paymentType",
+	"bank",
+	"store",
+	"date",
+	"amount"
+] as const
 
 export function NewExpenseModal({
 	isOpen,
@@ -109,6 +121,7 @@ export function NewExpenseModal({
 	const form = useForm<NewExpenseFormValues>({
 		resolver: zodResolver(schema),
 		mode: "onSubmit",
+		shouldFocusError: false,
 		defaultValues: buildDefaultValues(expense)
 	})
 
@@ -116,11 +129,17 @@ export function NewExpenseModal({
 		register,
 		control,
 		handleSubmit,
+		setFocus,
 		formState: { errors },
 		watch,
 		setValue,
 		reset
 	} = form
+
+	const focusFirstInvalid = (formErrors: FieldErrors<NewExpenseFormValues>) => {
+		const first = FOCUS_ORDER.find((name) => formErrors[name])
+		if (first) setFocus(first)
+	}
 
 	const selectedPaymentTypeId = watch("paymentType")
 	const currentMonth = watch("currentMonth")
@@ -222,7 +241,10 @@ export function NewExpenseModal({
 					</DialogTitle>
 				</DialogHeader>
 
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
+				<form
+					onSubmit={handleSubmit(onSubmit, focusFirstInvalid)}
+					className="space-y-4 mt-4"
+				>
 					{/* Description */}
 					<Input
 						icon={MdTitle}
@@ -245,6 +267,7 @@ export function NewExpenseModal({
 									value={field.value ?? ""}
 									onValueChange={field.onChange}
 									onBlur={field.onBlur}
+									ref={field.ref}
 									error={errors.category?.message}
 								/>
 							)}
@@ -262,6 +285,7 @@ export function NewExpenseModal({
 									value={field.value ?? ""}
 									onValueChange={field.onChange}
 									onBlur={field.onBlur}
+									ref={field.ref}
 									error={errors.paymentType?.message}
 								/>
 							)}
@@ -281,6 +305,7 @@ export function NewExpenseModal({
 									value={field.value ?? ""}
 									onValueChange={field.onChange}
 									onBlur={field.onBlur}
+									ref={field.ref}
 									error={errors.bank?.message}
 								/>
 							)}
@@ -298,6 +323,7 @@ export function NewExpenseModal({
 									value={field.value ?? ""}
 									onValueChange={field.onChange}
 									onBlur={field.onBlur}
+									ref={field.ref}
 								/>
 							)}
 						/>
