@@ -1,7 +1,7 @@
-import { AlertCircle, Calendar, ChevronDown, Loader2 } from "lucide-react"
+import { AlertCircle, Calendar, Loader2 } from "lucide-react"
 import * as React from "react"
 import { Button } from "@/components/ui/button"
-import { Select } from "@/components/ui/select"
+import { SelectMenu } from "@/components/ui/select-menu"
 import { translations } from "@/constants/translations"
 import { SHARED_BALANCE_TYPES } from "@/lib/constants"
 import { cn } from "@/lib/utils"
@@ -51,19 +51,17 @@ export function ConsolidatedFilters({
 				<div className="flex flex-row gap-2 w-full md:w-auto">
 					{/* Select Container */}
 					<div className="flex-1 md:w-[15rem]">
-						<Select
-							icon={ChevronDown}
+						<SelectMenu
 							name="balanceType"
 							options={SHARED_BALANCE_TYPES}
 							placeholder={translations.dashboards.consolidated.selectType}
 							value={balanceType}
-							onChange={(e) => {
-								onBalanceTypeChange(e.target.value)
+							onValueChange={(value) => {
+								onBalanceTypeChange(value)
 								if (errors.balanceType)
 									setErrors((prev) => ({ ...prev, balanceType: "" }))
 							}}
 							error={errors.balanceType}
-							className="px-2 md:px-3"
 						/>
 					</div>
 

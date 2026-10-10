@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { HiOutlineSelector } from "react-icons/hi"
 import { toast } from "sonner"
 import { translations } from "@/constants/translations"
 import { useFilterValues } from "@/hooks/use-filter-values"
@@ -10,8 +9,7 @@ import { getErrorMessage } from "@/lib/get-error-message"
 import type { ExpenseFilters } from "@/types/expenses"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
-import { Select, type SelectOption } from "./ui/select"
-import { SelectMenu } from "./ui/select-menu"
+import { SelectMenu, type SelectOption } from "./ui/select-menu"
 
 interface FilterFormProps {
 	onSubmit: (filters: ExpenseFilters) => void
@@ -79,7 +77,6 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 				{/* Filters Group */}
 				<div className="flex gap-2 w-full lg:w-auto">
 					<SelectMenu
-						icon={HiOutlineSelector}
 						name="filterBy"
 						options={COLUMN_FILTERS as unknown as SelectOption[]}
 						placeholder={translations.filters.filterBy}
@@ -87,15 +84,14 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 						value={filterBy}
 						onValueChange={handleFilterByChange}
 					/>
-					<Select
-						icon={HiOutlineSelector}
+					<SelectMenu
 						name="filterValue"
 						options={filterOptions}
 						placeholder={translations.filters.filterValue}
 						className="flex-1 lg:w-44"
 						disabled={!filterBy || isLoadingOptions}
 						value={filterValue}
-						onChange={(e) => setFilterValue(e.target.value)}
+						onValueChange={setFilterValue}
 					/>
 				</div>
 

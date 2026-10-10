@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { beforeAll, describe, expect, it, vi } from "vitest"
+import { describe, expect, it, vi } from "vitest"
+import { Dialog, DialogContent, DialogTitle } from "./dialog"
 import { SelectMenu } from "./select-menu"
 
 const options = [
@@ -9,18 +10,6 @@ const options = [
 	{ id: "banks", description: "Bank" },
 	{ id: "stores", name: "Store" }
 ]
-
-beforeAll(() => {
-	globalThis.ResizeObserver = class {
-		observe() {}
-		unobserve() {}
-		disconnect() {}
-	}
-	Element.prototype.hasPointerCapture = () => false
-	Element.prototype.setPointerCapture = () => {}
-	Element.prototype.releasePointerCapture = () => {}
-	Element.prototype.scrollIntoView = () => {}
-})
 
 const setup = (value = "", extra: Partial<Parameters<typeof SelectMenu>[0]> = {}) => {
 	const onValueChange = vi.fn()
@@ -81,5 +70,45 @@ describe("SelectMenu", () => {
 		setup("", { error: "Required" })
 
 		expect(screen.getByRole("combobox")).toHaveAttribute("aria-invalid", "true")
+	})
+
+	it("shows the error message", () => {
+		setup("", { error: "Type is required" })
+
+		expect(screen.getByRole("alert")).toHaveTextContent("Type is required")
+	})
+
+	it("passes blur through", async () => {
+		const onBlur = vi.fn()
+		const { user } = setup("", { onBlur })
+
+		await user.click(screen.getByRole("combobox"))
+		await user.keyboard("{Escape}")
+		await user.tab()
+
+		expect(onBlur).toHaveBeenCalled()
+	})
+
+	it("works inside a modal dialog", async () => {
+		const onValueChange = vi.fn()
+		const user = userEvent.setup()
+		render(
+			<Dialog open>
+				<DialogContent>
+					<DialogTitle>Create</DialogTitle>
+					<SelectMenu
+						options={options}
+						value=""
+						onValueChange={onValueChange}
+						placeholder="Select category"
+					/>
+				</DialogContent>
+			</Dialog>
+		)
+
+		await user.click(screen.getByRole("combobox"))
+		await user.click(await screen.findByRole("option", { name: "Bank" }))
+
+		expect(onValueChange).toHaveBeenCalledWith("banks")
 	})
 })

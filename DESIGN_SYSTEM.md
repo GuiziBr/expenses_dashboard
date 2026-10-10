@@ -228,7 +228,7 @@ Use the variants. Do not recolour buttons per screen.
 
 Row buttons next to inputs use `className="h-10 font-semibold"`. While pending, show `<Loader2 className="size-4 animate-spin" />` in place of the label and set `disabled`.
 
-### Input and Select (`ui/input.tsx`, `ui/select.tsx`)
+### Input (`ui/input.tsx`)
 
 A wrapper with the border and an inner transparent field:
 
@@ -241,6 +241,30 @@ error: border-danger text-danger
 - Leading icon: `size-4 text-muted-foreground`.
 - The `error` prop shows a `danger` border, an alert icon and a tooltip chip (`bg-destructive text-destructive-foreground`).
 - Date and month fields reuse the same wrapper classes around a native `<input type="date|month">`.
+
+### Select (`ui/select-menu.tsx`)
+
+All selects use `SelectMenu`, a Radix Select with its own popover list, so the open menu follows the theme instead of the operating system's picker. Do not use a native `<select>`.
+
+```tsx
+<SelectMenu
+  options={options}              // { id, description | name }[]
+  value={value}
+  onValueChange={setValue}       // receives the id
+  placeholder="Select category"
+  error={errors.category?.message}
+  disabled={!ready}
+  className="flex-1 lg:w-44"     // sizes the whole field
+/>
+```
+
+- Trigger: the same box as the Input (`h-10`, `border-input`, `bg-card`, purple border and ring while open or focused) with a trailing `ChevronDown`. No leading icon.
+- Menu: `bg-popover` card with a border and shadow, as wide as the trigger. The highlighted option uses `bg-accent`, the selected one a `text-primary-text` checkmark. It opens with the dialog fade and zoom animation.
+- Keyboard: Enter, Space or the arrows open it, the arrows and type-ahead move, Escape closes.
+- The `error` prop shows a `danger` border and an alert icon with a tooltip chip, like the Input.
+- In react-hook-form, wrap it in a `Controller` and pass `field.value`, `field.onChange` and `field.onBlur`.
+- There is no empty option. A field cannot be cleared once a value is chosen, as before with the native placeholder option.
+- It works inside a dialog. For long, searchable lists use a combobox instead.
 
 ### Metric card (`BalanceCard`)
 
@@ -351,7 +375,7 @@ const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof
 })
 ```
 
-- Pass `error={errors.field?.message}` to `Input` and `Select`.
+- Pass `error={errors.field?.message}` to `Input` and `SelectMenu` (inside a `Controller` for selects).
 - The submit button shows a spinner and is `disabled` while pending.
 - Fields sit in a `flex flex-col gap-4` container, two per row where they pair (category and payment type, bank and store, date and amount).
 - The New Expense dialog has three variants that share one layout: create, create with **Current Month** (shown only when the selected payment type has no statement), and edit. Edit adds a Cancel button.
