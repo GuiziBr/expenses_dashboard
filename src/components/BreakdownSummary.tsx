@@ -73,7 +73,7 @@ function SummaryCard({
 				className
 			)}
 		>
-			<header className="flex items-center justify-center gap-2 md:justify-between">
+			<header className="flex items-center justify-between gap-2 text-left">
 				<p
 					className={cn(
 						"text-[13px] font-medium",
