@@ -32,14 +32,14 @@ export function BalanceCard({
 	return (
 		<div
 			className={cn(
-				"flex flex-col gap-3 rounded-xl border p-4 font-[family-name:var(--font-roboto)] md:p-5",
+				"flex flex-col gap-3 rounded-xl border p-4 text-center font-[family-name:var(--font-roboto)] md:p-5 md:text-left",
 				isTotal
 					? "border-primary bg-primary text-primary-foreground"
 					: "border-border bg-card text-card-foreground",
 				className
 			)}
 		>
-			<header className="flex items-center justify-between gap-2">
+			<header className="flex items-center justify-center gap-2 md:justify-between">
 				<p
 					className={cn(
 						"text-[13px] font-medium",

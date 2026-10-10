@@ -66,14 +66,14 @@ function SummaryCard({
 	return (
 		<div
 			className={cn(
-				"flex flex-col gap-2 rounded-xl border p-4 md:gap-3 md:p-5",
+				"flex flex-col gap-2 rounded-xl border p-4 text-center md:gap-3 md:p-5 md:text-left",
 				isTotal
 					? "border-primary bg-primary text-primary-foreground"
 					: "border-border bg-card text-card-foreground",
 				className
 			)}
 		>
-			<header className="flex items-center justify-between">
+			<header className="flex items-center justify-center gap-2 md:justify-between">
 				<p
 					className={cn(
 						"text-[13px] font-medium",
