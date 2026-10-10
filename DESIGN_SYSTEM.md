@@ -1,17 +1,19 @@
 # Design System Reference
 
-This document is the single source of truth for the visual design of this application. It is intended to be provided to an AI assistant when building a new frontend that should match this application's look and feel.
+This document is the source of truth for the visual design of this application. It is intended to be provided to an AI assistant (or a new developer) building UI that should match the app's look and feel.
+
+The tokens live in `src/app/globals.css`. When this document and that file disagree, the file wins. The history of the navigation, theming and restyle work is in [docs/ui/ui-overhaul.md](docs/ui/ui-overhaul.md).
 
 ---
 
 ## 1. Design Philosophy
 
-This application uses a **dark-mode-only** aesthetic with a professional, data-dense layout suited for financial dashboards. There is no light mode — the HTML element always carries the `dark` class.
+A professional, data-dense interface for financial dashboards, in **light and dark themes**. Dark is the default; users switch with the toggle.
 
-The visual language is built on three pillars:
-- **Depth through layering**: a deep purple-grey page background (`#312e38`) with darker cards/containers (`#232129`) creates visual hierarchy without borders.
-- **One primary accent**: orange (`#ff872c`) is the *only* action color. Every interactive element — buttons, focus rings, active nav links — uses it.
-- **Legibility first**: high-contrast cream text (`#f4ede8`) on dark backgrounds, minimal decoration, clean typography.
+- **Tokens, not colours.** Every colour in a component comes from a semantic token (`bg-card`, `text-muted-foreground`, `border-input`, `bg-primary`). Components never use raw hex values, Tailwind palette colours (`text-white`, `bg-slate-200`) or `dark:` variants. The theme changes by redefining the tokens under `.dark`.
+- **One accent.** Purple (`--primary`) is the only action colour: primary buttons, the current page number, the active nav item, focus rings, the total card.
+- **Layered surfaces.** A page background (`--background`), cards and inputs on `--card`, subtle borders (`--border`), and tinted fills for state (`*-soft`).
+- **Legibility first.** Text and UI meet WCAG contrast (4.5:1 for text, 3:1 for control boundaries) in both themes. See Section 5.
 
 ---
 
@@ -23,1034 +25,356 @@ The visual language is built on three pillars:
 | Styling | Tailwind CSS v4 (CSS-first config via `@theme` in `globals.css`) |
 | Component primitives | shadcn/ui + Radix UI |
 | Component variants | Class Variance Authority (CVA) |
-| Icons (primary) | lucide-react |
-| Icons (secondary) | react-icons |
+| Icons | lucide-react (primary), react-icons (a few legacy form icons) |
 | Toasts | Sonner |
 | Forms | react-hook-form + Zod |
 | Data fetching | TanStack Query (React Query) |
 
 ---
 
-## 3. Project Setup Instructions
+## 3. Project Setup
 
-When scaffolding a new project to match this design, follow these steps:
-
-1. **Create a Next.js app** with the App Router.
-2. **Init shadcn/ui** (`npx shadcn@latest init`). When prompted, choose "New York" style and accept defaults — the `globals.css` below will override the generated variables.
-3. **Replace `globals.css`** with the exact content from [Section 4](#4-globalscss--design-tokens) below.
-4. **Configure fonts** in `src/app/layout.tsx`:
+1. Create a Next.js app with the App Router and init shadcn/ui (New York style).
+2. Copy `src/app/globals.css` from this repository. It defines the tokens (light in `:root`, dark in `.dark`), the radius scale and the Tailwind bridge (`@theme`).
+3. Load the fonts and wire up the theme in `src/app/layout.tsx`:
 
 ```tsx
 import { Roboto, Roboto_Slab } from "next/font/google"
-
-const robotoSlab = Roboto_Slab({
-  variable: "--font-roboto-slab",
-  subsets: ["latin"]
-})
-
-const roboto = Roboto({
-  variable: "--font-roboto",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"]
-})
-
-// Apply to <html> and <body>:
-<html lang="en" className="dark">
-  <body className={`${robotoSlab.variable} ${roboto.variable} antialiased`}>
-```
-
-5. **Force dark mode**: the `<html>` element must always have `className="dark"`. This is not a toggle — it is always dark.
-6. **Add Sonner** for toasts:
-
-```tsx
 import { Toaster } from "@/components/ui/sonner"
-// Inside <body>:
-<Toaster position="top-center" expand={true} richColors />
+import { THEME_INIT_SCRIPT } from "@/lib/theme"
+import { ThemeProvider } from "@/providers/theme-provider"
+
+const robotoSlab = Roboto_Slab({ variable: "--font-roboto-slab", subsets: ["latin"] })
+const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: ["400", "500", "700"] })
+
+<html lang="en" className="dark" suppressHydrationWarning>
+  <head>
+    <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+  </head>
+  <body className={`${robotoSlab.variable} ${roboto.variable} antialiased`}>
+    <ThemeProvider>
+      {children}
+      <Toaster position="top-center" expand={true} richColors />
+    </ThemeProvider>
+  </body>
+</html>
 ```
+
+- `className="dark"` is only the server default. The inline script (`THEME_INIT_SCRIPT`) runs before first paint and sets or removes the `dark` class from `localStorage["theme"]`, so a saved light choice never flashes dark. `suppressHydrationWarning` on `<html>` covers that class change.
+- `ThemeProvider` exposes `useTheme()` (`theme`, `setTheme`, `toggleTheme`). Its first render uses the default so it matches the server, then a layout effect reads the saved choice before paint.
+- `Toaster` reads the theme from `useTheme()`, so it must be inside `ThemeProvider`.
 
 ---
 
-## 4. globals.css — Design Tokens
+## 4. Theming
 
-Copy this file verbatim into `src/app/globals.css`. It defines all color variables, radius tokens, and bridges them into Tailwind v4 utilities via `@theme`.
+### How it works
 
-```css
-@import "tailwindcss";
+`:root` holds the light values and `.dark` overrides them. Tailwind utilities read the variables through `@theme` (`--color-card: var(--card)` and so on). The custom variant `@custom-variant dark (&:is(.dark *))` exists, but components should not need it.
 
-@custom-variant dark (&:is(.dark *));
+`color-scheme` is set per theme, so native controls (date and month pickers, scrollbars) follow the theme.
 
-:root {
-  --radius: 0.625rem;
-  --background: #312e38;
-  --container-background: #232129;
-  --input-text: #f4ede8;
+### Switching
 
-  --light-orange: #ff9000;
-  --iron-gray: #666360;
-  --red: #c53030;
-  --white: #ffffff;
-  --light-blue: #5636d3;
-  --orange: #ff872c;
-  --very-light-blue: #ebf8ff;
-  --blue-sky: #3172b7;
-  --cleared-blue: #e6fffa;
+- Desktop: `ThemeToggle` (an icon button) in the top bar, from `md` up.
+- Mobile: a **Theme** row in the More sheet of the bottom tab bar, above Log out. It does not close the sheet.
+- The choice is stored in `localStorage` under `theme` (`"light"` or `"dark"`). Anything else means the default (dark). There is no "follow the system" option.
 
-  --green-blue: #2e656a;
-  --light-pink: #fddede;
-  --light-gray: #969cb3;
-  --blue-wood: #363f5f;
-  --green: #12a454;
-  --pink: #e83f5b;
+### Rules for components
 
-  /* shadcn/ui variables adjusted for default dark background */
-  --foreground: #f4ede8;
-  --card: #232129;
-  --card-foreground: #f4ede8;
-  --popover: #232129;
-  --popover-foreground: #f4ede8;
-  --primary: #ff872c;
-  --primary-foreground: #ffffff;
-  --secondary: #3e3b47;
-  --secondary-foreground: #f4ede8;
-  --muted: #3e3b47;
-  --muted-foreground: #969cb3;
-  --accent: #3e3b47;
-  --accent-foreground: #f4ede8;
-  --destructive: #e83f5b;
-  --destructive-foreground: #ffffff;
-  --border: #3e3b47;
-  --input: #232129;
-  --ring: #ff872c;
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: #28262e;
-  --sidebar-foreground: #f4ede8;
-  --sidebar-primary: #ff872c;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #3e3b47;
-  --sidebar-accent-foreground: #f4ede8;
-  --sidebar-border: #3e3b47;
-  --sidebar-ring: #ff872c;
-}
-
-@theme {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-serif: var(--font-roboto-slab);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
-
-  /* Custom Project Colors */
-  --color-orange: var(--orange);
-  --color-light-orange: var(--light-orange);
-  --color-light-blue: var(--light-blue);
-  --color-very-light-blue: var(--very-light-blue);
-  --color-container-background: var(--container-background);
-  --color-input-text: var(--input-text);
-  --color-iron-gray: var(--iron-gray);
-  --color-red: var(--red);
-  --color-blue-sky: var(--blue-sky);
-  --color-cleared-blue: var(--cleared-blue);
-  --color-green-blue: var(--green-blue);
-  --color-light-pink: var(--light-pink);
-  --color-light-gray: var(--light-gray);
-  --color-blue-wood: var(--blue-wood);
-  --color-green: var(--green);
-  --color-pink: var(--pink);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-roboto-slab), serif;
-  }
-
-  /* Prevent browser autofill from applying its own yellow/blue background */
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus,
-  input:-webkit-autofill:active {
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: var(--input-text);
-    transition: background-color 5000s ease-in-out 0s;
-    box-shadow: inset 0 0 20px 20px var(--container-background);
-  }
-}
-```
+1. Use semantic tokens only. Need a new colour? Add a token to both `:root` and `.dark` and bridge it in `@theme`.
+2. **Input-like controls** (inputs, selects, date fields, checkbox groups, the month picker) use `border-input`, not `border-border`. `--input` is the border colour that meets 3:1 on both backgrounds in light.
+3. **`primary` vs `primary-text`.** `bg-primary` is a fill that carries white text. For purple *text or icons* on a page or tinted surface use `text-primary-text`.
+4. **`destructive` vs `danger`.** `bg-destructive` is a fill with `text-destructive-foreground`. For red *text, icons or borders* use `text-danger` / `border-danger`; it stays readable on dark cards.
+5. State fills use the `*-soft` tokens (`bg-success-soft`, `bg-danger-soft`, `bg-primary-soft`) with the matching strong colour for text.
+6. Check every new screen in **both** themes, on desktop and on a 390px-wide phone.
 
 ---
 
-## 5. Color Reference
+## 5. Colour Reference
 
-Once the `globals.css` above is installed, all tokens below are available as Tailwind utilities (`bg-orange`, `text-iron-gray`, `border-red`, etc.).
+### Semantic tokens
 
-### Project colors
+| Token | Tailwind | Light | Dark | Use |
+|---|---|---|---|---|
+| `--background` | `bg-background` | `#f6f6fa` | `#312e38` | Page background, table header tint |
+| `--card` | `bg-card` | `#ffffff` | `#232129` | Cards, inputs, dialogs, the sidebar surface |
+| `--foreground` | `text-foreground` | `#15152b` | `#f4ede8` | Primary text |
+| `--muted-foreground` | `text-muted-foreground` | `#6b6b82` | `#969cb3` | Secondary text, labels, inactive icons |
+| `--border` | `border-border` | `#e6e6ef` | `#3e3b47` | Card edges, dividers |
+| `--input` | `border-input` | `#8a8aa3` | `#3e3b47` | Border of input-like controls |
+| `--primary` | `bg-primary` | `#5636d3` | `#6c4cf0` | The accent: primary buttons, current page, total card |
+| `--primary-foreground` | `text-primary-foreground` | `#ffffff` | `#ffffff` | Text on `--primary` |
+| `--primary-text` | `text-primary-text` | `#5636d3` | `#b9abff` | Purple text and icons (active nav, avatar initials) |
+| `--primary-soft` | `bg-primary-soft` | `#eeeafc` | `#2f2760` | Active nav pill, avatar background, neutral icon chips |
+| `--accent` | `bg-accent` | `#eeeafc` | `#3e3b47` | Hover fills |
+| `--secondary` / `--muted` | `bg-secondary` / `bg-muted` | `#ececf3` | `#3e3b47` | Subtle buttons, skeletons |
+| `--destructive` | `bg-destructive` | `#d23b3b` | `#d4344f` | Delete buttons and tooltip chips (white text) |
+| `--success` / `--success-soft` | `text-success` / `bg-success-soft` | `#12875a` / `#e3f5ec` | `#3dd68c` / `#173a2b` | Incomes, positive amounts |
+| `--danger` / `--danger-soft` | `text-danger` / `bg-danger-soft` | `#d23b3b` / `#fce9e9` | `#ff7d7d` / `#4a2226` | Outcomes, negative amounts, error text |
+| `--ring` | `ring-ring` | `#5636d3` | `#b9abff` | Focus rings |
+| `--sidebar*` | `bg-sidebar`, … | white surface | `#28262e` | Sidebar surface and its accent states |
 
-| Token | Hex | Tailwind class | When to use |
-|---|---|---|---|
-| `--orange` | `#ff872c` | `bg-orange` / `text-orange` / `border-orange` | Primary actions, CTA buttons, focus rings, active nav states |
-| `--light-orange` | `#ff9000` | `bg-light-orange` | Hover variant of orange |
-| `--background` | `#312e38` | `bg-background` | Page background |
-| `--container-background` | `#232129` | `bg-container-background` | Cards, inputs, modals, dropdowns |
-| `--foreground` / `--input-text` | `#f4ede8` | `text-foreground` / `text-input-text` | All body text |
-| `--iron-gray` | `#666360` | `text-iron-gray` | Muted icons, input placeholders, disabled text |
-| `--light-gray` | `#969cb3` | `text-light-gray` / `text-muted-foreground` | Secondary labels, table column headers |
-| `--light-blue` | `#5636d3` | `bg-light-blue` | Navigation/header background |
-| `--blue-wood` | `#363f5f` | `text-blue-wood` | Text on light/white surfaces (balance cards) |
-| `--red` | `#c53030` | `text-red` / `border-red` | Error text, error borders |
-| `--pink` | `#e83f5b` | `bg-pink` / `text-pink` | Destructive button background (`--destructive`) |
-| `--light-pink` | `#fddede` | `bg-light-pink` | Error state backgrounds |
-| `--green` | `#12a454` | `text-green` | Success states |
-| `--green-blue` | `#2e656a` | `bg-green-blue` | Alternate success/cleared states |
-| `--cleared-blue` | `#e6fffa` | `bg-cleared-blue` | Cleared state indicator backgrounds |
-| `--border` | `#3e3b47` | `border-border` | Default border on cards and dividers |
+### Not token-driven
 
-### shadcn/ui semantic tokens (auto-wired)
+- **Chart palette.** The Balance Breakdown donut and legend use legacy variables (`--orange`, `--blue-sky`, `--green`, `--pink`, `--light-blue`, `--light-gray`) that are the same in both themes. They are data colours, not the accent.
+- **Toast colours.** With `richColors`, Sonner uses its own light and dark palettes for success and error toasts. The Toaster follows the app theme.
+- The other legacy variables in `globals.css` (`--iron-gray`, `--blue-wood`, `--red`, …) are unused by components and kept only for the chart.
 
-| Token | Maps to | Notes |
-|---|---|---|
-| `--primary` | `#ff872c` (orange) | Use on CTA buttons |
-| `--destructive` | `#e83f5b` (pink) | Use on delete/danger buttons |
-| `--secondary` | `#3e3b47` | Subtle button variant |
-| `--muted` | `#3e3b47` | Subdued backgrounds |
-| `--muted-foreground` | `#969cb3` | Hint/description text |
-| `--card` | `#232129` | Card surfaces |
-| `--border` | `#3e3b47` | Component borders |
-| `--ring` | `#ff872c` | Focus ring color |
+### Contrast
+
+Measured when the switch went live (WCAG 2.x):
+
+- Text: every body and secondary text pair is at or above 4.5:1 in both themes, except muted text on hover fills in light (about 4.4:1).
+- Control boundaries: input borders are about 3.4:1 on white in light. In dark they are intentionally subtle (about 1.5:1).
+- Focus ring: 6.5:1 in dark, 6.8:1 in light.
 
 ---
 
 ## 6. Typography
 
-**Fonts must be loaded via `next/font/google`** — see Section 3.
+Fonts are loaded with `next/font/google` (Section 3).
 
 | Role | Font | CSS var | Notes |
 |---|---|---|---|
-| Body / headings (default) | Roboto Slab | `--font-roboto-slab` | Applied globally on `body`. Serif, gives a professional financial feel. |
-| Numeric displays, balance cards | Roboto | `--font-roboto` | Used where a more compact, modern look is needed. Apply with `font-[family-name:var(--font-roboto)]`. |
+| Body, headings, tables | Roboto Slab | `--font-roboto-slab` | Applied on `body` |
+| Metric values | Roboto | `--font-roboto` | `font-[family-name:var(--font-roboto)]` on the balance cards |
 
-### Size conventions
-
-| Usage | Class | Size |
-|---|---|---|
-| Dialog/card titles | `text-lg font-semibold` | 18px |
-| Navigation links | `text-base font-medium` | 16px |
-| Body / form labels | `text-base font-medium` or `text-sm` | 16px / 14px |
-| Secondary/description text | `text-sm text-muted-foreground` | 14px |
-| Table headers | `text-sm` (mobile) `text-xl` (desktop) | 14px / 20px |
-| Balance card amount | `text-[2.25rem] font-normal leading-[3.5rem]` | 36px |
-| Page title (mobile) | `text-lg font-bold` | 18px |
-
----
-
-## 7. Spacing System
-
-Tailwind's default 4px grid applies throughout. Do not invent custom spacing values unless strictly necessary.
-
-| Use case | Class | Value |
-|---|---|---|
-| Flex/grid gap (tight) | `gap-2` | 8px |
-| Flex/grid gap (standard) | `gap-4` | 16px |
-| Flex/grid gap (loose) | `gap-8` | 32px |
-| Card / section padding | `p-6` | 24px |
-| Balance card padding | `px-8 py-6` | 32px / 24px |
-| Dialog content padding | `p-6` | 24px |
-| Section vertical rhythm | `mt-8`, `mb-8` | 32px |
+| Usage | Classes |
+|---|---|
+| Page title (`h1`, top bar) | `text-2xl font-bold tracking-tight` |
+| Card and dialog titles | `text-lg font-semibold` |
+| Navigation items | `text-sm font-medium` (sidebar), `text-base font-medium` (More sheet) |
+| Sidebar and sheet section labels | `text-[11px] font-semibold uppercase tracking-wider text-muted-foreground` |
+| Table headers | `text-xs md:text-[13px] font-semibold text-muted-foreground` (capitalised, not uppercase) |
+| Table body | `text-[13px] md:text-sm` |
+| Metric card value | `text-2xl md:text-3xl font-semibold tracking-tight` |
+| Metric card label | `text-[13px] font-medium text-muted-foreground` |
+| Secondary text | `text-sm text-muted-foreground` |
 
 ---
 
-## 8. Border Radius
+## 7. Spacing and Radius
 
-Base token: `--radius: 0.625rem` (10px). All radii are derived from it.
+Tailwind's 4px grid. Do not invent spacing values.
 
-| Token | Value | Tailwind class | Use on |
-|---|---|---|---|
-| sm | 6px | `rounded-sm` | Small chips, badges |
-| md | 8px | `rounded-md` | Inputs, buttons, dropdowns |
-| lg | 10px | `rounded-lg` | Cards, dialogs, modals |
-| xl | 14px | `rounded-xl` | Larger panels |
-| full | 50% | `rounded-full` | Icon-only circular buttons |
-| custom | 4.8px | `rounded-[0.3rem]` | Balance cards and primary action buttons (project-specific choice) |
+| Use | Class |
+|---|---|
+| Page column | `mx-auto max-w-[1120px] px-5` |
+| Space between page sections | `gap-6` |
+| Card padding | `p-4 md:p-5` (metric cards), `p-6` (form sections) |
+| Space between a table and its pagination | `gap-4` |
+| Control height | `h-10` (inputs, selects, buttons in rows), `h-9` (default `Button`) |
+
+Base radius `--radius: 0.625rem` (10px).
+
+| Class | Use |
+|---|---|
+| `rounded-lg` | Inputs, selects, buttons, nav items, icon chips |
+| `rounded-xl` | Cards, table cards, dialog-like panels, the pagination bar |
+| `rounded-full` | Avatars, badges, the floating action button |
+
+---
+
+## 8. App Shell and Layout
+
+Every authenticated page lives in the `(app)` route group, whose layout renders the shell once.
+
+| Breakpoint | Navigation |
+|---|---|
+| `< lg` (below 1024px) | Bottom tab bar (Shared, Personal, Balance, More). No sidebar |
+| `≥ lg` | 248px sidebar on the left |
+
+- **Sidebar** (`AppSidebar`): logo and name, groups Dashboards / Reports / Manage (Management is collapsible), user menu pinned to the bottom with the avatar or initials. The current page uses `bg-primary-soft text-primary-text` and `aria-current="page"`.
+- **Bottom tab bar** (`BottomTabBar`): fixed, 44px-high targets, safe-area padding. **More** opens a bottom sheet with Balance Breakdown, the Management pages, **Theme** and **Logout**.
+- **Top bar** (`TopBar`): the page title (`h1`), the month picker on month pages, the theme toggle (from `md`), and the page action (`New expense`; a floating button on phones).
+- **Month picker**: the month lives in the URL (`?month=YYYY-MM`) and is shared by the Shared and Personal dashboards and Balance Breakdown. On phones it is sticky at the top of the Shared and Personal dashboards.
+- **Scrolling**: from `lg` the page scrolls inside a fixed-height region beside the sidebar. On the dashboards and management lists the table card scrolls on its own with a pinned header, so the metric cards, filters and pagination stay in view. Below `lg` the whole page scrolls.
+- **Pagination** is pinned to the bottom of the viewport on desktop, centred in the area beside the sidebar. On smaller screens it sits under the table.
+
+Page content pattern:
+
+```tsx
+<main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-5 lg:h-full">
+  <section className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">{/* metric cards */}</section>
+  <FilterForm />
+  <div className="flex flex-col gap-4 lg:min-h-[12rem]">
+    <ExpenseTable />
+    <Pagination />
+  </div>
+</main>
+```
+
+| Property | Value |
+|---|---|
+| Modal max width, confirmation | `sm:max-w-[425px]` |
+| Modal max width, form | `max-w-[700px]` |
+| Primary breakpoints | `md` (768px), `lg` (1024px, shell switch), `xl` (1280px, extra table columns) |
 
 ---
 
 ## 9. Component Patterns
 
-### Button
+### Button (`ui/button.tsx`, CVA)
 
-Uses CVA. Install the button component from shadcn/ui and keep these variants unchanged.
-
-```tsx
-// Default (orange fill) — primary actions
-<Button>Save</Button>
-
-// Destructive (pink) — delete/danger
-<Button variant="destructive">Delete</Button>
-
-// Outline — cancel / secondary
-<Button variant="outline">Cancel</Button>
-
-// Ghost — navigation, inline actions
-<Button variant="ghost">Menu item</Button>
-
-// Icon-only
-<Button variant="ghost" size="icon"><Pencil className="h-4 w-4" /></Button>
-```
-
-Base classes (never override without reason):
-```
-inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium
-transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring
-disabled:pointer-events-none disabled:opacity-50 cursor-pointer
-```
-
-shadcn default sizes: `h-8` (sm), `h-9` (default), `h-10` (lg). **This project overrides the default height to `h-12` (48px)** for primary, destructive, and outline buttons. Add `h-12` to the CVA size map for the project default:
+Use the variants. Do not recolour buttons per screen.
 
 ```tsx
-// In button.tsx CVA config
-default: "h-12 px-6 py-2",
-sm:      "h-8 px-3 text-xs",
-lg:      "h-12 px-8",
-icon:    "h-9 w-9",
+<Button>Save</Button>                          {/* default: bg-primary */}
+<Button variant="outline">Search</Button>      {/* border-input, bg-background */}
+<Button variant="destructive">Delete</Button>  {/* bg-destructive, white text */}
+<Button variant="ghost" size="icon" aria-label="…"><Icon /></Button>
 ```
 
-Icon + text button (used for "Create Expense", "New" actions — not a shadcn variant, compose inline):
+Row buttons next to inputs use `className="h-10 font-semibold"`. While pending, show `<Loader2 className="size-4 animate-spin" />` in place of the label and set `disabled`.
 
-```tsx
-<button className="inline-flex items-center gap-2 h-10 px-4 rounded-[0.3rem] bg-orange text-background text-sm font-medium">
-  <Plus className="h-5 w-5" />
-  Create Expense
-</button>
-```
+### Input and Select (`ui/input.tsx`, `ui/select.tsx`)
 
-Loading state: replace button text with `<Loader2 className="animate-spin" />` and set `disabled`.
-
----
-
-### Input
-
-A custom component that wraps a native `<input>` with a styled container. Key behaviors:
-- **Focus**: the *container* gets `border-orange`, not the inner `<input>`.
-- **Error**: container switches to `border-red text-red`; an `<AlertCircle>` tooltip appears on hover.
-- **Currency**: automatic decimal/comma formatting when `isCurrency` prop is set.
-
-```tsx
-<Input
-  icon={DollarSign}
-  placeholder="Amount"
-  isCurrency
-  error={errors.amount?.message}
-/>
-```
-
-Container classes:
-```
-flex h-12 w-full items-center rounded-md bg-container-background
-border-2 border-container-background px-3 text-base shadow-sm
-transition-colors focus-within:border-orange text-input-text
-```
-
-Inner `<input>` classes:
-```
-flex-1 bg-transparent border-none p-0 h-full w-full
-text-input-text focus:outline-none focus:ring-0 placeholder:text-iron-gray
-```
-
-Icon: `mr-2 h-5 w-5 text-iron-gray shrink-0`
-
-Error tooltip (absolute, appears above on hover):
-```
-absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2
-bg-red text-white px-2 py-1 rounded text-xs whitespace-nowrap
-opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg
-```
-The CSS triangle pointer under the tooltip: `border-[6px] border-t-red border-x-transparent border-b-transparent`
-
----
-
-### Select
-
-**Do not use a native `<select>`.** Use a custom component that matches the Input container visually — icon on the left, placeholder text, chevrons-up-down icon on the right. Build it by wrapping shadcn's `<Select>` primitive with the same container classes as Input:
-
-```tsx
-// Custom Select component — mirrors Input layout exactly
-<div className="flex h-12 w-full items-center rounded-md bg-container-background border-2 border-container-background px-3 transition-colors focus-within:border-orange">
-  <Icon className="mr-2 h-5 w-5 text-iron-gray shrink-0" />
-  <Select onValueChange={onChange} value={value}>
-    <SelectTrigger className="flex-1 bg-transparent border-none p-0 h-full text-base text-input-text focus:outline-none focus:ring-0 shadow-none">
-      <SelectValue placeholder={<span className="text-iron-gray">{placeholder}</span>} />
-    </SelectTrigger>
-    <SelectContent className="bg-container-background border-border text-input-text">
-      {options.map(opt => (
-        <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-</div>
-```
-
-The `<SelectTrigger>` built-in chevron should be hidden (`[&>svg]:hidden`) and replaced with a `ChevronsUpDown` icon inside the container if needed, or the default shadcn chevron can be kept at the right edge.
-
-For simple filter dropdowns where no error state is needed, use the same shadcn `<Select>` primitive with a leaner container — omit the left icon and drop `border-2` to `border` if visual weight should be reduced. Never fall back to a native `<select>`.
-
----
-
-### Card
-
-```tsx
-<div className="bg-card rounded-lg border border-border p-6 shadow-lg">
-  {/* content */}
-</div>
-```
-
----
-
-### Balance Card
-
-Two variants: `default` (white bg, dark text) and `total` (orange bg, white text).
-
-```tsx
-<div className={cn(
-  "px-8 py-6 rounded-[0.3rem] font-[family-name:var(--font-roboto)] flex flex-col items-center md:items-start",
-  isTotal ? "bg-orange text-white" : "bg-white text-blue-wood"
-)}>
-  <header className="flex items-center justify-between w-full">
-    <p className="text-base">{label}</p>
-    <Icon className="w-8 h-8" strokeWidth={1.5} />
-  </header>
-  <p className="mt-4 text-[2.25rem] font-normal leading-[3.5rem] text-center md:text-left w-full">
-    {value}
-  </p>
-</div>
-```
-
----
-
-### Table
+A wrapper with the border and an inner transparent field:
 
 ```
-border-separate border-spacing-y-2 table-fixed w-full
+flex h-10 w-full items-center rounded-lg border border-input bg-card px-3 text-sm text-foreground shadow-xs
+focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30
+error: border-danger text-danger
 ```
 
-Header cells: `text-left py-2 px-1 md:px-2 text-light-gray font-normal text-sm md:text-xl`
+- Leading icon: `size-4 text-muted-foreground`.
+- The `error` prop shows a `danger` border, an alert icon and a tooltip chip (`bg-destructive text-destructive-foreground`).
+- Date and month fields reuse the same wrapper classes around a native `<input type="date|month">`.
 
-Data rows use white background with rounded ends:
-- First cell: `rounded-l-lg`
-- Last cell: `rounded-r-lg`
-- Individual cells: `py-3 px-1 md:px-4 text-sm md:text-base`
+### Metric card (`BalanceCard`)
 
-**Mobile column visibility** — hide columns progressively, always keeping the primary identifier and amount visible:
-
-| Page | Always visible | Hidden on mobile (`hidden md:table-cell`) |
-|---|---|---|
-| Dashboard | Expense name, Amount | Category, Due Date, Purchase Date |
-| Banks Management | Bank name | Updated At |
-| Payment Types | Payment type, Has Statement | Created At, Updated At |
-
-Row actions (edit/delete) use a `DropdownMenu` with `MoreVertical` icon trigger (`size="icon"` ghost button).
-
-### Has Statement display
-
-In the Payment Types table the "Has Statement" column renders differently based on value — never use a text boolean:
-
-```tsx
-// has_statement = true
-<Check className="h-4 w-4 text-green" />
-
-// has_statement = false
-<span className="text-muted-foreground">—</span>
+```
+rounded-xl border p-4 md:p-5   +   bg-card border-border   |   bg-primary border-primary text-primary-foreground  (variant="total")
+header: label (left) + 32px icon chip (right)   value below
+chip tone: income  -> bg-success-soft text-success
+           outcome -> bg-danger-soft  text-danger
+           neutral -> bg-primary-soft text-primary-text
+           total   -> bg-white/20
 ```
 
-### Amount / value display
+On phones the label stays left, the icon right and the value is centred. The Balance card comes first and spans two columns, with Incomes and Outcomes side by side below.
 
-Monetary amounts are always color-coded by sign. Never show a plain number:
+### Table (`ExpenseTable`, management tables)
 
-| Context | Color class | Example |
-|---|---|---|
-| Expense / debit (negative) | `text-pink` | `-$15.99` |
-| Income / credit (positive) | `text-green` | `$1,200.00` |
-| Neutral totals on dark bg | `text-foreground` | `$355.20` |
-| Neutral totals on white bg | `text-blue-wood` | `$892.30` |
-| Muted / secondary dates | `text-muted-foreground` | `Jan 15, 2025` |
+A bordered card with a sticky header:
 
-Always format with two decimal places and a dollar sign prefix. Use a utility or `Intl.NumberFormat` — never `toFixed` directly in JSX.
-
----
-
-### Dialog / Modal
-
-Use shadcn/ui's Dialog component. Key styling points:
-- Overlay: `bg-black/80 backdrop-blur-sm`
-- Content: `bg-background border border-border rounded-lg shadow-lg`
-- Animation: `data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 duration-200`
-- Close button: absolute top-right, `opacity-70 hover:opacity-100`
-
-Footer pattern (cancel + action):
-```tsx
-<DialogFooter>
-  <Button variant="outline" onClick={onClose}>Cancel</Button>
-  <Button disabled={isPending}>
-    {isPending ? <Loader2 className="animate-spin" /> : "Confirm"}
-  </Button>
-</DialogFooter>
+```
+card:   w-full overflow-hidden rounded-xl border border-border bg-card  lg:overflow-y-auto
+thead:  bg-card lg:sticky lg:top-0 lg:z-10;  th: bg-background/60 px-2 py-3 text-xs md:text-[13px] font-semibold text-muted-foreground
+row:    border-t border-border hover:bg-accent/40
+cell:   px-2 py-4 text-[13px] md:px-4 md:text-sm;  description font-medium text-foreground; others text-muted-foreground
+amount: font-medium text-danger (outcome) / text-success (income)
+category: rounded-full bg-background px-2.5 py-0.5 text-xs text-muted-foreground
 ```
 
----
-
-### Checkbox
-
-Use shadcn/ui's `<Checkbox>` component paired with a `<label>`. The checkbox itself uses the default shadcn styling (border, checked fill via `--primary`). Always wrap the pair in a flex container:
-
-```tsx
-<div className="flex items-center gap-2">
-  <Checkbox
-    id="personal"
-    checked={isPersonal}
-    onCheckedChange={setIsPersonal}
-    className="border-iron-gray data-[state=checked]:bg-orange data-[state=checked]:border-orange"
-  />
-  <label htmlFor="personal" className="text-sm text-foreground cursor-pointer select-none">
-    Personal
-  </label>
-</div>
-```
-
-When multiple checkboxes are grouped (e.g. Personal / Split in the New Expense form), wrap them in a row container:
-
-```tsx
-<div className="flex items-center gap-4">
-  <div className="flex items-center gap-2">...</div>
-  <div className="flex items-center gap-2">...</div>
-</div>
-```
-
----
-
-### Confirm Delete Modal
-
-Used on all management pages (Banks, Payment Types). Always use this exact structure — do not invent a new layout for destructive confirmations:
-
-```tsx
-<Dialog open={open} onOpenChange={onClose}>
-  <DialogContent className="max-w-[500px]">
-    <DialogHeader>
-      <DialogTitle>Delete {entityName}</DialogTitle>
-      <DialogDescription className="text-muted-foreground">
-        Are you sure you want to delete <span className="font-semibold text-foreground">{name}</span>?
-        This action cannot be undone.
-      </DialogDescription>
-    </DialogHeader>
-    <DialogFooter className="gap-2">
-      <Button variant="outline" onClick={onClose} disabled={isPending}>
-        Cancel
-      </Button>
-      <Button variant="destructive" onClick={onConfirm} disabled={isPending}>
-        {isPending ? <Loader2 className="animate-spin" /> : "Delete"}
-      </Button>
-    </DialogFooter>
-  </DialogContent>
-</Dialog>
-```
-
----
+- Sortable headers are real `<button>`s inside the `<th>`, with `aria-sort` and a chevron: `ChevronsUpDown` (dimmed) when unsorted, `ChevronUp` / `ChevronDown` for the active direction.
+- Columns are hidden progressively (`hidden md:table-cell`, `lg:`, `xl:`) and use percentage widths with `table-fixed`.
+- The card fits its rows (no minimum height). Do not add one.
+- Row actions: a `DropdownMenu` on a ghost round button (`MoreVertical`), with `variant="destructive"` for Delete.
 
 ### Pagination
 
-Used on management pages (Banks, Payment Types) and the Dashboard table. Always render as a centered flex row:
+"Page X of N" and four icon buttons: first, previous, next, last (`ChevronsLeft`, `ChevronLeft`, `ChevronRight`, `ChevronsRight`), `size-8`, disabled at the ends, each with an `aria-label`. It renders nothing for a single page. The bar is a `nav` labelled "Pagination"; on `lg` it is `fixed` with `rounded-xl border border-border bg-card shadow-md`, with a spacer so the last rows are not covered.
+
+### Dialog / Modal
+
+Use the defaults of `ui/dialog.tsx` (background, border, radius). Do not override the surface colours.
 
 ```tsx
-<div className="flex items-center justify-center gap-1 py-4">
-  <button
-    onClick={() => setPage(p => Math.max(1, p - 1))}
-    disabled={page === 1}
-    className="flex h-8 w-8 items-center justify-center rounded-md bg-white/5 disabled:opacity-40"
-  >
-    <ChevronLeft className="h-4 w-4 text-muted-foreground" />
-  </button>
-
-  {pages.map(p => (
-    <button
-      key={p}
-      onClick={() => setPage(p)}
-      className={cn(
-        "flex h-8 w-8 items-center justify-center rounded-md text-sm",
-        p === page
-          ? "bg-orange text-background font-bold"
-          : "bg-white/5 text-muted-foreground"
-      )}
-    >
-      {p}
-    </button>
-  ))}
-
-  <button
-    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-    disabled={page === totalPages}
-    className="flex h-8 w-8 items-center justify-center rounded-md bg-white/5 disabled:opacity-40"
-  >
-    <ChevronRight className="h-4 w-4 text-muted-foreground" />
-  </button>
-</div>
+<DialogContent className="sm:max-w-[425px]">
+  <DialogHeader><DialogTitle>Title</DialogTitle></DialogHeader>
+  …
+  <DialogFooter>
+    <Button variant="outline">Cancel</Button>
+    <Button>Save</Button>   {/* or variant="destructive" */}
+  </DialogFooter>
+</DialogContent>
 ```
+
+The scrim is `bg-black/50`. Confirm-delete dialogs show the resource name in `font-medium italic text-foreground`.
+
+### Checkbox group
+
+A bordered `bg-card` row using the Input wrapper classes. The box is `size-5 rounded border-2`: checked `bg-primary border-primary` with a `text-primary-foreground` tick; unchecked `border-muted-foreground`.
+
+### Badge / chip
+
+`rounded-full bg-background px-2.5 py-0.5 text-xs font-medium text-muted-foreground`. State chips use the `*-soft` fills.
+
+### Empty, loading and error
+
+- **Empty:** `rounded-xl border border-dashed border-border bg-card px-4 py-12 text-center text-muted-foreground`.
+- **Loading (page):** a centred `Loader` (`text-primary-text`), not a full-screen overlay. Skeletons use `bg-muted animate-pulse`.
+- **Error (page):** an inline message in `text-danger` (never only a toast), with a Retry button when the request can be repeated.
+
+### Toasts
+
+Sonner with `richColors`, position `top-center`. Use `toast.success()` and `toast.error()`. The Toaster passes the active theme, so toasts follow it. Do not hard-code a toast theme.
 
 ---
 
-### Empty State
-
-Used when a filtered table returns no results (Dashboard, management pages). Always centered inside the table container area:
-
-```tsx
-<div className="flex items-center justify-center rounded-lg bg-white/5 border border-white/10 py-12">
-  <p className="text-sm text-muted-foreground text-center">
-    No expenses found for this criteria.
-  </p>
-</div>
-```
-
-For pages that are empty because no data has been created yet (first-use state), add an icon above the text:
-
-```tsx
-<div className="flex flex-col items-center justify-center gap-3 rounded-lg bg-white/5 border border-white/10 py-16">
-  <Inbox className="h-10 w-10 text-muted-foreground/50" />
-  <p className="text-sm text-muted-foreground">No records yet.</p>
-</div>
-```
-
----
-
-### Navigation / Header
-
-- Background: `bg-[var(--light-blue)]` (purple `#5636d3`)
-- Container: `max-w-[1120px] mx-auto px-5`
-- Links: `text-base font-medium transition-opacity duration-200`
-- Active link: `text-orange`
-- Inactive link: `text-white hover:text-orange/60`
-- Mobile: hide nav with `hidden md:flex`, show hamburger `Menu` icon
-- Dropdown on mobile: full-width `w-[calc(100vw-40px)]`, same `bg-[var(--light-blue)]` background
-
----
-
-## 10. Page Layout Templates
-
-These templates repeat across all pages. Never invent a new top-level layout — extend one of these.
-
-### Management page layout (Banks, Payment Types)
-
-Used for any CRUD management page. The blue band is the full-width page header; the white card overlaps it from below.
-
-```
-┌─────────────────────────── full viewport width ────────────────────────────┐
-│  [Header / Nav]                                                             │
-│  ┌─────────────────── bg-light-blue, h-[213px] desktop / h-[216px] mobile ─┐│
-│  │                                                                          ││
-│  └──────────────────────────────────────────────────────────────────────────┘│
-│    ┌──── max-w-[1120px] mx-auto, overlapping blue band by ~96px ──────────┐  │
-│    │  createSection (card)                                                 │  │
-│    │  tableSection (header row + data rows + pagination)                  │  │
-│    └───────────────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-```tsx
-// Page shell
-<main className="min-h-screen bg-background">
-  <Header />
-  <div className="bg-light-blue h-[213px] md:h-[216px] w-full" />
-  <div className="max-w-[1120px] mx-auto px-5 -mt-24 pb-16 flex flex-col gap-8">
-    {/* createSection */}
-    <section className="bg-white/5 border border-white/10 rounded-lg p-6 flex flex-col gap-6">
-      <h1 className="text-2xl font-bold text-white">{title}</h1>
-      <div className="flex items-center gap-4">
-        <Input ... />
-        <Button className="w-32">Save</Button>
-      </div>
-    </section>
-
-    {/* tableSection */}
-    <div className="flex flex-col gap-2">
-      <table className="border-separate border-spacing-y-2 table-fixed w-full">
-        ...
-      </table>
-      <Pagination ... />
-    </div>
-  </div>
-</main>
-```
-
-On mobile the create section stacks the input and button vertically (`flex-col`). The table collapses non-essential columns (see Section 9 — Table).
-
----
-
-### Dashboard page layout
-
-The blue band is taller (overlaps more) and the main content has three zones stacked vertically.
-
-```tsx
-<main className="min-h-screen bg-background">
-  <Header />
-  <div className="bg-light-blue h-[213px] w-full" />
-  <div className="max-w-[1120px] mx-auto px-5 -mt-24 pb-16 flex flex-col gap-8">
-    {/* Balance row — 3 cards in a grid */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <BalanceCard label="Incomes" value={incomes} icon={CircleArrowUp} />
-      <BalanceCard label="Outcomes" value={outcomes} icon={CircleArrowDown} />
-      <BalanceCard label="Balance" value={balance} icon={DollarSign} isTotal />
-    </div>
-
-    {/* Filter bar */}
-    <FilterBar onSearch={handleSearch} />
-
-    {/* Content: expense table or empty state */}
-    {expenses.length === 0 ? <EmptyState /> : <ExpenseTable rows={expenses} />}
-  </div>
-</main>
-```
-
-### Dashboard filter bar pattern
-
-The filter bar is always a flex row on desktop, a stacked column on mobile. The Create button is always on the left; all filter controls + Search are on the right.
-
-```tsx
-// Desktop: space-between row. Mobile: flex-col gap-4.
-<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-  {/* Left */}
-  <button className="inline-flex items-center gap-2 h-10 px-4 rounded-[0.3rem] bg-orange text-background text-sm font-medium">
-    <Plus className="h-5 w-5" />
-    Create Expense
-  </button>
-
-  {/* Right */}
-  <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-3">
-    <Select placeholder="Filter by" className="w-full md:w-36" />
-    <Select placeholder="Select value" className="w-full md:w-44" />
-    <Input icon={Calendar} placeholder="Start date" className="w-full md:w-44" />
-    <Input icon={Calendar} placeholder="End date" className="w-full md:w-44" />
-    <Button className="h-10 w-full md:w-auto px-4">Search</Button>
-  </div>
-</div>
-```
-
-### Consolidated Balance report tables
-
-Used on Consolidated Balance pages. Two side-by-side tables (one per user), each grouped by payment type with subtotal rows:
-
-```tsx
-<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-  {[requester, partner].map(user => (
-    <div key={user.id} className="flex flex-col gap-2">
-      {/* Table header */}
-      <div className="flex items-center justify-center h-12 text-foreground font-semibold">
-        {user.name}
-      </div>
-
-      {/* Payment type groups */}
-      {user.groups.map(group => (
-        <div key={group.type} className="flex flex-col gap-1">
-          {/* Group header row — white bg, type label centered */}
-          <div className="flex items-center justify-center h-11 rounded-lg bg-white text-blue-wood text-sm font-medium">
-            {group.paymentType}
-          </div>
-
-          {/* Bank rows — striped light gray bg */}
-          {group.banks.map(bank => (
-            <div key={bank.id} className="flex items-center justify-between h-12 rounded-lg bg-slate-200 px-4 text-sm">
-              <span className="text-blue-wood">{bank.name}</span>
-              <span className="text-blue-wood font-medium">{formatCurrency(bank.amount)}</span>
-            </div>
-          ))}
-
-          {/* Subtotal row — cleared-blue teal */}
-          <div className="flex items-center justify-center h-11 rounded-lg bg-cleared-blue text-green-blue text-sm font-semibold">
-            Total — {formatCurrency(group.total)}
-          </div>
-        </div>
-      ))}
-    </div>
-  ))}
-</div>
-```
-
----
-
-## 11. Layout System
-
-| Property | Value | Notes |
-|---|---|---|
-| Max content width | `max-w-[1120px] mx-auto px-5` | Applied to page content wrappers |
-| Modal max width — confirmation | `max-w-[500px]` | Confirm Delete and similar single-action dialogs |
-| Modal max width — form | `max-w-[700px]` | Multi-field forms (e.g. New Expense) |
-| Primary breakpoint | `md` (768px) | Most responsive switches happen here |
-| Secondary breakpoints | `lg` (1024px), `xl` (1280px) | Used for fine-tuning column widths |
-
-Common responsive pattern:
-```
-hidden md:flex          // hide on mobile, flex on desktop
-flex-col md:flex-row    // stack on mobile, row on desktop
-w-full md:w-[14rem]     // full width mobile, fixed on desktop
-```
-
----
-
-## 12. Interaction & Animation Patterns
+## 10. Interaction and Animation
 
 | State | Pattern |
 |---|---|
-| Input focus | `focus-within:border-orange` on container (not `box-shadow`) |
-| Button hover | `hover:bg-primary/90` (opacity reduction, not color change) |
-| Navigation hover | `hover:text-orange/60` (opacity reduction) |
-| Brightness hover | `hover:brightness-75` on images/colored elements |
-| Disabled | `opacity-50 cursor-not-allowed pointer-events-none` |
-| Loading | `<Loader2 className="animate-spin text-orange" />` replaces button text |
+| Focus (inputs) | `focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30` on the wrapper |
+| Focus (buttons, links, tabs) | `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring` (the base `Button` uses `ring-1`) |
+| Hover | `hover:bg-accent` or `hover:bg-accent/40` on rows and ghost controls |
+| Disabled | `disabled:pointer-events-none disabled:opacity-50` |
 
-### Dialog animations
-```
-data-[state=open]:animate-in data-[state=closed]:animate-out
-data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
-data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95
-duration-200
-```
-
-### Sheet / drawer animations (slide from right)
-```
-data-[state=open]:animate-in data-[state=closed]:animate-out
-data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right
-data-[state=open]:duration-500 data-[state=closed]:duration-300
-```
+Dialog: `data-[state=open]:animate-in data-[state=closed]:animate-out` with `fade` and `zoom-95`. Sheet: `slide-in-from-*` with `duration-500` open and `duration-300` close. Both come with the shadcn components.
 
 ---
 
-## 13. Icon System
+## 11. Icons
 
-### Primary: lucide-react
+lucide-react, sized with `size-*`:
 
-Install: `npm install lucide-react`
-
-Sizing conventions:
 | Size | Class | Use |
 |---|---|---|
-| Compact | `h-4 w-4` | Inside small buttons, nav chevrons |
-| Standard | `h-5 w-5` | Inline with text, input icons |
-| Medium | `h-6 w-6` | Mobile header icons |
-| Large | `h-8 w-8` | Balance card decorative icons |
+| Compact | `size-3.5` / `size-4` | Sort chevrons, input icons, icon chips |
+| Standard | `size-[18px]` / `size-5` | Navigation items, sheet rows |
+| Large | `size-6` | Floating action button |
 
-Icon color for decorative/muted icons: `text-iron-gray`
-Icon color for action icons in context: inherit from parent text color.
-
-Common icons used: `ChevronDown`, `ChevronUp`, `ChevronLeft`, `ChevronRight`, `Menu`, `LogOut`, `Pencil`, `Trash2`, `AlertCircle`, `X`, `Loader2`, `DollarSign`, `Landmark`, `MoreVertical`, `CheckCircle2`, `XCircle`
-
-### Secondary: react-icons
-
-Install: `npm install react-icons`
-
-Used for: `HiOutlineSelector` (custom select arrow), `HiPlus` (add buttons), `MdDateRange` (date input icon), `MdTitle` (text field icon), `IoMdCheckboxOutline` (checkbox icon in filters).
+Decorative icons carry `aria-hidden="true"`. Icon-only buttons need an `aria-label`. Inactive and muted icons use `text-muted-foreground`; icons inside a coloured control inherit its text colour.
 
 ---
 
-## 14. Toast / Notification Patterns
+## 12. Form Patterns
 
-Uses Sonner. Always call `toast.success()` or `toast.error()`. Configure once in root layout:
-
-```tsx
-<Toaster position="top-center" expand={true} richColors />
-```
-
-Custom icon examples:
-```tsx
-toast.success("Saved successfully", {
-  icon: <CheckCircle2 className="text-green" />
-})
-toast.error("Something went wrong", {
-  icon: <XCircle className="text-red" />
-})
-```
-
-Toaster appearance overrides (applied via `toastOptions` on `<Toaster>` if needed):
-- Background: `bg-container-background`
-- Text: `text-input-text`
-- Border: `border border-iron-gray`
-- Theme: `dark`
-
----
-
-## 15. Form Patterns
-
-Forms always use `react-hook-form` with Zod schema validation.
+Forms use `react-hook-form` with a Zod schema.
 
 ```tsx
-const schema = z.object({
-  amount: z.string().min(1, "Required"),
-  category: z.string().min(1, "Required"),
-})
-
 const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof schema>>({
   resolver: zodResolver(schema)
 })
 ```
 
-- Always pass `error={errors.fieldName?.message}` to `Input` and `Select` components.
-- Submit button shows `<Loader2 className="animate-spin" />` and is `disabled` while pending.
-- Form fields use `gap-4` between them inside a `flex flex-col` container.
+- Pass `error={errors.field?.message}` to `Input` and `Select`.
+- The submit button shows a spinner and is `disabled` while pending.
+- Fields sit in a `flex flex-col gap-4` container, two per row where they pair (category and payment type, bank and store, date and amount).
+- The New Expense dialog has three variants that share one layout: create, create with **Current Month** (shown only when the selected payment type has no statement), and edit. Edit adds a Cancel button.
 
 ---
 
-## 16. Loading & Skeleton States
+## 13. Accessibility
 
-### Page-level loading
-
-When the entire page content is loading (e.g. initial data fetch), render a centered spinner inside the content area — not a full-screen overlay:
-
-```tsx
-<div className="flex items-center justify-center py-24">
-  <Loader2 className="h-8 w-8 animate-spin text-orange" />
-</div>
-```
-
-### Skeleton table rows
-
-While table data is loading, render 3–5 skeleton rows at the same height as data rows to prevent layout shift:
-
-```tsx
-{Array.from({ length: 5 }).map((_, i) => (
-  <tr key={i}>
-    {columns.map((_, j) => (
-      <td key={j} className="py-3 px-4">
-        <div className="h-4 rounded-md bg-muted animate-pulse" />
-      </td>
-    ))}
-  </tr>
-))}
-```
-
-### Error state
-
-When a data fetch fails, show an inline error message inside the content area (never a toast for page-level errors):
-
-```tsx
-<div className="flex flex-col items-center justify-center gap-3 py-16">
-  <TriangleAlert className="h-8 w-8 text-pink" />
-  <p className="text-sm text-muted-foreground">Failed to load data. Please try again.</p>
-  <Button variant="outline" size="sm" onClick={refetch}>Retry</Button>
-</div>
-```
+- Navigation landmarks are labelled (`Main`, `Primary`, `Pagination`). The current page has `aria-current="page"`.
+- Sortable headers are keyboard-operable buttons with `aria-sort`.
+- Every interactive element has a visible focus ring in both themes.
+- Tab bar and sheet targets are at least 44px high.
+- Do not rely on colour alone: expense amounts are also signed ("- $15.99").
 
 ---
 
-## 17. New Expense Modal
+## 14. What NOT to Do
 
-The modal is used on Dashboard pages. It has three variants: **Base** (create), **Current Month** (create with no-statement payment type selected), and **Edit**. All share the same form layout — only the title and footer change.
-
-```tsx
-<Dialog open={open} onOpenChange={onClose}>
-  <DialogContent className="max-w-[700px] bg-background border-border">
-    <DialogHeader>
-      <DialogTitle className="text-center text-2xl font-bold text-foreground">
-        {isEdit ? "Edit Expense" : "Create Expense"}
-      </DialogTitle>
-    </DialogHeader>
-
-    {/* Form — single column, gap-4 between rows */}
-    <div className="flex flex-col gap-4">
-      <Input icon={Type} placeholder="Expense description" />
-
-      {/* Row: category + payment type */}
-      <div className="flex gap-4">
-        <Select placeholder="Select category" icon={ChevronsUpDown} className="flex-1" />
-        <Select placeholder="Select payment type" icon={ChevronsUpDown} className="flex-1" />
-      </div>
-
-      {/* Row: bank + store */}
-      <div className="flex gap-4">
-        <Select placeholder="Select bank" icon={ChevronsUpDown} className="flex-1" />
-        <Select placeholder="Select store" icon={ChevronsUpDown} className="flex-1" />
-      </div>
-
-      {/* Row: date + amount */}
-      <div className="flex gap-4">
-        <Input icon={Calendar} placeholder="yyyy-mm-dd" className="flex-1" />
-        <Input icon={CircleDollarSign} placeholder="0.00" isCurrency className="flex-1" />
-      </div>
-
-      {/* Checkbox row */}
-      <div className="flex items-center gap-4 bg-container-background rounded-md px-3 h-12">
-        <SquareCheckBig className="h-5 w-5 text-iron-gray" />
-        <div className="flex items-center gap-6">
-          <Checkbox id="personal" label="Personal" />
-          <Checkbox id="split" label="Split" />
-        </div>
-      </div>
-
-      {/* Current Month checkbox — only when payment type has no statement */}
-      {showCurrentMonth && (
-        <div className="flex items-center gap-4 bg-container-background rounded-md px-3 h-12">
-          <SquareCheckBig className="h-5 w-5 text-iron-gray" />
-          <Checkbox id="currentMonth" label="Current Month" />
-        </div>
-      )}
-    </div>
-
-    <DialogFooter className="flex-col gap-3 sm:flex-row">
-      {isEdit && (
-        <Button variant="outline" onClick={onClose} className="flex-1">Cancel</Button>
-      )}
-      <Button className="flex-1" disabled={isPending}>
-        {isPending ? <Loader2 className="animate-spin" /> : "Save"}
-      </Button>
-    </DialogFooter>
-  </DialogContent>
-</Dialog>
-```
-
-The **Current Month** checkbox is conditional — it appears only when the selected payment type has `has_statement = false`. Show a small annotation tooltip near the checkbox explaining this to the user (e.g. "Only shown when the selected payment type has no statement").
-
----
-
-## 18. What NOT to Do
-
-- **Do not add a light mode.** The design has no light mode. Do not add `dark:` class variants.
-- **Do not use box-shadow for focus states.** Use `border-orange` (the Input focus pattern).
-- **Do not use colors outside the token list** for UI elements. Only add a raw hex if it's a one-off decorative element with no semantic meaning.
-- **Do not change the font.** Roboto Slab is the brand font.
-- **Do not use `rounded-none` broadly.** Inputs, cards, and buttons always have radius.
-- **Do not skip the `focus-visible:ring-1` on interactive elements** — it is required for accessibility.
+- **Do not use raw colours.** No hex values, `text-white`, `bg-slate-*`, `text-green-500`, and no `dark:` variants. Use tokens (Section 5). The only exceptions are translucent white overlays on the primary fill (`bg-white/20`) and the `bg-black/50` scrims.
+- **Do not use `border-border` on input-like controls.** Use `border-input` so the boundary is visible in light.
+- **Do not use `bg-destructive` or `bg-primary` as a text colour.** Use `text-danger` and `text-primary-text`.
+- **Do not recolour buttons** per screen; pick a `Button` variant.
+- **Do not add a minimum height to a table card.** It leaves blank space under short lists.
+- **Do not put the header back in each page.** The shell comes from the `(app)` layout.
+- **Do not change the fonts** without updating the typography table and checking every table's column widths.
+- **Do not skip the focus ring** on interactive elements.

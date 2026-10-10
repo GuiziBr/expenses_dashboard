@@ -9,7 +9,7 @@ A modern expense management portal for tracking personal and shared expenses, bu
 - **Monthly Consolidated Reports** — breakdown by payment type, bank, and category per month
 - **Management Pages** — full CRUD for banks, categories, stores, and payment types
 - **Isomorphic Authentication** — cookie-based auth that works across client and server; middleware protects all routes at the edge
-- **Responsive Dark UI** — mobile-first dark theme built with Tailwind CSS v4
+- **Responsive Light & Dark UI** — mobile-first, with a sidebar on desktop, a bottom tab bar on mobile and a light/dark theme switch (dark by default), built with Tailwind CSS v4
 - **Type-safe Forms** — react-hook-form + Zod validation on all inputs
 - **Smart Caching** — TanStack Query for server state management with automatic cache invalidation
 
