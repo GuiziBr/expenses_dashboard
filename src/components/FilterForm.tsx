@@ -11,6 +11,7 @@ import type { ExpenseFilters } from "@/types/expenses"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { Select, type SelectOption } from "./ui/select"
+import { SelectMenu } from "./ui/select-menu"
 
 interface FilterFormProps {
 	onSubmit: (filters: ExpenseFilters) => void
@@ -64,8 +65,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 		})
 	}
 
-	const handleFilterByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		const value = e.target.value
+	const handleFilterByChange = (value: string) => {
 		setFilterBy(value)
 		setFilterValue("") // Reset value when category changes
 	}
@@ -78,14 +78,14 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 			>
 				{/* Filters Group */}
 				<div className="flex gap-2 w-full lg:w-auto">
-					<Select
+					<SelectMenu
 						icon={HiOutlineSelector}
 						name="filterBy"
 						options={COLUMN_FILTERS as unknown as SelectOption[]}
 						placeholder={translations.filters.filterBy}
 						className="flex-1 lg:w-36"
 						value={filterBy}
-						onChange={handleFilterByChange}
+						onValueChange={handleFilterByChange}
 					/>
 					<Select
 						icon={HiOutlineSelector}
