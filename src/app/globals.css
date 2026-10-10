@@ -43,7 +43,7 @@
 	--destructive: #d23b3b;
 	--destructive-foreground: #ffffff;
 	--border: #e6e6ef;
-	--input: #ffffff;
+	--input: #8a8aa3;
 	--ring: #5636d3;
 	--chart-1: oklch(0.646 0.222 41.116);
 	--chart-2: oklch(0.6 0.118 184.704);
@@ -90,7 +90,7 @@
 	--destructive: #e83f5b;
 	--destructive-foreground: #ffffff;
 	--border: #3e3b47;
-	--input: #232129;
+	--input: #3e3b47;
 	--ring: #6c4cf0;
 	--sidebar: #28262e;
 	--sidebar-foreground: #f4ede8;

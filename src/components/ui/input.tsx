@@ -23,7 +23,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 		return (
 			<div
 				className={cn(
-					"flex h-10 w-full items-center rounded-lg border border-border bg-card px-3 text-sm text-foreground shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30",
+					"flex h-10 w-full items-center rounded-lg border border-input bg-card px-3 text-sm text-foreground shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30",
 					error && "border-destructive text-destructive",
 					className
 				)}

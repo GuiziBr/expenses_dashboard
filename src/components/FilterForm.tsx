@@ -101,7 +101,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 
 				{/* Inputs Group */}
 				<div className="flex gap-2 w-full lg:w-auto">
-					<div className="relative flex-1 lg:w-44 h-10 flex items-center bg-card rounded-lg border border-border px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
+					<div className="relative flex-1 lg:w-44 h-10 flex items-center bg-card rounded-lg border border-input px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
 						<Input
 							type="date"
 							name="startDate"
@@ -114,7 +114,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 							}}
 						/>
 					</div>
-					<div className="relative flex-1 lg:w-44 h-10 flex items-center bg-card rounded-lg border border-border px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
+					<div className="relative flex-1 lg:w-44 h-10 flex items-center bg-card rounded-lg border border-input px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
 						<Input
 							type="date"
 							name="endDate"

@@ -70,7 +70,7 @@ export function ConsolidatedFilters({
 					{/* Input Container */}
 					<div
 						className={cn(
-							"relative flex h-10 flex-1 items-center rounded-lg border border-border bg-card px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30 md:w-[14rem]",
+							"relative flex h-10 flex-1 items-center rounded-lg border border-input bg-card px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30 md:w-[14rem]",
 							errors.date && "border-destructive text-destructive"
 						)}
 					>

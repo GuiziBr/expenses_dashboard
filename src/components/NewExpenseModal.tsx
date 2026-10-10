@@ -311,7 +311,7 @@ export function NewExpenseModal({
 							}
 						/>
 						{hasNoStatement && (
-							<div className="flex flex-1 items-center gap-3 rounded-lg border border-border bg-card px-3 py-3 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
+							<div className="flex flex-1 items-center gap-3 rounded-lg border border-input bg-card px-3 py-3 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
 								<IoMdCheckboxOutline className="size-5 text-muted-foreground shrink-0" />
 								<label
 									htmlFor="current-month"

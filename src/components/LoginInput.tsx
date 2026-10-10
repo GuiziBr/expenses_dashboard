@@ -26,7 +26,7 @@ const LoginInput = forwardRef<HTMLInputElement, LoginInputProps>(
 		return (
 			<div
 				className={cn(
-					"flex items-center w-full p-3.5 rounded-lg border border-border bg-card text-muted-foreground transition-colors duration-300",
+					"flex items-center w-full p-3.5 rounded-lg border border-input bg-card text-muted-foreground transition-colors duration-300",
 					error && "border-destructive text-destructive",
 					isFocused && "border-primary ring-2 ring-ring/30 text-primary-text",
 					!error && isFilled && "text-primary-text",
