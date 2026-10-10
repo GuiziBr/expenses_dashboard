@@ -155,7 +155,7 @@ export function BottomTabBar({ className }: { className?: string }) {
 								closeSheet()
 								signOut()
 							}}
-							className="flex h-12 w-full cursor-pointer items-center gap-3 rounded-lg px-3 text-base font-medium text-destructive outline-none focus-visible:ring-2 focus-visible:ring-ring"
+							className="flex h-12 w-full cursor-pointer items-center gap-3 rounded-lg px-3 text-base font-medium text-danger outline-none focus-visible:ring-2 focus-visible:ring-ring"
 						>
 							<LogOut className="size-5 shrink-0" aria-hidden="true" />
 							{translations.common.logout}
