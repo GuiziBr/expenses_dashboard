@@ -51,7 +51,7 @@ export default function CategoriesManagementPage() {
 			)}
 
 			{data && (
-				<div className="flex flex-col gap-4 animate-in fade-in duration-500 lg:min-h-0">
+				<div className="flex flex-col gap-4 animate-in fade-in duration-500 lg:min-h-[12rem]">
 					{data.categories.length > 0 ? (
 						<>
 							<CategoryTable categories={data.categories} />

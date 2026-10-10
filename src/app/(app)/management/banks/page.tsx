@@ -51,7 +51,7 @@ export default function BanksManagementPage() {
 			)}
 
 			{data && (
-				<div className="flex flex-col gap-4 animate-in fade-in duration-500 lg:min-h-0">
+				<div className="flex flex-col gap-4 animate-in fade-in duration-500 lg:min-h-[12rem]">
 					{data.banks.length > 0 ? (
 						<>
 							<BankTable banks={data.banks} />
