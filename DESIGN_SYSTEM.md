@@ -161,7 +161,7 @@ Tailwind's 4px grid. Do not invent spacing values.
 | Use | Class |
 |---|---|
 | Page column | `mx-auto max-w-[1120px] px-5` |
-| Space between page sections | `gap-3` (list pages), `gap-6` (Consolidated Balance) |
+| Space between page sections | `gap-3` |
 | Card padding | `p-4 md:p-5` (metric cards), `p-6` (form sections) |
 | Space between a table and its pagination | `gap-4` |
 | Control height | `h-10` (inputs, selects, buttons in rows), `h-9` (default `Button`) |
