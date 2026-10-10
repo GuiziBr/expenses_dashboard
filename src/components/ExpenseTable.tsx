@@ -38,7 +38,7 @@ const COLUMNS: Column[] = [
 	{
 		key: EXPENSE_COLUMNS.description,
 		label: translations.table.expense,
-		width: "w-[22%] md:w-[33%] lg:w-[27%] xl:w-[23%]"
+		width: "w-[30%] md:w-[33%] lg:w-[27%] xl:w-[23%]"
 	},
 	{
 		key: EXPENSE_COLUMNS.category,
@@ -49,7 +49,7 @@ const COLUMNS: Column[] = [
 	{
 		key: EXPENSE_COLUMNS.amount,
 		label: translations.table.amount,
-		width: "w-[24%] md:w-[15%] lg:w-[12%] xl:w-[10%]"
+		width: "w-[20%] md:w-[15%] lg:w-[12%] xl:w-[10%]"
 	},
 	{
 		key: EXPENSE_COLUMNS.paymentType,
@@ -70,7 +70,7 @@ const COLUMNS: Column[] = [
 	{
 		key: EXPENSE_COLUMNS.date,
 		label: translations.table.purchase,
-		width: "w-[27%] md:w-[16%] lg:w-[15%] xl:w-[11%]"
+		width: "w-[23%] md:w-[16%] lg:w-[15%] xl:w-[11%]"
 	},
 	{
 		key: EXPENSE_COLUMNS.bank,
@@ -86,7 +86,7 @@ const COLUMNS: Column[] = [
 	}
 ]
 
-const CELL = "px-2 py-4 text-[13px] md:px-4 md:text-sm"
+const CELL = "px-1.5 py-4 text-[13px] md:px-4 md:text-sm"
 const MUTED_CELL = cn(CELL, "text-muted-foreground")
 
 const SORT_ICON = {
@@ -125,7 +125,7 @@ export function ExpenseTable({
 									scope="col"
 									aria-sort={ARIA_SORT[indicator]}
 									className={cn(
-										"bg-background/60 px-2 py-3 text-left md:px-4",
+										"bg-background/60 px-1.5 py-3 text-left md:px-4",
 										width,
 										visibility
 									)}
@@ -148,7 +148,7 @@ export function ExpenseTable({
 							)
 						})}
 						{hasActions && (
-							<th scope="col" className="w-10 bg-background/60 md:w-12" />
+							<th scope="col" className="w-8 bg-background/60 md:w-12" />
 						)}
 					</tr>
 				</thead>
@@ -208,7 +208,7 @@ export function ExpenseTable({
 								{expense.store || "—"}
 							</td>
 							{hasActions && (
-								<td className="px-1 py-2 text-right md:px-2">
+								<td className="px-0.5 py-2 text-right md:px-2">
 									{currentUserId === expense.ownerId && (
 										<DropdownMenu>
 											<DropdownMenuTrigger
