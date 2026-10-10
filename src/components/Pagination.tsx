@@ -56,43 +56,52 @@ export function Pagination({
 		<>
 			{/* Keeps the last rows clear of the fixed bar on desktop */}
 			<div aria-hidden="true" className="hidden h-14 lg:block" />
-			{/* On desktop the bar is pinned to the bottom of the viewport, centred in the area beside the sidebar (248px) */}
+			{/* On desktop the bar is pinned to the bottom of the viewport, left-aligned with the page content beside the sidebar (248px) */}
 			<nav
 				aria-label={common.pagination}
-				className="flex w-full justify-center lg:pointer-events-none lg:fixed lg:right-0 lg:bottom-4 lg:left-[248px] lg:z-30 lg:w-auto"
+				className="flex w-full lg:pointer-events-none lg:fixed lg:right-0 lg:bottom-4 lg:left-[248px] lg:z-30 lg:w-auto"
 			>
-				<div className="flex items-center gap-3 lg:pointer-events-auto lg:rounded-xl lg:border lg:border-border lg:bg-card lg:px-3 lg:py-1 lg:shadow-md">
-					<p className="px-1 text-sm text-muted-foreground" aria-live="polite">
-						{common.page}{" "}
-						<span className="font-semibold text-foreground">{currentPage}</span>{" "}
-						{common.of}{" "}
-						<span className="font-semibold text-foreground">{totalPages}</span>
-					</p>
-					<div className="flex items-center gap-1">
-						<PageButton
-							icon={ChevronsLeft}
-							label={common.firstPage}
-							disabled={isFirst}
-							onClick={() => setCurrentPage(1)}
-						/>
-						<PageButton
-							icon={ChevronLeft}
-							label={common.previousPage}
-							disabled={isFirst}
-							onClick={() => setCurrentPage(currentPage - 1)}
-						/>
-						<PageButton
-							icon={ChevronRight}
-							label={common.nextPage}
-							disabled={isLast}
-							onClick={() => setCurrentPage(currentPage + 1)}
-						/>
-						<PageButton
-							icon={ChevronsRight}
-							label={common.lastPage}
-							disabled={isLast}
-							onClick={() => setCurrentPage(totalPages)}
-						/>
+				<div className="mx-auto flex w-full max-w-[1120px] justify-start lg:px-5">
+					<div className="flex items-center lg:pointer-events-auto lg:rounded-xl lg:border lg:border-border lg:bg-card lg:px-3 lg:py-1 lg:shadow-md">
+						<p
+							className="px-1 text-sm text-muted-foreground"
+							aria-live="polite"
+						>
+							{common.page}{" "}
+							<span className="font-semibold text-foreground">
+								{currentPage}
+							</span>{" "}
+							{common.of}{" "}
+							<span className="font-semibold text-foreground">
+								{totalPages}
+							</span>
+						</p>
+						<div className="flex items-center">
+							<PageButton
+								icon={ChevronsLeft}
+								label={common.firstPage}
+								disabled={isFirst}
+								onClick={() => setCurrentPage(1)}
+							/>
+							<PageButton
+								icon={ChevronLeft}
+								label={common.previousPage}
+								disabled={isFirst}
+								onClick={() => setCurrentPage(currentPage - 1)}
+							/>
+							<PageButton
+								icon={ChevronRight}
+								label={common.nextPage}
+								disabled={isLast}
+								onClick={() => setCurrentPage(currentPage + 1)}
+							/>
+							<PageButton
+								icon={ChevronsRight}
+								label={common.lastPage}
+								disabled={isLast}
+								onClick={() => setCurrentPage(totalPages)}
+							/>
+						</div>
 					</div>
 				</div>
 			</nav>
