@@ -214,7 +214,7 @@ export function NewExpenseModal({
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
 			<DialogContent className="sm:max-w-[450px] md:max-w-[600px] lg:max-w-[700px]">
 				<DialogHeader>
-					<DialogTitle className="text-[28px] font-bold text-input-text text-center">
+					<DialogTitle className="text-2xl font-semibold text-foreground text-center">
 						{isEditing
 							? translations.editExpense.title
 							: translations.createExpense.title}
@@ -311,8 +311,8 @@ export function NewExpenseModal({
 							}
 						/>
 						{hasNoStatement && (
-							<div className="flex flex-1 items-center gap-3 px-3 py-3 bg-container-background rounded-md border-2 border-container-background focus-within:border-orange">
-								<IoMdCheckboxOutline className="size-5 text-iron-gray shrink-0" />
+							<div className="flex flex-1 items-center gap-3 rounded-lg border border-border bg-card px-3 py-3 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
+								<IoMdCheckboxOutline className="size-5 text-muted-foreground shrink-0" />
 								<label
 									htmlFor="current-month"
 									className="flex items-center gap-2 cursor-pointer group select-none"
@@ -322,13 +322,13 @@ export function NewExpenseModal({
 										className={cn(
 											"size-5 rounded border-2 flex items-center justify-center transition-colors shrink-0",
 											currentMonth
-												? "bg-orange border-orange"
-												: "border-iron-gray group-hover:border-orange"
+												? "bg-primary border-primary"
+												: "border-muted-foreground group-hover:border-primary"
 										)}
 									>
 										{currentMonth && (
 											<svg
-												className="size-3.5 text-background"
+												className="size-3.5 text-primary-foreground"
 												fill="none"
 												viewBox="0 0 24 24"
 												stroke="currentColor"
@@ -354,7 +354,7 @@ export function NewExpenseModal({
 											})
 										}
 									/>
-									<span className="text-base font-medium text-input-text">
+									<span className="text-sm font-medium text-foreground">
 										{translations.createExpense.currentMonthLabel}
 									</span>
 								</label>
@@ -366,8 +366,9 @@ export function NewExpenseModal({
 						{isEditing && (
 							<Button
 								type="button"
+								variant="outline"
 								onClick={onClose}
-								className="flex-1 h-12 bg-transparent border border-white/20 text-white font-bold text-[18px] hover:bg-white/5 transition-all"
+								className="h-10 flex-1 font-semibold"
 								disabled={isPending}
 							>
 								{translations.common.cancel}
@@ -375,7 +376,7 @@ export function NewExpenseModal({
 						)}
 						<Button
 							type="submit"
-							className="flex-1 h-12 bg-orange text-background font-bold text-[18px] hover:brightness-95 transition-all"
+							className="h-10 flex-1 font-semibold"
 							disabled={isPending}
 						>
 							{isPending ? (

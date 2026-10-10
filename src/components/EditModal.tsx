@@ -46,9 +46,9 @@ export function EditModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="sm:max-w-[425px] bg-background border-white/10">
+			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle className="text-white">{title}</DialogTitle>
+					<DialogTitle>{title}</DialogTitle>
 				</DialogHeader>
 				<form onSubmit={handleSubmit} className="space-y-4 pt-4">
 					<Input
@@ -63,14 +63,12 @@ export function EditModal({
 							variant="outline"
 							onClick={onClose}
 							disabled={isPending}
-							className="text-white border-white/10 hover:bg-white/5"
 						>
 							Cancel
 						</Button>
 						<Button
 							type="submit"
 							disabled={!value.trim() || isPending || value === initialValue}
-							className="bg-orange text-background hover:brightness-95"
 						>
 							{isPending ? (
 								<Loader2 className="h-4 w-4 animate-spin" />

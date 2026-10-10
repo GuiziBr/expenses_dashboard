@@ -31,13 +31,13 @@ export function ConfirmDeleteModal({
 }: ConfirmDeleteModalProps) {
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="sm:max-w-[425px] bg-background border-white/10">
+			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle className="text-white">{title}</DialogTitle>
-					<DialogDescription className="text-light-gray pt-2">
+					<DialogTitle>{title}</DialogTitle>
+					<DialogDescription className="pt-2">
 						{description}
 						{resourceName && (
-							<span className="block mt-2 font-medium text-white italic">
+							<span className="block mt-2 font-medium text-foreground italic">
 								"{resourceName}"
 							</span>
 						)}
@@ -49,7 +49,6 @@ export function ConfirmDeleteModal({
 						variant="outline"
 						onClick={onClose}
 						disabled={isPending}
-						className="text-white border-white/10 hover:bg-white/5"
 					>
 						Cancel
 					</Button>
@@ -58,7 +57,6 @@ export function ConfirmDeleteModal({
 						variant="destructive"
 						onClick={onConfirm}
 						disabled={isPending}
-						className="bg-pink hover:bg-red/90"
 					>
 						{isPending ? (
 							<Loader2 className="h-4 w-4 animate-spin" />

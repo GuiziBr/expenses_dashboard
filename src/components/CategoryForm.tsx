@@ -41,12 +41,12 @@ export function CategoryForm() {
 				placeholder={translations.management.categoryPlaceholder}
 				value={description}
 				onChange={(e) => setDescription(e.target.value)}
-				className="w-full md:flex-1 h-12"
+				className="w-full md:flex-1"
 			/>
 			<Button
 				type="submit"
 				disabled={!description.trim() || isPending}
-				className="h-12 w-full md:w-32 bg-orange text-background font-medium hover:brightness-95 transition-all"
+				className="h-10 w-full font-semibold md:w-32"
 			>
 				{isPending ? (
 					<Loader2 className="h-5 w-5 animate-spin" />

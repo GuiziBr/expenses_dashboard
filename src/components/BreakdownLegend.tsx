@@ -81,9 +81,9 @@ export function BreakdownLegend({
 									onClick={() => onSelect?.({ kind: "other" })}
 									{...previewProps({ kind: "other" })}
 									className={cn(
-										"flex items-center justify-between rounded-md px-1 pt-2 text-light-gray transition-opacity cursor-pointer",
+										"flex items-center justify-between rounded-md px-1 pt-2 text-muted-foreground transition-opacity cursor-pointer",
 										focusRing,
-										otherSelected && "text-input-text",
+										otherSelected && "text-foreground",
 										hasSelection && !otherSelected && "opacity-[0.55]"
 									)}
 								>
@@ -109,9 +109,9 @@ export function BreakdownLegend({
 								onClick={() => onSelect?.(getRowSelection(row))}
 								{...previewProps(getRowSelection(row))}
 								className={cn(
-									"flex h-12 items-center gap-2.5 rounded-lg bg-white px-4 text-left text-sm font-medium text-blue-wood transition-opacity cursor-pointer md:text-[0.9375rem]",
+									"flex h-12 items-center gap-2.5 rounded-lg border border-border bg-card px-4 text-left text-sm font-medium text-foreground transition-opacity cursor-pointer hover:bg-accent/40 md:text-[0.9375rem]",
 									focusRing,
-									isRowSelected(row, selection) && "ring-2 ring-orange",
+									isRowSelected(row, selection) && "ring-2 ring-primary",
 									hasSelection &&
 										!isRowSelected(row, selection) &&
 										"opacity-[0.55]"
@@ -121,12 +121,12 @@ export function BreakdownLegend({
 								<span
 									className={cn(
 										"min-w-0 flex-1 truncate",
-										label.isPlaceholder && "italic text-iron-gray"
+										label.isPlaceholder && "italic text-muted-foreground"
 									)}
 								>
 									{label.text}
 								</span>
-								<span className="flex h-[22px] items-center rounded-full bg-slate-200 px-2 text-[0.6875rem]">
+								<span className="flex h-[22px] items-center rounded-full bg-background px-2 text-[0.6875rem] text-muted-foreground">
 									{formatShare(row.share)}
 								</span>
 								<span className="min-w-[76px] whitespace-nowrap text-right md:min-w-[110px]">
@@ -143,7 +143,7 @@ export function BreakdownLegend({
 					type="button"
 					aria-expanded={expanded}
 					onClick={() => setExpanded((current) => !current)}
-					className="flex h-11 items-center justify-center gap-2 rounded-md border border-border text-sm font-medium text-light-gray transition-colors hover:text-input-text cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+					className="flex h-11 items-center justify-center gap-2 rounded-md border border-border text-sm font-medium text-muted-foreground transition-colors hover:text-foreground cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
 				>
 					{expanded
 						? legend.showLess
