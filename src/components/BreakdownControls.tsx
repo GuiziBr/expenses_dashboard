@@ -73,7 +73,7 @@ export function BreakdownControls({
 			<div
 				role="tablist"
 				aria-label={translations.dashboards.breakdown.groupingLabel}
-				className="flex gap-1 rounded-lg border border-border bg-card p-1"
+				className="flex gap-1 rounded-lg border border-border bg-card p-1 md:w-fit"
 			>
 				{TABS.map(({ key, label, shortLabel, icon: Icon }, index) => {
 					const isActive = key === groupBy
