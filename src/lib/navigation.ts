@@ -136,7 +136,11 @@ export const MONTH_ROUTES = [
 	"/balanceBreakdown"
 ]
 
-const CREATE_EXPENSE_ROUTES = ["/sharedDashboard", "/personalDashboard"]
+const CREATE_EXPENSE_ROUTES = [
+	"/sharedDashboard",
+	"/personalDashboard",
+	"/balanceBreakdown"
+]
 
 /** Balance Breakdown is left out: its group-by tabs are already sticky on mobile. */
 const STICKY_MONTH_ROUTES = ["/sharedDashboard", "/personalDashboard"]

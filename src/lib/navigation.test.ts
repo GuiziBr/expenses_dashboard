@@ -136,7 +136,7 @@ describe("getPageMeta", () => {
 			title: "Balance Breakdown",
 			hasMonthPicker: true,
 			hasStickyMonthPicker: false,
-			canCreateExpense: false
+			canCreateExpense: true
 		})
 		expect(getPageMeta("/consolidatedBalance")).toEqual({
 			title: "Consolidated Balance",
