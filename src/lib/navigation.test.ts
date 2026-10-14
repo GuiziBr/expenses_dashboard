@@ -22,8 +22,8 @@ describe("navigation config", () => {
 		expect(MAIN_NAV_ITEMS.map((item) => item.href)).toEqual([
 			"/sharedDashboard",
 			"/personalDashboard",
-			"/consolidatedBalance",
-			"/balanceBreakdown"
+			"/balanceBreakdown",
+			"/consolidatedBalance"
 		])
 	})
 

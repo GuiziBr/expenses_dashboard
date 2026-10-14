@@ -45,14 +45,14 @@ export const NAV_GROUPS: NavGroup[] = [
 		label: translations.navigation.reports,
 		items: [
 			{
-				label: translations.dashboards.consolidated.title,
-				href: "/consolidatedBalance",
-				icon: Scale
-			},
-			{
 				label: translations.dashboards.breakdown.title,
 				href: "/balanceBreakdown",
 				icon: ChartPie
+			},
+			{
+				label: translations.dashboards.consolidated.title,
+				href: "/consolidatedBalance",
+				icon: Scale
 			}
 		]
 	}
