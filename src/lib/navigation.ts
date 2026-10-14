@@ -95,16 +95,16 @@ const findMainItem = (href: string) => {
 
 export const MOBILE_TAB_ITEMS: NavItem[] = [
 	{
-		...findMainItem("/sharedDashboard"),
-		label: translations.navigation.tabs.shared
-	},
-	{
 		...findMainItem("/personalDashboard"),
 		label: translations.navigation.tabs.personal
 	},
 	{
+		...findMainItem("/balanceBreakdown"),
+		label: translations.navigation.tabs.breakdown
+	},
+	{
 		...findMainItem("/consolidatedBalance"),
-		label: translations.navigation.tabs.balance
+		label: translations.navigation.tabs.consolidated
 	}
 ]
 
