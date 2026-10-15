@@ -82,7 +82,7 @@ export function ConsolidatedFilters({
 							setDate(e.target.value)
 							if (errors.date) setErrors((prev) => ({ ...prev, date: "" }))
 						}}
-						className="h-full w-full appearance-none bg-transparent pl-2 pr-2 text-sm text-foreground outline-none"
+						className="h-full min-w-0 flex-1 appearance-none bg-transparent pl-2 pr-2 text-sm text-foreground outline-none"
 					/>
 					{errors.date && (
 						<div className="relative flex items-center group h-5">
