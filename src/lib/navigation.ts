@@ -45,14 +45,14 @@ export const NAV_GROUPS: NavGroup[] = [
 		label: translations.navigation.reports,
 		items: [
 			{
-				label: translations.dashboards.consolidated.title,
-				href: "/consolidatedBalance",
-				icon: Scale
-			},
-			{
 				label: translations.dashboards.breakdown.title,
 				href: "/balanceBreakdown",
 				icon: ChartPie
+			},
+			{
+				label: translations.dashboards.consolidated.title,
+				href: "/consolidatedBalance",
+				icon: Scale
 			}
 		]
 	}
@@ -95,16 +95,16 @@ const findMainItem = (href: string) => {
 
 export const MOBILE_TAB_ITEMS: NavItem[] = [
 	{
-		...findMainItem("/sharedDashboard"),
-		label: translations.navigation.tabs.shared
-	},
-	{
 		...findMainItem("/personalDashboard"),
 		label: translations.navigation.tabs.personal
 	},
 	{
+		...findMainItem("/balanceBreakdown"),
+		label: translations.navigation.tabs.breakdown
+	},
+	{
 		...findMainItem("/consolidatedBalance"),
-		label: translations.navigation.tabs.balance
+		label: translations.navigation.tabs.consolidated
 	}
 ]
 
@@ -136,7 +136,11 @@ export const MONTH_ROUTES = [
 	"/balanceBreakdown"
 ]
 
-const CREATE_EXPENSE_ROUTES = ["/sharedDashboard", "/personalDashboard"]
+const CREATE_EXPENSE_ROUTES = [
+	"/sharedDashboard",
+	"/personalDashboard",
+	"/balanceBreakdown"
+]
 
 /** Balance Breakdown is left out: its group-by tabs are already sticky on mobile. */
 const STICKY_MONTH_ROUTES = ["/sharedDashboard", "/personalDashboard"]

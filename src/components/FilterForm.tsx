@@ -69,18 +69,18 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 	}
 
 	return (
-		<section className="flex w-full flex-col items-center justify-start gap-4 lg:flex-row">
+		<section className="w-full">
 			<form
 				onSubmit={handleSubmit}
-				className="flex flex-col lg:flex-row items-center justify-start gap-3 w-full lg:w-auto"
+				className="flex flex-col gap-3 md:grid md:grid-cols-3 md:gap-5"
 			>
-				{/* Filters Group */}
-				<div className="flex gap-2 w-full lg:w-auto">
+				{/* Each group spans one column, like the balance cards above */}
+				<div className="flex gap-2">
 					<SelectMenu
 						name="filterBy"
 						options={COLUMN_FILTERS as unknown as SelectOption[]}
 						placeholder={translations.filters.filterBy}
-						className="flex-1 lg:w-36"
+						className="min-w-0 flex-1"
 						value={filterBy}
 						onValueChange={handleFilterByChange}
 					/>
@@ -88,7 +88,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 						name="filterValue"
 						options={filterOptions}
 						placeholder={translations.filters.filterValue}
-						className="flex-1 lg:w-44"
+						className="min-w-0 flex-1"
 						disabled={!filterBy || isLoadingOptions}
 						value={filterValue}
 						onValueChange={setFilterValue}
@@ -96,11 +96,11 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 				</div>
 
 				{/* Inputs Group */}
-				<div className="flex gap-2 w-full lg:w-auto">
+				<div className="flex gap-2">
 					<Input
 						type="date"
 						name="startDate"
-						className="flex-1 lg:w-44"
+						className="min-w-0 flex-1"
 						value={startDate}
 						max={maxStartDate}
 						onChange={(e) => {
@@ -111,7 +111,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 					<Input
 						type="date"
 						name="endDate"
-						className="flex-1 lg:w-44"
+						className="min-w-0 flex-1"
 						value={endDate}
 						min={minEndDate}
 						onChange={(e) => {
@@ -124,7 +124,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 				<Button
 					type="submit"
 					variant="outline"
-					className="h-10 w-full font-semibold lg:w-[5.5rem]"
+					className="h-10 w-full font-semibold md:w-[5.5rem]"
 				>
 					{translations.common.search}
 				</Button>
