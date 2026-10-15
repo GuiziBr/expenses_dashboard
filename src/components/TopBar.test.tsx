@@ -37,11 +37,11 @@ describe("TopBar", () => {
 		expect(screen.getByText("New expense action")).toBeInTheDocument()
 	})
 
-	it("shows the month picker without a create action on Balance Breakdown", () => {
+	it("shows the month picker and the create action on Balance Breakdown", () => {
 		renderBar("/balanceBreakdown")
 
 		expect(screen.getByLabelText("Month")).toBeInTheDocument()
-		expect(screen.queryByText("New expense action")).not.toBeInTheDocument()
+		expect(screen.getByText("New expense action")).toBeInTheDocument()
 	})
 
 	it("shows neither on Consolidated Balance or management pages", () => {

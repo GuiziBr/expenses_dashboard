@@ -48,9 +48,9 @@ describe("BottomTabBar tabs", () => {
 		const nav = screen.getByRole("navigation", { name: "Primary" })
 
 		for (const [label, href] of [
-			["Shared", "/sharedDashboard"],
 			["Personal", "/personalDashboard"],
-			["Balance", "/consolidatedBalance"]
+			["Breakdown", "/balanceBreakdown"],
+			["Consolidated", "/consolidatedBalance"]
 		]) {
 			expect(within(nav).getByRole("link", { name: label })).toHaveAttribute(
 				"href",
@@ -70,13 +70,13 @@ describe("BottomTabBar tabs", () => {
 			"aria-current",
 			"page"
 		)
-		expect(screen.getByRole("link", { name: "Shared" })).not.toHaveAttribute(
+		expect(screen.getByRole("link", { name: "Breakdown" })).not.toHaveAttribute(
 			"aria-current"
 		)
 	})
 
 	it("highlights More for pages that live inside it", () => {
-		for (const path of ["/balanceBreakdown", "/management/banks"]) {
+		for (const path of ["/sharedDashboard", "/management/banks"]) {
 			pathname = path
 			const { unmount } = renderBar()
 			expect(screen.getByRole("button", { name: "More" })).toHaveAttribute(
@@ -88,6 +88,7 @@ describe("BottomTabBar tabs", () => {
 	})
 
 	it("does not highlight More on a primary tab", () => {
+		pathname = "/personalDashboard"
 		renderBar()
 		expect(screen.getByRole("button", { name: "More" })).toHaveAttribute(
 			"data-active",
@@ -105,7 +106,7 @@ describe("BottomTabBar month carry-over", () => {
 			"href",
 			"/personalDashboard?month=2026-08"
 		)
-		expect(screen.getByRole("link", { name: "Balance" })).toHaveAttribute(
+		expect(screen.getByRole("link", { name: "Consolidated" })).toHaveAttribute(
 			"href",
 			"/consolidatedBalance"
 		)
@@ -113,11 +114,11 @@ describe("BottomTabBar month carry-over", () => {
 })
 
 describe("BottomTabBar More sheet", () => {
-	it("lists Balance Breakdown and every management page", async () => {
+	it("lists Shared Dashboard and every management page", async () => {
 		const { dialog } = await openMore()
 
 		for (const [label, href] of [
-			["Balance Breakdown", "/balanceBreakdown"],
+			["Shared Dashboard", "/sharedDashboard"],
 			["Banks", "/management/banks"],
 			["Categories", "/management/categories"],
 			["Payment Types", "/management/paymentTypes"],

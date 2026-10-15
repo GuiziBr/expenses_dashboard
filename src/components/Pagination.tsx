@@ -32,7 +32,7 @@ function PageButton({
 			onClick={onClick}
 			disabled={disabled}
 			aria-label={label}
-			className="flex size-8 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40"
+			className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:bg-accent lg:size-8 lg:border-transparent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40"
 		>
 			<Icon className="size-4" aria-hidden="true" />
 		</button>
@@ -62,46 +62,45 @@ export function Pagination({
 				className="flex w-full lg:pointer-events-none lg:fixed lg:right-0 lg:bottom-4 lg:left-[248px] lg:z-30 lg:w-auto"
 			>
 				<div className="mx-auto flex w-full max-w-[1120px] justify-start lg:px-5">
-					<div className="flex items-center lg:pointer-events-auto lg:rounded-xl lg:border lg:border-border lg:bg-card lg:px-3 lg:py-1 lg:shadow-md">
+					{/* Mobile: full-width row with the page label as a pill between the arrows. Desktop: compact card with the label first. */}
+					<div className="flex w-full items-center gap-2 lg:pointer-events-auto lg:w-auto lg:gap-0 lg:rounded-xl lg:border lg:border-border lg:bg-card lg:px-3 lg:py-1 lg:shadow-md">
+						<PageButton
+							icon={ChevronsLeft}
+							label={common.firstPage}
+							disabled={isFirst}
+							onClick={() => setCurrentPage(1)}
+						/>
+						<PageButton
+							icon={ChevronLeft}
+							label={common.previousPage}
+							disabled={isFirst}
+							onClick={() => setCurrentPage(currentPage - 1)}
+						/>
 						<p
-							className="px-1 text-sm text-muted-foreground"
+							className="flex h-11 min-w-0 flex-1 items-center justify-center rounded-lg bg-accent px-1 text-sm text-muted-foreground lg:order-first lg:h-auto lg:flex-none lg:justify-start lg:bg-transparent"
 							aria-live="polite"
 						>
-							{common.page}{" "}
+							{common.page}&nbsp;
 							<span className="font-semibold text-foreground">
 								{currentPage}
-							</span>{" "}
-							{common.of}{" "}
+							</span>
+							&nbsp;{common.of}&nbsp;
 							<span className="font-semibold text-foreground">
 								{totalPages}
 							</span>
 						</p>
-						<div className="flex items-center">
-							<PageButton
-								icon={ChevronsLeft}
-								label={common.firstPage}
-								disabled={isFirst}
-								onClick={() => setCurrentPage(1)}
-							/>
-							<PageButton
-								icon={ChevronLeft}
-								label={common.previousPage}
-								disabled={isFirst}
-								onClick={() => setCurrentPage(currentPage - 1)}
-							/>
-							<PageButton
-								icon={ChevronRight}
-								label={common.nextPage}
-								disabled={isLast}
-								onClick={() => setCurrentPage(currentPage + 1)}
-							/>
-							<PageButton
-								icon={ChevronsRight}
-								label={common.lastPage}
-								disabled={isLast}
-								onClick={() => setCurrentPage(totalPages)}
-							/>
-						</div>
+						<PageButton
+							icon={ChevronRight}
+							label={common.nextPage}
+							disabled={isLast}
+							onClick={() => setCurrentPage(currentPage + 1)}
+						/>
+						<PageButton
+							icon={ChevronsRight}
+							label={common.lastPage}
+							disabled={isLast}
+							onClick={() => setCurrentPage(totalPages)}
+						/>
 					</div>
 				</div>
 			</nav>

@@ -38,9 +38,9 @@ export const translations = {
 		account: "Account",
 		tabBarLabel: "Primary",
 		tabs: {
-			shared: "Shared",
 			personal: "Personal",
-			balance: "Balance",
+			breakdown: "Breakdown",
+			consolidated: "Consolidated",
 			more: "More"
 		}
 	},

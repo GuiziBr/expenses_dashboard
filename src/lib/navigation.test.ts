@@ -22,8 +22,8 @@ describe("navigation config", () => {
 		expect(MAIN_NAV_ITEMS.map((item) => item.href)).toEqual([
 			"/sharedDashboard",
 			"/personalDashboard",
-			"/consolidatedBalance",
-			"/balanceBreakdown"
+			"/balanceBreakdown",
+			"/consolidatedBalance"
 		])
 	})
 
@@ -88,27 +88,27 @@ describe("getPageTitle", () => {
 describe("mobile tabs", () => {
 	it("uses short labels for the three primary tabs", () => {
 		expect(MOBILE_TAB_ITEMS.map((tab) => tab.label)).toEqual([
-			"Shared",
 			"Personal",
-			"Balance"
+			"Breakdown",
+			"Consolidated"
 		])
 		expect(MOBILE_TAB_ITEMS.map((tab) => tab.href)).toEqual([
-			"/sharedDashboard",
 			"/personalDashboard",
+			"/balanceBreakdown",
 			"/consolidatedBalance"
 		])
 	})
 
 	it("moves the remaining main items into More", () => {
 		expect(MORE_NAV_ITEMS.map((item) => item.href)).toEqual([
-			"/balanceBreakdown"
+			"/sharedDashboard"
 		])
 	})
 
 	it("flags More as active for its pages and management only", () => {
-		expect(isMoreTabActive("/balanceBreakdown")).toBe(true)
+		expect(isMoreTabActive("/sharedDashboard")).toBe(true)
 		expect(isMoreTabActive("/management/stores")).toBe(true)
-		expect(isMoreTabActive("/sharedDashboard")).toBe(false)
+		expect(isMoreTabActive("/balanceBreakdown")).toBe(false)
 		expect(isMoreTabActive(null)).toBe(false)
 	})
 })
@@ -136,7 +136,7 @@ describe("getPageMeta", () => {
 			title: "Balance Breakdown",
 			hasMonthPicker: true,
 			hasStickyMonthPicker: false,
-			canCreateExpense: false
+			canCreateExpense: true
 		})
 		expect(getPageMeta("/consolidatedBalance")).toEqual({
 			title: "Consolidated Balance",

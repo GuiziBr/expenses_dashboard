@@ -41,65 +41,61 @@ export function ConsolidatedFilters({
 	}
 
 	return (
-		<section className="flex items-center justify-end">
+		<section>
 			<form
 				onSubmit={handleSubmit}
-				className="flex flex-col md:flex-row items-center justify-center w-full md:w-auto gap-2 md:gap-1"
+				className="grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-5"
 				noValidate
 			>
-				{/* Inputs Row */}
-				<div className="flex flex-row gap-2 w-full md:w-auto">
-					{/* Select Container */}
-					<div className="flex-1 md:w-[15rem]">
-						<SelectMenu
-							name="balanceType"
-							options={SHARED_BALANCE_TYPES}
-							placeholder={translations.dashboards.consolidated.selectType}
-							value={balanceType}
-							onValueChange={(value) => {
-								onBalanceTypeChange(value)
-								if (errors.balanceType)
-									setErrors((prev) => ({ ...prev, balanceType: "" }))
-							}}
-							error={errors.balanceType}
-						/>
-					</div>
+				{/* Same columns as the balance cards above */}
+				{/* Select Container */}
+				<div>
+					<SelectMenu
+						name="balanceType"
+						options={SHARED_BALANCE_TYPES}
+						placeholder={translations.dashboards.consolidated.selectType}
+						value={balanceType}
+						onValueChange={(value) => {
+							onBalanceTypeChange(value)
+							if (errors.balanceType)
+								setErrors((prev) => ({ ...prev, balanceType: "" }))
+						}}
+						error={errors.balanceType}
+					/>
+				</div>
 
-					{/* Input Container */}
-					<div
-						className={cn(
-							"relative flex h-10 flex-1 items-center rounded-lg border border-input bg-card px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30 md:w-[14rem]",
-							errors.date && "border-danger text-danger"
-						)}
-					>
-						<div className="text-muted-foreground">
-							<Calendar
-								className={cn("size-4", errors.date && "text-danger")}
-							/>
-						</div>
-						<input
-							type="month"
-							name="date"
-							value={date}
-							onChange={(e) => {
-								setDate(e.target.value)
-								if (errors.date) setErrors((prev) => ({ ...prev, date: "" }))
-							}}
-							className="h-full w-full appearance-none bg-transparent pl-2 pr-2 text-sm text-foreground outline-none"
-						/>
-						{errors.date && (
-							<div className="relative flex items-center group h-5">
-								<AlertCircle className="h-5 w-5 shrink-0 text-danger" />
-								<span
-									role="alert"
-									className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 bg-destructive text-destructive-foreground px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
-								>
-									{errors.date}
-									<div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-t-destructive border-x-transparent border-b-transparent" />
-								</span>
-							</div>
-						)}
+				{/* Input Container */}
+				<div
+					className={cn(
+						"relative flex h-10 items-center rounded-lg border border-input bg-card px-3 shadow-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30",
+						errors.date && "border-danger text-danger"
+					)}
+				>
+					<div className="text-muted-foreground">
+						<Calendar className={cn("size-4", errors.date && "text-danger")} />
 					</div>
+					<input
+						type="month"
+						name="date"
+						value={date}
+						onChange={(e) => {
+							setDate(e.target.value)
+							if (errors.date) setErrors((prev) => ({ ...prev, date: "" }))
+						}}
+						className="h-full min-w-0 flex-1 appearance-none bg-transparent pl-2 pr-2 text-sm text-foreground outline-none"
+					/>
+					{errors.date && (
+						<div className="relative flex items-center group h-5">
+							<AlertCircle className="h-5 w-5 shrink-0 text-danger" />
+							<span
+								role="alert"
+								className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 bg-destructive text-destructive-foreground px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
+							>
+								{errors.date}
+								<div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-t-destructive border-x-transparent border-b-transparent" />
+							</span>
+						</div>
+					)}
 				</div>
 
 				{/* Button */}
@@ -107,7 +103,7 @@ export function ConsolidatedFilters({
 					type="submit"
 					disabled={isLoading}
 					variant="outline"
-					className="h-10 w-full font-semibold md:w-[5.5rem]"
+					className="col-span-2 h-10 w-full font-semibold md:col-span-1 md:w-[5.5rem]"
 				>
 					{isLoading ? (
 						<Loader2 className="h-4 w-4 animate-spin" />
