@@ -19,6 +19,8 @@ function buildBankSearchParams(params: BankQueryParams): string {
 	const entries: [string, string][] = []
 	entries.push(["offset", String(params.offset)])
 	entries.push(["limit", String(params.limit)])
+	if (params.orderBy) entries.push(["orderBy", params.orderBy])
+	if (params.orderType) entries.push(["orderType", params.orderType])
 	return new URLSearchParams(entries).toString()
 }
 

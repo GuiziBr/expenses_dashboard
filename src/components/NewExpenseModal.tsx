@@ -422,17 +422,15 @@ export function NewExpenseModal({
 					</div>
 
 					<div className="flex gap-3 mt-4">
-						{isEditing && (
-							<Button
-								type="button"
-								variant="outline"
-								onClick={onClose}
-								className="h-10 flex-1 font-semibold"
-								disabled={isPending}
-							>
-								{translations.common.cancel}
-							</Button>
-						)}
+						<Button
+							type="button"
+							variant="outline"
+							onClick={onClose}
+							className="h-10 flex-1 font-semibold"
+							disabled={isPending}
+						>
+							{translations.common.cancel}
+						</Button>
 						<Button
 							type="submit"
 							className="h-10 flex-1 font-semibold"
