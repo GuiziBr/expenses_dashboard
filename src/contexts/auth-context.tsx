@@ -19,6 +19,7 @@ import {
 	setAuthToken,
 	setUser as setUserCookie
 } from "@/lib/auth-helpers"
+import { buildSignInUrl } from "@/lib/redirect"
 
 export interface User {
 	id: string
@@ -98,22 +99,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		[queryClient]
 	)
 
-	const signOut = useCallback(() => {
+	const clearSession = useCallback(() => {
 		removeAuthToken()
 		setUser(null)
 		// Drop the previous account's cached data (see signIn)
 		queryClient.clear()
+	}, [queryClient])
+
+	const signOut = useCallback(() => {
+		clearSession()
 		router.push("/")
-	}, [router, queryClient])
+	}, [router, clearSession])
 
 	// Auto-logout on 401 from any API call
 	useEffect(() => {
 		setUnauthorizedHandler(() => {
 			toast.error(translations.auth.sessionExpired)
-			signOut()
+			clearSession()
+			// Expired mid-use: come back to the same page (and filters) after sign-in
+			router.push(
+				buildSignInUrl(`${window.location.pathname}${window.location.search}`)
+			)
 		})
 		return () => setUnauthorizedHandler(() => {})
-	}, [signOut])
+	}, [clearSession, router])
 
 	return (
 		<AuthContext.Provider value={{ user, isLoading, signIn, signOut }}>

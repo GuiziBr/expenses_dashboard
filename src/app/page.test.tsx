@@ -2,8 +2,12 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+const replace = vi.fn()
+let search = ""
+
 vi.mock("next/navigation", () => ({
-	useRouter: () => ({ replace: vi.fn(), push: vi.fn() })
+	useRouter: () => ({ replace, push: vi.fn() }),
+	useSearchParams: () => new URLSearchParams(search)
 }))
 
 vi.mock("@/contexts/auth-context", () => ({
@@ -39,6 +43,40 @@ async function submitLoginForm() {
 describe("Home (login page)", () => {
 	beforeEach(() => {
 		vi.clearAllMocks()
+		search = ""
+	})
+
+	it("returns to the page the user originally requested after signing in", async () => {
+		const target = "/personal-dashboard?month=2026-09&filterBy=categories"
+		search = `redirectTo=${encodeURIComponent(target)}`
+		vi.mocked(useAuth).mockReturnValue({
+			signIn: vi.fn().mockResolvedValue(undefined),
+			isLoading: false,
+			user: null,
+			signOut: vi.fn()
+		})
+
+		render(<Home />)
+		await submitLoginForm()
+
+		await waitFor(() => expect(replace).toHaveBeenCalledWith(target))
+	})
+
+	it("ignores an unsafe redirectTo and goes to the default page", async () => {
+		search = "redirectTo=%2F%2Fevil.com"
+		vi.mocked(useAuth).mockReturnValue({
+			signIn: vi.fn().mockResolvedValue(undefined),
+			isLoading: false,
+			user: null,
+			signOut: vi.fn()
+		})
+
+		render(<Home />)
+		await submitLoginForm()
+
+		await waitFor(() =>
+			expect(replace).toHaveBeenCalledWith("/balance-breakdown")
+		)
 	})
 
 	it("shows a friendly message on a 401 (invalid credentials)", async () => {
