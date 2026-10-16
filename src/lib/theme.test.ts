@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import {
 	applyTheme,
 	DEFAULT_THEME,
@@ -26,6 +26,14 @@ describe("theme helpers", () => {
 		storeTheme("light")
 		expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("light")
 		expect(getStoredTheme()).toBe("light")
+	})
+
+	it("falls back to the default when storage is unavailable", () => {
+		vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+			throw new Error("blocked")
+		})
+		expect(getStoredTheme()).toBe("dark")
+		vi.restoreAllMocks()
 	})
 
 	it("ignores an invalid stored value", () => {

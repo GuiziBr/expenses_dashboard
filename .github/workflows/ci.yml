@@ -31,5 +31,13 @@ jobs:
       - name: Check
         run: npm run check
 
-      - name: Unit tests
-        run: npm run test:run
+      - name: Unit tests with coverage
+        run: npm run test:cov
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          if-no-files-found: ignore
