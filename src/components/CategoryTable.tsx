@@ -76,9 +76,9 @@ export function CategoryTable({
 				<thead className="bg-card lg:sticky lg:top-0 lg:z-10">
 					<tr>
 						<SortableHeader
-							column="name"
+							column="description"
 							label={translations.management.categoryColumn}
-							indicator={getSortIndicator("name")}
+							indicator={getSortIndicator("description")}
 							onSort={onSort}
 							className="w-[50%] md:w-[35%]"
 						/>
