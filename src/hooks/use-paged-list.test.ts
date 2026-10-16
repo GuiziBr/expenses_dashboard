@@ -120,4 +120,29 @@ describe("usePagedList", () => {
 
 		expect(result.current.currentPage).toBe(3)
 	})
+
+	it("sorts ascending first, flips to descending and resets to page 1", () => {
+		const { result } = setup()
+
+		act(() => result.current.setPage(2))
+		act(() => result.current.toggleSort("name"))
+
+		expect(result.current.params).toMatchObject({
+			offset: 0,
+			orderBy: "name",
+			orderType: "asc"
+		})
+		expect(result.current.getSortIndicator("name")).toBe("↑")
+		expect(result.current.getSortIndicator("created_at")).toBe("")
+
+		act(() => result.current.toggleSort("name"))
+		expect(result.current.params.orderType).toBe("desc")
+		expect(result.current.getSortIndicator("name")).toBe("↓")
+
+		act(() => result.current.toggleSort("created_at"))
+		expect(result.current.params).toMatchObject({
+			orderBy: "created_at",
+			orderType: "asc"
+		})
+	})
 })

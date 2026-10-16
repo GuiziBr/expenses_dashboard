@@ -166,7 +166,7 @@ export interface FormattedBank {
 	formattedUpdatedAt: string
 }
 
-export interface BankQueryParams {
+export interface BankQueryParams extends ExpenseOrderBy {
 	offset: number
 	limit: number
 }
@@ -189,7 +189,7 @@ export interface FormattedCategory {
 	formattedUpdatedAt: string
 }
 
-export interface CategoryQueryParams {
+export interface CategoryQueryParams extends ExpenseOrderBy {
 	offset: number
 	limit: number
 }
@@ -214,7 +214,7 @@ export interface FormattedPaymentType {
 	formattedUpdatedAt: string
 }
 
-export interface PaymentTypeQueryParams {
+export interface PaymentTypeQueryParams extends ExpenseOrderBy {
 	offset: number
 	limit: number
 }
@@ -237,7 +237,7 @@ export interface FormattedStore {
 	formattedUpdatedAt: string
 }
 
-export interface StoreQueryParams {
+export interface StoreQueryParams extends ExpenseOrderBy {
 	offset: number
 	limit: number
 }

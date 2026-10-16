@@ -14,6 +14,8 @@ Lists payment types, optionally paginated, excluding soft-deleted records.
 |----------|--------|---------|-------|
 | `offset` | number | `0`     | Min `0` |
 | `limit`  | number | `20`    | Min `1`, max `20` |
+| `orderBy` | enum | `description` | One of `description`, `has_statement`, `created_at` |
+| `orderType` | enum | `asc` | `asc` or `desc` |
 
 ### Response `200 OK`
 

@@ -11,8 +11,17 @@ import { usePagedList } from "@/hooks/use-paged-list"
 const DEFAULT_LIMIT = 8
 
 export default function BanksManagementPage() {
-	const { data, isLoading, error, pages, totalPages, currentPage, setPage } =
-		usePagedList(useBanks, DEFAULT_LIMIT)
+	const {
+		data,
+		isLoading,
+		error,
+		pages,
+		totalPages,
+		currentPage,
+		setPage,
+		toggleSort,
+		getSortIndicator
+	} = usePagedList(useBanks, DEFAULT_LIMIT)
 
 	return (
 		<main className="mx-auto flex max-w-[1120px] flex-col gap-3 px-5 lg:h-full">
@@ -39,7 +48,11 @@ export default function BanksManagementPage() {
 				<div className="flex flex-col gap-4 animate-in fade-in duration-500 lg:min-h-[12rem]">
 					{data.banks.length > 0 ? (
 						<>
-							<BankTable banks={data.banks} />
+							<BankTable
+								banks={data.banks}
+								onSort={toggleSort}
+								getSortIndicator={getSortIndicator}
+							/>
 							{totalPages > 1 && (
 								<Pagination
 									currentPage={currentPage}

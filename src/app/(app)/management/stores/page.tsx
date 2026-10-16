@@ -11,8 +11,17 @@ import { useStores } from "@/hooks/use-stores"
 const DEFAULT_LIMIT = 8
 
 export default function StoresManagementPage() {
-	const { data, isLoading, error, pages, totalPages, currentPage, setPage } =
-		usePagedList(useStores, DEFAULT_LIMIT)
+	const {
+		data,
+		isLoading,
+		error,
+		pages,
+		totalPages,
+		currentPage,
+		setPage,
+		toggleSort,
+		getSortIndicator
+	} = usePagedList(useStores, DEFAULT_LIMIT)
 
 	return (
 		<main className="mx-auto flex max-w-[1120px] flex-col gap-3 px-5 lg:h-full">
@@ -39,7 +48,11 @@ export default function StoresManagementPage() {
 				<div className="flex flex-col gap-4 animate-in fade-in duration-500 lg:min-h-[12rem]">
 					{data.stores.length > 0 ? (
 						<>
-							<StoreTable stores={data.stores} />
+							<StoreTable
+								stores={data.stores}
+								onSort={toggleSort}
+								getSortIndicator={getSortIndicator}
+							/>
 							{totalPages > 1 && (
 								<Pagination
 									currentPage={currentPage}
