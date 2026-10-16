@@ -3,7 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Lock, Mail } from "lucide-react"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import * as z from "zod"
@@ -11,6 +12,11 @@ import { LoginInput } from "@/components/LoginInput"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/contexts/auth-context"
 import { ApiError } from "@/lib/api"
+import {
+	DEFAULT_AUTHENTICATED_PATH,
+	getSafeRedirect,
+	REDIRECT_PARAM
+} from "@/lib/redirect"
 import logo from "../../public/assets/images/logo.svg"
 import background from "../../public/assets/images/sign-in-background.jpg"
 
@@ -23,7 +29,17 @@ const signInSchema = z.object({
 type SignInFormData = z.infer<typeof signInSchema>
 
 export default function Home() {
+	// useSearchParams requires a Suspense boundary
+	return (
+		<Suspense>
+			<SignIn />
+		</Suspense>
+	)
+}
+
+function SignIn() {
 	const router = useRouter()
+	const searchParams = useSearchParams()
 	const { signIn, isLoading } = useAuth()
 	const methods = useForm<SignInFormData>({
 		resolver: zodResolver(signInSchema)
@@ -44,7 +60,10 @@ export default function Home() {
 			toast.success("Successfully logged in!", {
 				duration: 800
 			})
-			router.replace("/balance-breakdown")
+			router.replace(
+				getSafeRedirect(searchParams.get(REDIRECT_PARAM)) ??
+					DEFAULT_AUTHENTICATED_PATH
+			)
 		} catch (error) {
 			// 401 means the credentials themselves were rejected, so a
 			// friendly fixed message is clearer than the backend's raw text.

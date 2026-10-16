@@ -7,15 +7,16 @@ This document describes each feature of the Expenses Dashboard application and i
 ## 1. Authentication
 
 ### What it does
-Cookie-based login/logout system that works across both client components and server-side middleware.
+Cookie-based login/logout system that works across both client components and server-side proxy.
 
 ### Rules
 - Login requires **email** and **password** (`POST /sessions`).
 - On success the API returns a `token` and `user` object. Both are stored in cookies.
 - **Cookie settings**: name `auth_token`, expires in 7 days, path `/`, `secure: true` in production, `sameSite: lax`.
-- **Route protection** (enforced by `middleware.ts`):
+- **Route protection** (enforced by `src/proxy.ts`, which must live in `src/` because the app uses a `src` directory):
   - Authenticated user accessing `/` → redirect to `/balance-breakdown`.
-  - Unauthenticated user accessing any other route → redirect to `/`.
+  - Unauthenticated user accessing any other route → redirect to `/?redirectTo=<path+query>`; after signing in the user lands on that URL (validated as a same-origin relative path), otherwise `/balance-breakdown`.
+  - A 401 on an authenticated session (expired/revoked token) also redirects to sign-in with `redirectTo` set to the current URL.
 - Logout clears all auth cookies and redirects to `/`.
 
 ---

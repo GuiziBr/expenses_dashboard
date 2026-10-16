@@ -71,7 +71,7 @@ Priority uses MoSCoW: **M** = Must, **S** = Should, **C** = Could.
 | ID | Requirement | Priority |
 |---|---|---|
 | FR-01 | Add a **Balance Breakdown** link to the desktop header after *Consolidated Balance*, and to the mobile menu. | M |
-| FR-02 | The route `/balance-breakdown` is protected by `middleware.ts` like every other authenticated route. | M |
+| FR-02 | The route `/balance-breakdown` is protected by `src/proxy.ts` like every other authenticated route. | M |
 | FR-03 | The selected grouping and month are stored in the URL (`?groupBy=category&month=2026-09`). Reloading, sharing the link, and back/forward all restore the same view. | S |
 
 ### 4.2 Controls

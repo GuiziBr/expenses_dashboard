@@ -1,8 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server"
+import {
+	buildSignInUrl,
+	DEFAULT_AUTHENTICATED_PATH,
+	getSafeRedirect,
+	REDIRECT_PARAM
+} from "@/lib/redirect"
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
 	const rawToken = request.cookies.get("auth_token")?.value
-	const { pathname } = request.nextUrl
+	const { pathname, search } = request.nextUrl
 
 	// Treat malformed or expired tokens as absent
 	const isValidToken = (() => {
@@ -28,12 +34,18 @@ export async function middleware(request: NextRequest) {
 
 	// If logged in and trying to access a public route, redirect to dashboard
 	if (token && isPublicRoute) {
-		return NextResponse.redirect(new URL("/balance-breakdown", request.url))
+		const destination =
+			getSafeRedirect(request.nextUrl.searchParams.get(REDIRECT_PARAM)) ??
+			DEFAULT_AUTHENTICATED_PATH
+		return NextResponse.redirect(new URL(destination, request.url))
 	}
 
-	// If NOT logged in and trying to access a protected route, redirect to login
+	// If NOT logged in and trying to access a protected route, redirect to login,
+	// remembering the full URL (including filters) to return to after signing in
 	if (!token && !isPublicRoute) {
-		return NextResponse.redirect(new URL("/", request.url))
+		return NextResponse.redirect(
+			new URL(buildSignInUrl(`${pathname}${search}`), request.url)
+		)
 	}
 
 	return NextResponse.next()
