@@ -79,6 +79,7 @@ export function BreakdownContent({
 					<BreakdownLegend
 						view={view}
 						groupBy={groupBy}
+						month={month}
 						selection={selection}
 						onSelect={toggle}
 						onPreview={setPreview}
