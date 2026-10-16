@@ -28,6 +28,10 @@ export function useSelectedMonth() {
 		(next: BreakdownMonth) => {
 			const params = new URLSearchParams(searchParams.toString())
 			params.set(MONTH_PARAM, formatMonthParam(next))
+			// A new month resets the custom range and the page
+			params.delete("startDate")
+			params.delete("endDate")
+			params.delete("page")
 			router.push(`${pathname}?${params.toString()}`, { scroll: false })
 		},
 		[router, pathname, searchParams]

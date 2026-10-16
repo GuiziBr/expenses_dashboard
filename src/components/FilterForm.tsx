@@ -17,8 +17,12 @@ interface FilterFormProps {
 }
 
 export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
-	const [filterBy, setFilterBy] = useState<string>("")
-	const [filterValue, setFilterValue] = useState<string>("")
+	const [filterBy, setFilterBy] = useState<string>(
+		initialFilters.filterBy || ""
+	)
+	const [filterValue, setFilterValue] = useState<string>(
+		initialFilters.filterValue || ""
+	)
 	const [startDate, setStartDate] = useState<string>(
 		initialFilters.startDate || ""
 	)
@@ -34,13 +38,20 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 		error: filterOptionsError
 	} = useFilterValues(filterBy)
 
-	// The month picker in the top bar resets the range from outside
+	// The month picker and the URL (back/forward) change the filters from outside
 	useEffect(() => {
+		setFilterBy(initialFilters.filterBy || "")
+		setFilterValue(initialFilters.filterValue || "")
 		setStartDate(initialFilters.startDate || "")
 		setEndDate(initialFilters.endDate || "")
 		setMinEndDate("")
 		setMaxStartDate("")
-	}, [initialFilters.startDate, initialFilters.endDate])
+	}, [
+		initialFilters.filterBy,
+		initialFilters.filterValue,
+		initialFilters.startDate,
+		initialFilters.endDate
+	])
 
 	useEffect(() => {
 		if (filterOptionsError) {

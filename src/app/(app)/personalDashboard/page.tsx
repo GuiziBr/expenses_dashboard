@@ -12,56 +12,25 @@ import { Pagination } from "@/components/Pagination"
 import { Loader } from "@/components/ui/loader"
 import { translations } from "@/constants/translations"
 import { useAuth } from "@/contexts/auth-context"
-import { useCustomRangeIndicator } from "@/contexts/page-toolbar-context"
 import { useBalance } from "@/hooks/use-balance"
+import { useExpenseFilters } from "@/hooks/use-expense-filters"
 import { useDeleteExpense, useExpenses } from "@/hooks/use-expenses"
-import { useSelectedMonth } from "@/hooks/use-selected-month"
-import { useSortParams } from "@/hooks/use-sort-params"
-import { formatMonthParam } from "@/lib/balance-breakdown-params"
-import { FILTER_VALUE_MAPPING } from "@/lib/constants"
-import { getMonthRange, isFullMonthRange } from "@/lib/date-utils"
 import { formatCurrency } from "@/lib/format-currency"
 import { getErrorMessage } from "@/lib/get-error-message"
-import type {
-	BalanceFilterKey,
-	ExpenseFilters,
-	ExpenseQueryParams,
-	FormattedExpense
-} from "@/types/expenses"
-
-const DEFAULT_LIMIT = 10
+import type { BalanceFilterKey, FormattedExpense } from "@/types/expenses"
 
 export default function PersonalDashboard() {
-	const { orderBy, orderType, toggleSort, getSortIndicator } = useSortParams()
+	const {
+		params,
+		filters,
+		currentPage,
+		onSearch,
+		toggleSort,
+		getSortIndicator,
+		setPage,
+		getPages
+	} = useExpenseFilters()
 	const { user } = useAuth()
-
-	const { month } = useSelectedMonth()
-
-	const [params, setParams] = useState<ExpenseQueryParams>({
-		offset: 0,
-		limit: DEFAULT_LIMIT,
-		...getMonthRange(month)
-	})
-
-	// The month picked in the top bar resets the range and the page
-	const monthKey = formatMonthParam(month)
-	useEffect(() => {
-		setParams((prev) => ({ ...prev, ...getMonthRange(month), offset: 0 }))
-	}, [monthKey])
-
-	useCustomRangeIndicator(
-		!isFullMonthRange(params.startDate, params.endDate, month)
-	)
-
-	// React to sort changes
-	useEffect(() => {
-		setParams((prev) => ({
-			...prev,
-			orderBy,
-			orderType,
-			offset: 0 // Reset to first page on sort
-		}))
-	}, [orderBy, orderType])
 
 	const { data, isLoading, error } = useExpenses("personal", params)
 	const { data: balance, error: balanceError } = useBalance({
@@ -97,11 +66,8 @@ export default function PersonalDashboard() {
 				setDeletingExpense(null)
 
 				// If we just deleted the last row on a non-first page, step back
-				if (data?.expenses.length === 1 && params.offset > 0) {
-					setParams((prev) => ({
-						...prev,
-						offset: Math.max(0, prev.offset - prev.limit)
-					}))
+				if (data?.expenses.length === 1 && currentPage > 1) {
+					setPage(currentPage - 1)
 				}
 			},
 			onError: (error) => {
@@ -110,28 +76,7 @@ export default function PersonalDashboard() {
 		})
 	}
 
-	const handleSearch = (filters: ExpenseFilters) => {
-		setParams((prev) => ({
-			...prev,
-			...filters,
-			// Map the UI filter ID to the API field name
-			filterBy: filters.filterBy
-				? FILTER_VALUE_MAPPING[filters.filterBy]
-				: undefined,
-			offset: 0 // Reset to first page on search
-		}))
-	}
-
-	const handlePageChange = (page: number) => {
-		setParams((prev) => ({
-			...prev,
-			offset: (page - 1) * prev.limit
-		}))
-	}
-
-	const totalPages = data ? Math.ceil(data.totalCount / params.limit) : 0
-	const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
-	const currentPage = Math.floor(params.offset / params.limit) + 1
+	const pages = getPages(data?.totalCount ?? 0)
 
 	return (
 		<main className="mx-auto flex max-w-[1120px] flex-col gap-3 px-5 lg:h-full">
@@ -145,7 +90,7 @@ export default function PersonalDashboard() {
 				/>
 			</section>
 
-			<FilterForm onSubmit={handleSearch} initialFilters={params} />
+			<FilterForm onSubmit={onSearch} initialFilters={filters} />
 
 			{isLoading && !data && (
 				<div className="flex items-center justify-center min-h-[400px]">
@@ -172,7 +117,7 @@ export default function PersonalDashboard() {
 
 					<Pagination
 						currentPage={currentPage}
-						setCurrentPage={handlePageChange}
+						setCurrentPage={setPage}
 						pages={pages}
 					/>
 				</div>
