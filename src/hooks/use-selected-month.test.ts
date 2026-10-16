@@ -7,7 +7,7 @@ let search = ""
 
 vi.mock("next/navigation", () => ({
 	useRouter: () => ({ push }),
-	usePathname: () => "/balanceBreakdown",
+	usePathname: () => "/balance-breakdown",
 	useSearchParams: () => new URLSearchParams(search)
 }))
 
@@ -45,7 +45,7 @@ describe("useSelectedMonth", () => {
 		result.current.setMonth({ year: 2027, month: 1 })
 
 		expect(push).toHaveBeenCalledWith(
-			"/balanceBreakdown?groupBy=bank&month=2027-01",
+			"/balance-breakdown?groupBy=bank&month=2027-01",
 			{ scroll: false }
 		)
 	})
@@ -58,7 +58,7 @@ describe("useSelectedMonth", () => {
 		result.current.setMonth({ year: 2026, month: 9 })
 
 		expect(push).toHaveBeenCalledWith(
-			"/balanceBreakdown?month=2026-09&filterBy=banks",
+			"/balance-breakdown?month=2026-09&filterBy=banks",
 			{ scroll: false }
 		)
 	})
@@ -69,7 +69,7 @@ describe("useSelectedMonth", () => {
 
 		result.current.shift(1)
 
-		expect(push).toHaveBeenCalledWith("/balanceBreakdown?month=2027-01", {
+		expect(push).toHaveBeenCalledWith("/balance-breakdown?month=2027-01", {
 			scroll: false
 		})
 	})

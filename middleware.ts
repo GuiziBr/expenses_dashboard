@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
 
 	// If logged in and trying to access a public route, redirect to dashboard
 	if (token && isPublicRoute) {
-		return NextResponse.redirect(new URL("/sharedDashboard", request.url))
+		return NextResponse.redirect(new URL("/balance-breakdown", request.url))
 	}
 
 	// If NOT logged in and trying to access a protected route, redirect to login

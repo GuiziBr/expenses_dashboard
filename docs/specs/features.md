@@ -14,7 +14,7 @@ Cookie-based login/logout system that works across both client components and se
 - On success the API returns a `token` and `user` object. Both are stored in cookies.
 - **Cookie settings**: name `auth_token`, expires in 7 days, path `/`, `secure: true` in production, `sameSite: lax`.
 - **Route protection** (enforced by `middleware.ts`):
-  - Authenticated user accessing `/` → redirect to `/sharedDashboard`.
+  - Authenticated user accessing `/` → redirect to `/balance-breakdown`.
   - Unauthenticated user accessing any other route → redirect to `/`.
 - Logout clears all auth cookies and redirects to `/`.
 

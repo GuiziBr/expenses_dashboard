@@ -44,7 +44,7 @@ export default function Home() {
 			toast.success("Successfully logged in!", {
 				duration: 800
 			})
-			router.replace("/personalDashboard")
+			router.replace("/balance-breakdown")
 		} catch (error) {
 			// 401 means the credentials themselves were rejected, so a
 			// friendly fixed message is clearer than the backend's raw text.
