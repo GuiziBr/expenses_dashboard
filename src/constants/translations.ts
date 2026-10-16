@@ -100,7 +100,8 @@ export const translations = {
 			legend: {
 				other: "OTHER",
 				showAll: "Show all",
-				showLess: "Show less"
+				showLess: "Show less",
+				viewExpenses: "View expenses"
 			},
 			noBank: "No bank",
 			noStore: "No store",

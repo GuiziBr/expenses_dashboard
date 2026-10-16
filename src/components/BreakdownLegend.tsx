@@ -1,6 +1,7 @@
 "use client"
 
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { ChevronDown, ChevronRight, ChevronUp } from "lucide-react"
+import Link from "next/link"
 import type React from "react"
 import { useState } from "react"
 import { translations } from "@/constants/translations"
@@ -10,6 +11,8 @@ import {
 	getRowSelection,
 	isRowSelected
 } from "@/lib/balance-breakdown"
+import type { BreakdownMonth } from "@/lib/balance-breakdown-params"
+import { buildPersonalDashboardHref } from "@/lib/expense-filter-params"
 import { formatCurrency } from "@/lib/format-currency"
 import { cn } from "@/lib/utils"
 import type {
@@ -33,6 +36,7 @@ const Dot = ({ color }: { color: string }) => (
 interface BreakdownLegendProps {
 	view: BreakdownView
 	groupBy: BalanceFilterKey
+	month: BreakdownMonth
 	selection?: BreakdownSelection | null
 	onSelect?: (selection: BreakdownSelection) => void
 	onPreview?: (selection: BreakdownSelection | null) => void
@@ -44,6 +48,7 @@ const focusRing =
 export function BreakdownLegend({
 	view,
 	groupBy,
+	month,
 	selection = null,
 	onSelect,
 	onPreview
@@ -102,37 +107,57 @@ export function BreakdownLegend({
 									</span>
 								</button>
 							)}
-							<button
-								type="button"
-								aria-label={`${label.text}, ${formatShare(row.share)}, ${formatCurrency(row.total)}`}
-								aria-pressed={isRowSelected(row, selection)}
-								onClick={() => onSelect?.(getRowSelection(row))}
-								{...previewProps(getRowSelection(row))}
+							<div
 								className={cn(
-									"flex h-12 items-center gap-2.5 rounded-lg border border-border bg-card px-4 text-left text-sm font-medium text-foreground transition-opacity cursor-pointer hover:bg-accent/40 md:text-[0.9375rem]",
-									focusRing,
+									"flex h-12 items-center rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-opacity hover:bg-accent/40 md:text-[0.9375rem]",
 									isRowSelected(row, selection) && "ring-2 ring-primary",
 									hasSelection &&
 										!isRowSelected(row, selection) &&
 										"opacity-[0.55]"
 								)}
 							>
-								<Dot color={row.color} />
-								<span
+								<button
+									type="button"
+									aria-label={`${label.text}, ${formatShare(row.share)}, ${formatCurrency(row.total)}`}
+									aria-pressed={isRowSelected(row, selection)}
+									onClick={() => onSelect?.(getRowSelection(row))}
+									{...previewProps(getRowSelection(row))}
 									className={cn(
-										"min-w-0 flex-1 truncate",
-										label.isPlaceholder && "italic text-muted-foreground"
+										"flex h-full min-w-0 flex-1 items-center gap-2.5 rounded-lg pl-4 text-left cursor-pointer",
+										row.id ? "pr-2" : "pr-4",
+										focusRing
 									)}
 								>
-									{label.text}
-								</span>
-								<span className="flex h-[22px] items-center rounded-full bg-background px-2 text-[0.6875rem] text-muted-foreground">
-									{formatShare(row.share)}
-								</span>
-								<span className="min-w-[76px] whitespace-nowrap text-right md:min-w-[110px]">
-									{formatCurrency(row.total)}
-								</span>
-							</button>
+									<Dot color={row.color} />
+									<span
+										className={cn(
+											"min-w-0 flex-1 truncate",
+											label.isPlaceholder && "italic text-muted-foreground"
+										)}
+									>
+										{label.text}
+									</span>
+									<span className="flex h-[22px] items-center rounded-full bg-background px-2 text-[0.6875rem] text-muted-foreground">
+										{formatShare(row.share)}
+									</span>
+									<span className="min-w-[76px] whitespace-nowrap text-right md:min-w-[110px]">
+										{formatCurrency(row.total)}
+									</span>
+								</button>
+								{row.id && (
+									<Link
+										href={buildPersonalDashboardHref(groupBy, row.id, month)}
+										aria-label={`${legend.viewExpenses}: ${label.text}`}
+										title={legend.viewExpenses}
+										className={cn(
+											"mr-1 flex h-10 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground",
+											focusRing
+										)}
+									>
+										<ChevronRight aria-hidden="true" className="h-4 w-4" />
+									</Link>
+								)}
+							</div>
 						</li>
 					)
 				})}

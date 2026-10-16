@@ -18,7 +18,11 @@ function renderLegend(
 	groupBy: BalanceFilterKey = "categories"
 ) {
 	return render(
-		<BreakdownLegend view={buildBreakdownView(items)} groupBy={groupBy} />
+		<BreakdownLegend
+			view={buildBreakdownView(items)}
+			groupBy={groupBy}
+			month={{ year: 2026, month: 9 }}
+		/>
 	)
 }
 
@@ -132,5 +136,34 @@ describe("BreakdownLegend – Show all (AC-09)", () => {
 		expect(
 			screen.queryByRole("button", { name: /^show (all|less)/i })
 		).not.toBeInTheDocument()
+	})
+})
+
+describe("BreakdownLegend – view expenses link", () => {
+	it("links each row to the personal dashboard filtered by item and month", () => {
+		render(
+			<BreakdownLegend
+				view={buildBreakdownView([{ id: "b1", label: "Nubank", total: 500 }])}
+				groupBy="banks"
+				month={{ year: 2026, month: 9 }}
+			/>
+		)
+		expect(
+			screen.getByRole("link", { name: "View expenses: Nubank" })
+		).toHaveAttribute(
+			"href",
+			"/personal-dashboard?month=2026-09&filterBy=banks&filterValue=b1"
+		)
+	})
+
+	it("has no link for expenses without a bank", () => {
+		render(
+			<BreakdownLegend
+				view={buildBreakdownView([{ id: null, label: null, total: 500 }])}
+				groupBy="banks"
+				month={{ year: 2026, month: 9 }}
+			/>
+		)
+		expect(screen.queryByRole("link")).not.toBeInTheDocument()
 	})
 })
