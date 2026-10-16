@@ -50,6 +50,19 @@ describe("useSelectedMonth", () => {
 		)
 	})
 
+	it("clears the custom range and the page on a month change", () => {
+		search =
+			"month=2026-08&startDate=2026-08-05&endDate=2026-08-10&page=2&filterBy=banks"
+		const { result } = renderHook(() => useSelectedMonth())
+
+		result.current.setMonth({ year: 2026, month: 9 })
+
+		expect(push).toHaveBeenCalledWith(
+			"/balanceBreakdown?month=2026-09&filterBy=banks",
+			{ scroll: false }
+		)
+	})
+
 	it("shifts across a year boundary", () => {
 		search = "month=2026-12"
 		const { result } = renderHook(() => useSelectedMonth())

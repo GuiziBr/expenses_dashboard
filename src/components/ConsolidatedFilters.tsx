@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils"
 
 interface ConsolidatedFiltersProps {
 	onSearch: (filters: { date: string }) => void
+	/** `YYYY-MM` applied from the URL; re-syncs the input when it changes */
+	initialDate?: string
 	balanceType: string
 	onBalanceTypeChange: (type: string) => void
 	isLoading?: boolean
@@ -15,12 +17,18 @@ interface ConsolidatedFiltersProps {
 
 export function ConsolidatedFilters({
 	onSearch,
+	initialDate = "",
 	balanceType,
 	onBalanceTypeChange,
 	isLoading
 }: ConsolidatedFiltersProps) {
-	const [date, setDate] = React.useState("")
+	const [date, setDate] = React.useState(initialDate)
 	const [errors, setErrors] = React.useState<{ [key: string]: string }>({})
+
+	// Back/forward and shared links change the month from outside
+	React.useEffect(() => {
+		setDate(initialDate)
+	}, [initialDate])
 
 	const handleSubmit = (e: React.SubmitEvent) => {
 		e.preventDefault()

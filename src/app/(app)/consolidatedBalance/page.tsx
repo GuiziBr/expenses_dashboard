@@ -1,34 +1,25 @@
 "use client"
 
 import { ArrowDownLeft, ArrowUpRight, Wallet } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { toast } from "sonner"
 import { BalanceCard } from "@/components/BalanceCard"
 import { ConsolidatedFilters } from "@/components/ConsolidatedFilters"
 import { ReportTables } from "@/components/ReportTables"
 import { translations } from "@/constants/translations"
 import { useConsolidatedBalance } from "@/hooks/use-consolidated-balance"
+import { useConsolidatedFilters } from "@/hooks/use-consolidated-filters"
 import { formatCurrency } from "@/lib/format-currency"
 import { getErrorMessage } from "@/lib/get-error-message"
 
 export default function ConsolidatedBalance() {
-	const [params, setParams] = useState<{ year: number; month: number } | null>(
-		null
-	)
-
-	const [balanceType, setBalanceType] = useState("")
+	const { period, date, balanceType, onSearch, onBalanceTypeChange } =
+		useConsolidatedFilters()
 
 	const { data, isLoading, error } = useConsolidatedBalance(
-		params?.year ?? null,
-		params?.month ?? null
+		period?.year ?? null,
+		period?.month ?? null
 	)
-
-	const handleSearch = (filters: { date: string }) => {
-		if (filters.date) {
-			const [year, month] = filters.date.split("-").map(Number)
-			setParams({ year, month })
-		}
-	}
 
 	useEffect(() => {
 		if (error) {
@@ -68,9 +59,10 @@ export default function ConsolidatedBalance() {
 			</section>
 
 			<ConsolidatedFilters
-				onSearch={handleSearch}
+				onSearch={onSearch}
+				initialDate={date}
 				balanceType={balanceType}
-				onBalanceTypeChange={setBalanceType}
+				onBalanceTypeChange={onBalanceTypeChange}
 				isLoading={isLoading}
 			/>
 
