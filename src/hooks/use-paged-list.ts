@@ -6,10 +6,13 @@ import { useEffect, useState } from "react"
 interface PageParams {
 	offset: number
 	limit: number
+	orderBy?: string
+	orderType?: "asc" | "desc"
 }
 
 /**
- * Offset-based paging for a list query that returns `totalCount`.
+ * Offset-based paging and column sorting for a list query that returns
+ * `totalCount`. Changing the sort goes back to the first page.
  *
  * Keeps the offset inside the list: deleting the last row of the last page
  * would otherwise leave the offset past the end, so the refetch comes back
@@ -41,6 +44,20 @@ export function usePagedList<T extends { totalCount: number }>(
 	const setPage = (page: number) =>
 		setParams((prev) => ({ ...prev, offset: (page - 1) * prev.limit }))
 
+	const toggleSort = (column: string) =>
+		setParams((prev) => ({
+			...prev,
+			offset: 0,
+			orderBy: column,
+			orderType:
+				prev.orderBy === column && prev.orderType === "asc" ? "desc" : "asc"
+		}))
+
+	const getSortIndicator = (column: string): "↑" | "↓" | "" => {
+		if (params.orderBy !== column) return ""
+		return params.orderType === "desc" ? "↓" : "↑"
+	}
+
 	return {
 		data,
 		isLoading,
@@ -49,6 +66,8 @@ export function usePagedList<T extends { totalCount: number }>(
 		pages,
 		totalPages,
 		currentPage,
-		setPage
+		setPage,
+		toggleSort,
+		getSortIndicator
 	}
 }

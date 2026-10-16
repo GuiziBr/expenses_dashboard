@@ -3,6 +3,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { ConfirmDeleteModal } from "@/components/ConfirmDeleteModal"
 import { EditModal } from "@/components/EditModal"
+import { SortableHeader, type SortIndicator } from "@/components/SortableHeader"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -15,9 +16,11 @@ import type { FormattedBank } from "@/types/expenses"
 
 interface BankTableProps {
 	banks: FormattedBank[]
+	onSort: (column: string) => void
+	getSortIndicator: (column: string) => SortIndicator
 }
 
-export function BankTable({ banks }: BankTableProps) {
+export function BankTable({ banks, onSort, getSortIndicator }: BankTableProps) {
 	const [editingBank, setEditingBank] = useState<FormattedBank | null>(null)
 	const [deletingBank, setDeletingBank] = useState<FormattedBank | null>(null)
 
@@ -60,15 +63,27 @@ export function BankTable({ banks }: BankTableProps) {
 			<table className="w-full table-fixed">
 				<thead className="bg-card lg:sticky lg:top-0 lg:z-10">
 					<tr>
-						<th className="bg-background/60 px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 w-[50%] md:w-[35%]">
-							{translations.management.bankColumn}
-						</th>
-						<th className="bg-background/60 px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 w-[35%] md:w-[25%]">
-							{translations.management.createdColumn}
-						</th>
-						<th className="bg-background/60 px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 hidden md:table-cell md:w-[25%]">
-							{translations.management.updatedColumn}
-						</th>
+						<SortableHeader
+							column="name"
+							label={translations.management.bankColumn}
+							indicator={getSortIndicator("name")}
+							onSort={onSort}
+							className="w-[50%] md:w-[35%]"
+						/>
+						<SortableHeader
+							column="created_at"
+							label={translations.management.createdColumn}
+							indicator={getSortIndicator("created_at")}
+							onSort={onSort}
+							className="w-[35%] md:w-[25%]"
+						/>
+						<SortableHeader
+							column="updated_at"
+							label={translations.management.updatedColumn}
+							indicator={getSortIndicator("updated_at")}
+							onSort={onSort}
+							className="hidden md:table-cell md:w-[25%]"
+						/>
 						<th scope="col" className="w-14 bg-background/60" />
 					</tr>
 				</thead>

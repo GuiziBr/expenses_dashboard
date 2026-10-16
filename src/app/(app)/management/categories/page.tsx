@@ -11,8 +11,17 @@ import { usePagedList } from "@/hooks/use-paged-list"
 const DEFAULT_LIMIT = 8
 
 export default function CategoriesManagementPage() {
-	const { data, isLoading, error, pages, totalPages, currentPage, setPage } =
-		usePagedList(useCategories, DEFAULT_LIMIT)
+	const {
+		data,
+		isLoading,
+		error,
+		pages,
+		totalPages,
+		currentPage,
+		setPage,
+		toggleSort,
+		getSortIndicator
+	} = usePagedList(useCategories, DEFAULT_LIMIT)
 
 	return (
 		<main className="mx-auto flex max-w-[1120px] flex-col gap-3 px-5 lg:h-full">
@@ -39,7 +48,11 @@ export default function CategoriesManagementPage() {
 				<div className="flex flex-col gap-4 animate-in fade-in duration-500 lg:min-h-[12rem]">
 					{data.categories.length > 0 ? (
 						<>
-							<CategoryTable categories={data.categories} />
+							<CategoryTable
+								categories={data.categories}
+								onSort={toggleSort}
+								getSortIndicator={getSortIndicator}
+							/>
 							{totalPages > 1 && (
 								<Pagination
 									currentPage={currentPage}
