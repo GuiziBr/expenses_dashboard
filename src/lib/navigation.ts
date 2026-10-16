@@ -30,12 +30,12 @@ export const NAV_GROUPS: NavGroup[] = [
 		items: [
 			{
 				label: translations.dashboards.shared.title,
-				href: "/sharedDashboard",
+				href: "/shared-dashboard",
 				icon: Users
 			},
 			{
 				label: translations.dashboards.personal.title,
-				href: "/personalDashboard",
+				href: "/personal-dashboard",
 				icon: User
 			}
 		]
@@ -46,12 +46,12 @@ export const NAV_GROUPS: NavGroup[] = [
 		items: [
 			{
 				label: translations.dashboards.breakdown.title,
-				href: "/balanceBreakdown",
+				href: "/balance-breakdown",
 				icon: ChartPie
 			},
 			{
 				label: translations.dashboards.consolidated.title,
-				href: "/consolidatedBalance",
+				href: "/consolidated-balance",
 				icon: Scale
 			}
 		]
@@ -77,7 +77,7 @@ export const MANAGEMENT_NAV_ITEMS: NavItem[] = [
 	},
 	{
 		label: translations.management.paymentTypes,
-		href: `${MANAGEMENT_ROUTE}/paymentTypes`,
+		href: `${MANAGEMENT_ROUTE}/payment-types`,
 		icon: CreditCard
 	},
 	{
@@ -95,15 +95,15 @@ const findMainItem = (href: string) => {
 
 export const MOBILE_TAB_ITEMS: NavItem[] = [
 	{
-		...findMainItem("/personalDashboard"),
+		...findMainItem("/personal-dashboard"),
 		label: translations.navigation.tabs.personal
 	},
 	{
-		...findMainItem("/balanceBreakdown"),
+		...findMainItem("/balance-breakdown"),
 		label: translations.navigation.tabs.breakdown
 	},
 	{
-		...findMainItem("/consolidatedBalance"),
+		...findMainItem("/consolidated-balance"),
 		label: translations.navigation.tabs.consolidated
 	}
 ]
@@ -131,19 +131,19 @@ export const getPageTitle = (pathname: string | null) => {
 }
 
 export const MONTH_ROUTES = [
-	"/sharedDashboard",
-	"/personalDashboard",
-	"/balanceBreakdown"
+	"/shared-dashboard",
+	"/personal-dashboard",
+	"/balance-breakdown"
 ]
 
 const CREATE_EXPENSE_ROUTES = [
-	"/sharedDashboard",
-	"/personalDashboard",
-	"/balanceBreakdown"
+	"/shared-dashboard",
+	"/personal-dashboard",
+	"/balance-breakdown"
 ]
 
 /** Balance Breakdown is left out: its group-by tabs are already sticky on mobile. */
-const STICKY_MONTH_ROUTES = ["/sharedDashboard", "/personalDashboard"]
+const STICKY_MONTH_ROUTES = ["/shared-dashboard", "/personal-dashboard"]
 
 /** Pages that follow the month picked in the top bar. */
 export const isMonthRoute = (pathname: string | null) =>

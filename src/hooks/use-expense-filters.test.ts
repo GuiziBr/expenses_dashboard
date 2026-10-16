@@ -7,7 +7,7 @@ let search = ""
 
 vi.mock("next/navigation", () => ({
 	useRouter: () => ({ push }),
-	usePathname: () => "/personalDashboard",
+	usePathname: () => "/personal-dashboard",
 	useSearchParams: () => new URLSearchParams(search)
 }))
 
@@ -56,7 +56,7 @@ describe("useExpenseFilters", () => {
 		})
 
 		expect(push).toHaveBeenCalledWith(
-			"/personalDashboard?month=2026-02&filterBy=categories&filterValue=c1&startDate=2026-02-05&endDate=2026-02-10",
+			"/personal-dashboard?month=2026-02&filterBy=categories&filterValue=c1&startDate=2026-02-05&endDate=2026-02-10",
 			OPTIONS
 		)
 	})
@@ -70,7 +70,7 @@ describe("useExpenseFilters", () => {
 		})
 
 		expect(push).toHaveBeenCalledWith(
-			"/personalDashboard?month=2026-02",
+			"/personal-dashboard?month=2026-02",
 			OPTIONS
 		)
 	})
@@ -81,7 +81,7 @@ describe("useExpenseFilters", () => {
 
 		result.current.toggleSort("amount")
 		expect(push).toHaveBeenLastCalledWith(
-			"/personalDashboard?month=2026-02&orderBy=amount&orderType=asc",
+			"/personal-dashboard?month=2026-02&orderBy=amount&orderType=asc",
 			OPTIONS
 		)
 
@@ -89,7 +89,7 @@ describe("useExpenseFilters", () => {
 		const again = renderHook(() => useExpenseFilters())
 		again.result.current.toggleSort("amount")
 		expect(push).toHaveBeenLastCalledWith(
-			"/personalDashboard?month=2026-02&orderBy=amount&orderType=desc",
+			"/personal-dashboard?month=2026-02&orderBy=amount&orderType=desc",
 			OPTIONS
 		)
 		expect(again.result.current.getSortIndicator("amount")).toBe("↑")
@@ -101,13 +101,13 @@ describe("useExpenseFilters", () => {
 
 		result.current.setPage(2)
 		expect(push).toHaveBeenLastCalledWith(
-			"/personalDashboard?month=2026-02&page=2",
+			"/personal-dashboard?month=2026-02&page=2",
 			OPTIONS
 		)
 
 		result.current.setPage(1)
 		expect(push).toHaveBeenLastCalledWith(
-			"/personalDashboard?month=2026-02",
+			"/personal-dashboard?month=2026-02",
 			OPTIONS
 		)
 	})

@@ -3,7 +3,7 @@ import { render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-let pathname = "/sharedDashboard"
+let pathname = "/shared-dashboard"
 let search = ""
 const signOut = vi.fn()
 
@@ -30,7 +30,7 @@ const renderBar = () =>
 beforeEach(() => {
 	window.localStorage.clear()
 	document.documentElement.className = "dark"
-	pathname = "/sharedDashboard"
+	pathname = "/shared-dashboard"
 	search = ""
 	signOut.mockClear()
 })
@@ -48,9 +48,9 @@ describe("BottomTabBar tabs", () => {
 		const nav = screen.getByRole("navigation", { name: "Primary" })
 
 		for (const [label, href] of [
-			["Personal", "/personalDashboard"],
-			["Breakdown", "/balanceBreakdown"],
-			["Consolidated", "/consolidatedBalance"]
+			["Personal", "/personal-dashboard"],
+			["Breakdown", "/balance-breakdown"],
+			["Consolidated", "/consolidated-balance"]
 		]) {
 			expect(within(nav).getByRole("link", { name: label })).toHaveAttribute(
 				"href",
@@ -63,7 +63,7 @@ describe("BottomTabBar tabs", () => {
 	})
 
 	it("marks the current tab with aria-current", () => {
-		pathname = "/personalDashboard"
+		pathname = "/personal-dashboard"
 		renderBar()
 
 		expect(screen.getByRole("link", { name: "Personal" })).toHaveAttribute(
@@ -76,7 +76,7 @@ describe("BottomTabBar tabs", () => {
 	})
 
 	it("highlights More for pages that live inside it", () => {
-		for (const path of ["/sharedDashboard", "/management/banks"]) {
+		for (const path of ["/shared-dashboard", "/management/banks"]) {
 			pathname = path
 			const { unmount } = renderBar()
 			expect(screen.getByRole("button", { name: "More" })).toHaveAttribute(
@@ -88,7 +88,7 @@ describe("BottomTabBar tabs", () => {
 	})
 
 	it("does not highlight More on a primary tab", () => {
-		pathname = "/personalDashboard"
+		pathname = "/personal-dashboard"
 		renderBar()
 		expect(screen.getByRole("button", { name: "More" })).toHaveAttribute(
 			"data-active",
@@ -104,11 +104,11 @@ describe("BottomTabBar month carry-over", () => {
 
 		expect(screen.getByRole("link", { name: "Personal" })).toHaveAttribute(
 			"href",
-			"/personalDashboard?month=2026-08"
+			"/personal-dashboard?month=2026-08"
 		)
 		expect(screen.getByRole("link", { name: "Consolidated" })).toHaveAttribute(
 			"href",
-			"/consolidatedBalance"
+			"/consolidated-balance"
 		)
 	})
 })
@@ -118,10 +118,10 @@ describe("BottomTabBar More sheet", () => {
 		const { dialog } = await openMore()
 
 		for (const [label, href] of [
-			["Shared Dashboard", "/sharedDashboard"],
+			["Shared Dashboard", "/shared-dashboard"],
 			["Banks", "/management/banks"],
 			["Categories", "/management/categories"],
-			["Payment Types", "/management/paymentTypes"],
+			["Payment Types", "/management/payment-types"],
 			["Stores", "/management/stores"]
 		]) {
 			expect(within(dialog).getByRole("link", { name: label })).toHaveAttribute(

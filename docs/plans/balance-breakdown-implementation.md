@@ -38,7 +38,7 @@ The donut needs only static arcs plus our own selection state, so a library adds
 |---|---|---|---|
 | 1 | **Grouping logic.** Types and the pure `buildBreakdownView(items)` (Other grouping, shares, top 3, null labels). | BR-10 to BR-18, BR-21, NFR-04 | Read the tests. They are the spec in code (AC-04, AC-05, AC-06 and the edge cases). No UI to QA. |
 | 2 | **Data layer.** `useBalanceBreakdown` hook, API call, query key `["balance","breakdown",year,month,filterBy]`, stale time 60s. | Spec §6 | Hook tests (URL, params, key), then one manual call against the real API. |
-| 3 | **Route and shell.** `/balanceBreakdown`, middleware, desktop and mobile nav link, translations, URL state for `groupBy` and `month`. | FR-01 to FR-03 | Link shows as active, page is protected when logged out, reload and back/forward restore the view. |
+| 3 | **Route and shell.** `/balance-breakdown`, middleware, desktop and mobile nav link, translations, URL state for `groupBy` and `month`. | FR-01 to FR-03 | Link shows as active, page is protected when logged out, reload and back/forward restore the view. |
 | 4 | **Controls.** Grouping tabs, month picker, ◀ / ▶, fetch on change. Data is shown as a temporary raw list. | FR-10 to FR-16, AC-02, AC-03 | Network tab: one request per change. Dec → Jan rollover. A cleared picker keeps the month. |
 | 5 | **Summary cards and page states.** Cards, loading, empty, error with retry. | FR-20 to FR-23, spec §7, AC-12 | Force each state (throttle, `[]`, a 500). Labels change per tab. |
 | 6 | **Legend (static).** Ranked rows, OTHER subheader, Show all / Show less, "No bank" in italic. | FR-35 to FR-38, AC-09, AC-10 | Compare with the design. Use a month with more than 10 items. |
