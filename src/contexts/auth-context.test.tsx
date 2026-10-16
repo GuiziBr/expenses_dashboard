@@ -103,4 +103,18 @@ describe("AuthProvider – cache isolation between accounts", () => {
 		// a failed login must not wipe the signed-in user's data
 		expect(queryClient.getQueryData(BREAKDOWN_KEY)).toBeDefined()
 	})
+
+	it("sends the user to sign-in with the current URL when the session expires", async () => {
+		const { setUnauthorizedHandler } = await import("@/lib/api")
+		setup()
+		await screen.findByText("ready")
+		window.history.pushState({}, "", "/personal-dashboard?month=2026-09")
+
+		const handler = vi.mocked(setUnauthorizedHandler).mock.calls.at(-1)?.[0]
+		act(() => handler?.())
+
+		expect(push).toHaveBeenCalledWith(
+			"/?redirectTo=%2Fpersonal-dashboard%3Fmonth%3D2026-09"
+		)
+	})
 })

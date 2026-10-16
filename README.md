@@ -8,7 +8,7 @@ A modern expense management portal for tracking personal and shared expenses, bu
 - **Balance Summaries** — personal balance and shared split view (paying/payed/total)
 - **Monthly Consolidated Reports** — breakdown by payment type, bank, and category per month
 - **Management Pages** — full CRUD for banks, categories, stores, and payment types
-- **Isomorphic Authentication** — cookie-based auth that works across client and server; middleware protects all routes at the edge
+- **Isomorphic Authentication** — cookie-based auth that works across client and server; the proxy protects all routes before they render
 - **Responsive Light & Dark UI** — mobile-first, with a sidebar on desktop, a bottom tab bar on mobile and a light/dark theme switch (dark by default), built with Tailwind CSS v4
 - **Type-safe Forms** — react-hook-form + Zod validation on all inputs
 - **Smart Caching** — TanStack Query for server state management with automatic cache invalidation
@@ -56,7 +56,7 @@ src/
 | `/management/stores` | Store management |
 | `/management/payment-types` | Payment type management |
 
-All routes except `/` are protected by `middleware.ts`.
+All routes except `/` are protected by `src/proxy.ts`.
 
 ## Getting Started
 
@@ -96,7 +96,7 @@ All routes except `/` are protected by `middleware.ts`.
 The project uses an isomorphic cookie-based approach:
 
 - **Client Side**: `AuthContext` manages the global user state and provides `signIn`/`signOut` methods.
-- **Server Side**: `middleware.ts` reads the `auth_token` cookie directly to handle redirects before the page renders.
+- **Server Side**: `src/proxy.ts` reads the `auth_token` cookie directly to handle redirects before the page renders. Unauthenticated requests are sent to `/?redirectTo=<original path and query>`, and the sign-in page returns the user there after login (only same-origin relative paths are accepted).
 - **Isomorphic Helpers**: `auth-helpers.ts` provides consistent access to the token and user data on both client and server.
 
 On login, the API returns a token and user object that are stored in cookies (7-day expiry). On logout, cookies are cleared and the user is redirected to `/`.
