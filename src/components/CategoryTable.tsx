@@ -89,13 +89,9 @@ export function CategoryTable({
 							onSort={onSort}
 							className="w-[35%] md:w-[25%]"
 						/>
-						<SortableHeader
-							column="updated_at"
-							label={translations.management.updatedColumn}
-							indicator={getSortIndicator("updated_at")}
-							onSort={onSort}
-							className="hidden md:table-cell md:w-[25%]"
-						/>
+						<th className="bg-background/60 px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 hidden md:table-cell md:w-[25%]">
+							{translations.management.updatedColumn}
+						</th>
 						<th scope="col" className="w-14 bg-background/60" />
 					</tr>
 				</thead>
