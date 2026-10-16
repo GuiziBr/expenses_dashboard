@@ -90,6 +90,13 @@ All routes except `/` are protected by `src/proxy.ts`.
 | `npm start` | Start production server |
 | `npm run lint` | Run Biome linter |
 | `npm run format` | Format code with Biome |
+| `npm test` | Run unit tests in watch mode |
+| `npm run test:run` | Run unit tests once |
+| `npm run test:cov` | Run unit tests with coverage (fails below thresholds) |
+
+### Coverage
+
+`npm run test:cov` prints a summary in the terminal and writes an HTML report to `coverage/`. Open `coverage/index.html` to browse per-file results. Thresholds and exclusions are configured in `vitest.config.ts`; CI runs the same command and uploads the report as an artifact. Thresholds only go up, never down.
 
 ## Authentication Architecture
 
