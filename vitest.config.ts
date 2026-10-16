@@ -36,10 +36,17 @@ export default defineConfig({
 			],
 			// Ratchet only: raise as coverage improves, never lower. Target is 80/80/80/70
 			thresholds: {
-				statements: 68,
-				branches: 70,
-				functions: 57,
-				lines: 68
+				statements: 80,
+				branches: 74,
+				functions: 74,
+				lines: 80,
+				// Pure logic is cheap to test, so hold it to a higher bar
+				"src/lib/**": {
+					statements: 90,
+					branches: 90,
+					functions: 90,
+					lines: 90
+				}
 			}
 		}
 	},
