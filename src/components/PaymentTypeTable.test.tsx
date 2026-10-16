@@ -3,6 +3,7 @@ import { render, screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { toast } from "sonner"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import type { SortIndicator } from "@/components/SortableHeader"
 import { translations } from "@/constants/translations"
 import { api } from "@/lib/api"
 import { createQueryWrapper } from "@/test/query-wrapper"
@@ -33,9 +34,19 @@ const paymentTypes: FormattedPaymentType[] = [
 	}
 ]
 
+const onSort = vi.fn()
+const getSortIndicator = vi.fn<(column: string) => SortIndicator>(() => "")
+
 function setup(rows = paymentTypes) {
 	const { wrapper } = createQueryWrapper()
-	render(<PaymentTypeTable paymentTypes={rows} />, { wrapper })
+	render(
+		<PaymentTypeTable
+			paymentTypes={rows}
+			onSort={onSort}
+			getSortIndicator={getSortIndicator}
+		/>,
+		{ wrapper }
+	)
 	return userEvent.setup()
 }
 
@@ -280,5 +291,41 @@ describe("PaymentTypeTable", () => {
 				translations.management.paymentTypeDeleteError
 			)
 		)
+	})
+
+	it("sorts by the clicked column header", async () => {
+		const user = setup()
+
+		await user.click(
+			screen.getByRole("button", {
+				name: translations.management.paymentTypeColumn
+			})
+		)
+		expect(onSort).toHaveBeenLastCalledWith("description")
+
+		await user.click(
+			screen.getByRole("button", {
+				name: translations.management.createdColumn
+			})
+		)
+		expect(onSort).toHaveBeenLastCalledWith("created_at")
+	})
+
+	it("exposes the current sort direction on the column header", () => {
+		getSortIndicator.mockImplementation((column) =>
+			column === "description" ? "↑" : ""
+		)
+		setup()
+
+		expect(
+			screen.getByRole("columnheader", {
+				name: translations.management.paymentTypeColumn
+			})
+		).toHaveAttribute("aria-sort", "ascending")
+		expect(
+			screen.getByRole("columnheader", {
+				name: translations.management.createdColumn
+			})
+		).toHaveAttribute("aria-sort", "none")
 	})
 })

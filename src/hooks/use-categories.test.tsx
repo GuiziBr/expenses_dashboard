@@ -60,6 +60,27 @@ describe("useCategories", () => {
 		})
 	})
 
+	it("sends the sort column and direction when provided", async () => {
+		vi.mocked(api.getWithHeaders).mockResolvedValue({ data: [], totalCount: 0 })
+		const { wrapper } = createQueryWrapper()
+
+		const { result } = renderHook(
+			() =>
+				useCategories({
+					offset: 0,
+					limit: 10,
+					orderBy: "created_at",
+					orderType: "desc"
+				}),
+			{ wrapper }
+		)
+
+		await waitFor(() => expect(result.current.isSuccess).toBe(true))
+		expect(api.getWithHeaders).toHaveBeenCalledWith(
+			"categories?offset=0&limit=10&orderBy=created_at&orderType=desc"
+		)
+	})
+
 	it("exposes the error when the request fails", async () => {
 		vi.mocked(api.getWithHeaders).mockRejectedValue(new Error("boom"))
 		const { wrapper } = createQueryWrapper()

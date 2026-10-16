@@ -3,6 +3,7 @@ import { render, screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { toast } from "sonner"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import type { SortIndicator } from "@/components/SortableHeader"
 import { translations } from "@/constants/translations"
 import { api } from "@/lib/api"
 import { createQueryWrapper } from "@/test/query-wrapper"
@@ -31,9 +32,19 @@ const categories: FormattedCategory[] = [
 	}
 ]
 
+const onSort = vi.fn()
+const getSortIndicator = vi.fn<(column: string) => SortIndicator>(() => "")
+
 function setup(rows = categories) {
 	const { wrapper } = createQueryWrapper()
-	render(<CategoryTable categories={rows} />, { wrapper })
+	render(
+		<CategoryTable
+			categories={rows}
+			onSort={onSort}
+			getSortIndicator={getSortIndicator}
+		/>,
+		{ wrapper }
+	)
 	return userEvent.setup()
 }
 
@@ -177,5 +188,41 @@ describe("CategoryTable", () => {
 
 		await waitFor(() => expect(toast.error).toHaveBeenCalledWith("In use"))
 		expect(screen.getByRole("dialog")).toBeVisible()
+	})
+
+	it("sorts by the clicked column header", async () => {
+		const user = setup()
+
+		await user.click(
+			screen.getByRole("button", {
+				name: translations.management.categoryColumn
+			})
+		)
+		expect(onSort).toHaveBeenLastCalledWith("description")
+
+		await user.click(
+			screen.getByRole("button", {
+				name: translations.management.createdColumn
+			})
+		)
+		expect(onSort).toHaveBeenLastCalledWith("created_at")
+	})
+
+	it("exposes the current sort direction on the column header", () => {
+		getSortIndicator.mockImplementation((column) =>
+			column === "description" ? "↑" : ""
+		)
+		setup()
+
+		expect(
+			screen.getByRole("columnheader", {
+				name: translations.management.categoryColumn
+			})
+		).toHaveAttribute("aria-sort", "ascending")
+		expect(
+			screen.getByRole("columnheader", {
+				name: translations.management.createdColumn
+			})
+		).toHaveAttribute("aria-sort", "none")
 	})
 })
