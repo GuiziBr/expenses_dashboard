@@ -55,8 +55,8 @@ describe("CategoryTable", () => {
 	it("renders a row per category with its dates", () => {
 		setup()
 
-		expect(screen.getByRole("cell", { description: "Groceries" })).toBeVisible()
-		expect(screen.getByRole("cell", { description: "Health" })).toBeVisible()
+		expect(screen.getByRole("cell", { name: "Groceries" })).toBeVisible()
+		expect(screen.getByRole("cell", { name: "Health" })).toBeVisible()
 		expect(screen.getByText("10/01/2026")).toBeVisible()
 		expect(screen.getByText("11/02/2026")).toBeInTheDocument()
 	})
