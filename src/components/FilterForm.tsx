@@ -135,7 +135,7 @@ export function FilterForm({ onSubmit, initialFilters }: FilterFormProps) {
 				<Button
 					type="submit"
 					variant="outline"
-					className="h-10 w-full font-semibold md:w-[5.5rem]"
+					className="h-10 w-full font-semibold md:w-[calc(50%-0.25rem)] md:justify-self-end"
 				>
 					{translations.common.search}
 				</Button>
