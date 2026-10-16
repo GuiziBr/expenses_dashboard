@@ -61,8 +61,8 @@ describe("BreakdownContent – selecting", () => {
 		expect(slices()[1]).not.toHaveClass("opacity-30")
 		expect(slices()[0]).toHaveClass("opacity-30")
 		expect(row("Item 2")).toHaveAttribute("aria-pressed", "true")
-		expect(row("Item 2")).toHaveClass("ring-2")
-		expect(row("Item 3")).toHaveClass("opacity-[0.55]")
+		expect(row("Item 2").parentElement).toHaveClass("ring-2")
+		expect(row("Item 3").parentElement).toHaveClass("opacity-[0.55]")
 	})
 
 	it("grows the selected slice outward", () => {

@@ -1,4 +1,7 @@
-import type { BreakdownMonth } from "@/lib/balance-breakdown-params"
+import {
+	type BreakdownMonth,
+	formatMonthParam
+} from "@/lib/balance-breakdown-params"
 import { COLUMN_FILTERS, EXPENSE_COLUMNS } from "@/lib/constants"
 import { getMonthRange } from "@/lib/date-utils"
 
@@ -120,4 +123,22 @@ export function serializeExpenseParams(
 	if (!next.get(ORDER_BY_PARAM)) next.delete(ORDER_TYPE_PARAM)
 
 	return next
+}
+
+/**
+ * Link to the personal dashboard filtered by one grouped item for a month.
+ * @example buildPersonalDashboardHref("banks", "b1", { year: 2026, month: 9 })
+ * → "/personal-dashboard?month=2026-09&filterBy=banks&filterValue=b1"
+ */
+export function buildPersonalDashboardHref(
+	filterBy: string,
+	filterValue: string,
+	month: BreakdownMonth
+): string {
+	const params = new URLSearchParams({
+		month: formatMonthParam(month),
+		[FILTER_BY_PARAM]: filterBy,
+		[FILTER_VALUE_PARAM]: filterValue
+	})
+	return `/personal-dashboard?${params.toString()}`
 }
