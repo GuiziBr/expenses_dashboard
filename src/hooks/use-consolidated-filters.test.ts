@@ -7,7 +7,7 @@ let search = ""
 
 vi.mock("next/navigation", () => ({
 	useRouter: () => ({ push }),
-	usePathname: () => "/consolidatedBalance",
+	usePathname: () => "/consolidated-balance",
 	useSearchParams: () => new URLSearchParams(search)
 }))
 
@@ -40,7 +40,7 @@ describe("useConsolidatedFilters", () => {
 		result.current.onSearch({ date: "2026-09" })
 
 		expect(push).toHaveBeenCalledWith(
-			"/consolidatedBalance?type=payments&month=2026-09",
+			"/consolidated-balance?type=payments&month=2026-09",
 			{ scroll: false }
 		)
 	})
@@ -52,7 +52,7 @@ describe("useConsolidatedFilters", () => {
 		result.current.onBalanceTypeChange("payments")
 
 		expect(push).toHaveBeenCalledWith(
-			"/consolidatedBalance?month=2026-09&type=payments",
+			"/consolidated-balance?month=2026-09&type=payments",
 			{ scroll: false }
 		)
 	})

@@ -10,7 +10,7 @@ const push = vi.fn()
 
 vi.mock("next/navigation", () => ({
 	useRouter: () => ({ push }),
-	usePathname: () => "/sharedDashboard",
+	usePathname: () => "/shared-dashboard",
 	useSearchParams: () => new URLSearchParams("month=2026-09")
 }))
 
@@ -42,10 +42,10 @@ describe("MonthPicker", () => {
 		fireEvent.click(screen.getByRole("button", { name: "Previous month" }))
 		fireEvent.click(screen.getByRole("button", { name: "Next month" }))
 
-		expect(push).toHaveBeenNthCalledWith(1, "/sharedDashboard?month=2026-08", {
+		expect(push).toHaveBeenNthCalledWith(1, "/shared-dashboard?month=2026-08", {
 			scroll: false
 		})
-		expect(push).toHaveBeenNthCalledWith(2, "/sharedDashboard?month=2026-10", {
+		expect(push).toHaveBeenNthCalledWith(2, "/shared-dashboard?month=2026-10", {
 			scroll: false
 		})
 	})
@@ -56,7 +56,7 @@ describe("MonthPicker", () => {
 			target: { value: "2027-01" }
 		})
 
-		expect(push).toHaveBeenCalledWith("/sharedDashboard?month=2027-01", {
+		expect(push).toHaveBeenCalledWith("/shared-dashboard?month=2027-01", {
 			scroll: false
 		})
 	})

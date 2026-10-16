@@ -68,11 +68,11 @@ Trade-off accepted: the sidebar takes about 248px of width on desktop.
 
 | Group | Item | Route | Icon (Lucide) |
 |---|---|---|---|
-| Dashboards | Shared Dashboard | `/sharedDashboard` | `users` |
-| Dashboards | Personal Dashboard | `/personalDashboard` | `user` |
-| Reports | Consolidated Balance | `/consolidatedBalance` | `scale` |
-| Reports | Balance Breakdown | `/balanceBreakdown` | `chart-pie` |
-| Manage | Management (expandable) | `/management/banks`, `/categories`, `/paymentTypes`, `/stores` | `settings-2` |
+| Dashboards | Shared Dashboard | `/shared-dashboard` | `users` |
+| Dashboards | Personal Dashboard | `/personal-dashboard` | `user` |
+| Reports | Consolidated Balance | `/consolidated-balance` | `scale` |
+| Reports | Balance Breakdown | `/balance-breakdown` | `chart-pie` |
+| Manage | Management (expandable) | `/management/banks`, `/categories`, `/payment-types`, `/stores` | `settings-2` |
 
 Bottom of the sidebar: user menu (avatar, name) containing **Log out**.
 
@@ -80,9 +80,9 @@ Bottom of the sidebar: user menu (avatar, name) containing **Log out**.
 
 | Tab | Route | Icon |
 |---|---|---|
-| Shared | `/sharedDashboard` | `users` |
-| Personal | `/personalDashboard` | `user` |
-| Balance | `/consolidatedBalance` | `chart-pie` |
+| Shared | `/shared-dashboard` | `users` |
+| Personal | `/personal-dashboard` | `user` |
+| Balance | `/consolidated-balance` | `chart-pie` |
 | More | opens a sheet | `ellipsis` |
 
 The **More** sheet holds **Balance Breakdown**, the four **Management** pages and **Log out**. The tab labelled *Balance* points to Consolidated Balance. If that name confuses users next to *Balance Breakdown*, rename it during implementation (see §11).

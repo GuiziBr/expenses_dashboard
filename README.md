@@ -48,13 +48,13 @@ src/
 | Route | Description |
 |---|---|
 | `/` | Login |
-| `/personalDashboard` | Personal expenses |
-| `/sharedDashboard` | Shared / split expenses |
-| `/consolidatedBalance` | Monthly consolidated report |
+| `/personal-dashboard` | Personal expenses |
+| `/shared-dashboard` | Shared / split expenses |
+| `/consolidated-balance` | Monthly consolidated report |
 | `/management/banks` | Bank management |
 | `/management/categories` | Category management |
 | `/management/stores` | Store management |
-| `/management/paymentTypes` | Payment type management |
+| `/management/payment-types` | Payment type management |
 
 All routes except `/` are protected by `middleware.ts`.
 

@@ -3,7 +3,7 @@ import { render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
 
-let pathname = "/sharedDashboard"
+let pathname = "/shared-dashboard"
 let search = ""
 const signOut = vi.fn()
 
@@ -43,7 +43,7 @@ const renderSidebar = () =>
 beforeEach(() => {
 	window.localStorage.clear()
 	document.documentElement.className = "dark"
-	pathname = "/sharedDashboard"
+	pathname = "/shared-dashboard"
 	search = ""
 	signOut.mockClear()
 	avatar = null
@@ -55,10 +55,10 @@ describe("AppSidebar navigation", () => {
 		const nav = screen.getByRole("navigation", { name: "Main" })
 
 		for (const [label, href] of [
-			["Shared Dashboard", "/sharedDashboard"],
-			["Personal Dashboard", "/personalDashboard"],
-			["Consolidated Balance", "/consolidatedBalance"],
-			["Balance Breakdown", "/balanceBreakdown"]
+			["Shared Dashboard", "/shared-dashboard"],
+			["Personal Dashboard", "/personal-dashboard"],
+			["Consolidated Balance", "/consolidated-balance"],
+			["Balance Breakdown", "/balance-breakdown"]
 		]) {
 			expect(within(nav).getByRole("link", { name: label })).toHaveAttribute(
 				"href",
@@ -74,7 +74,7 @@ describe("AppSidebar navigation", () => {
 	})
 
 	it("marks only the current page with aria-current", () => {
-		pathname = "/balanceBreakdown"
+		pathname = "/balance-breakdown"
 		renderSidebar()
 
 		expect(
@@ -93,13 +93,13 @@ describe("AppSidebar month carry-over", () => {
 
 		expect(
 			screen.getByRole("link", { name: "Personal Dashboard" })
-		).toHaveAttribute("href", "/personalDashboard?month=2026-08")
+		).toHaveAttribute("href", "/personal-dashboard?month=2026-08")
 		expect(
 			screen.getByRole("link", { name: "Balance Breakdown" })
-		).toHaveAttribute("href", "/balanceBreakdown?month=2026-08")
+		).toHaveAttribute("href", "/balance-breakdown?month=2026-08")
 		expect(
 			screen.getByRole("link", { name: "Consolidated Balance" })
-		).toHaveAttribute("href", "/consolidatedBalance")
+		).toHaveAttribute("href", "/consolidated-balance")
 	})
 
 	it("ignores an invalid month", () => {
@@ -108,7 +108,7 @@ describe("AppSidebar month carry-over", () => {
 
 		expect(
 			screen.getByRole("link", { name: "Personal Dashboard" })
-		).toHaveAttribute("href", "/personalDashboard")
+		).toHaveAttribute("href", "/personal-dashboard")
 	})
 })
 
@@ -129,7 +129,7 @@ describe("AppSidebar management section", () => {
 		for (const [label, href] of [
 			["Banks", "/management/banks"],
 			["Categories", "/management/categories"],
-			["Payment Types", "/management/paymentTypes"],
+			["Payment Types", "/management/payment-types"],
 			["Stores", "/management/stores"]
 		]) {
 			expect(screen.getByRole("link", { name: label })).toHaveAttribute(

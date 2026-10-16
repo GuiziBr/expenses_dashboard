@@ -2,7 +2,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
-let pathname = "/sharedDashboard"
+let pathname = "/shared-dashboard"
 
 vi.mock("next/navigation", () => ({
 	useRouter: () => ({ push: vi.fn() }),
@@ -28,7 +28,7 @@ const renderBar = (path: string) => {
 
 describe("TopBar", () => {
 	it("shows the title, month picker and create action on the dashboards", () => {
-		renderBar("/personalDashboard")
+		renderBar("/personal-dashboard")
 
 		expect(
 			screen.getByRole("heading", { level: 1, name: "Personal Dashboard" })
@@ -38,14 +38,14 @@ describe("TopBar", () => {
 	})
 
 	it("shows the month picker and the create action on Balance Breakdown", () => {
-		renderBar("/balanceBreakdown")
+		renderBar("/balance-breakdown")
 
 		expect(screen.getByLabelText("Month")).toBeInTheDocument()
 		expect(screen.getByText("New expense action")).toBeInTheDocument()
 	})
 
 	it("shows neither on Consolidated Balance or management pages", () => {
-		for (const path of ["/consolidatedBalance", "/management/banks"]) {
+		for (const path of ["/consolidated-balance", "/management/banks"]) {
 			const { unmount } = renderBar(path)
 			expect(screen.queryByLabelText("Month")).not.toBeInTheDocument()
 			expect(screen.queryByText("New expense action")).not.toBeInTheDocument()
@@ -54,7 +54,7 @@ describe("TopBar", () => {
 	})
 
 	it("has no theme toggle, which lives in the user menu", () => {
-		renderBar("/sharedDashboard")
+		renderBar("/shared-dashboard")
 
 		expect(
 			screen.queryByRole("button", { name: /switch to (light|dark) theme/i })
@@ -62,7 +62,7 @@ describe("TopBar", () => {
 	})
 
 	it("keeps the month picker pinned on the shared and personal dashboards", () => {
-		for (const path of ["/sharedDashboard", "/personalDashboard"]) {
+		for (const path of ["/shared-dashboard", "/personal-dashboard"]) {
 			const { container, unmount } = renderBar(path)
 			expect(container.querySelector(".sticky")).toContainElement(
 				screen.getByLabelText("Month")
@@ -72,7 +72,7 @@ describe("TopBar", () => {
 	})
 
 	it("does not pin the month picker on Balance Breakdown", () => {
-		const { container } = renderBar("/balanceBreakdown")
+		const { container } = renderBar("/balance-breakdown")
 
 		expect(container.querySelector(".sticky")).not.toBeInTheDocument()
 	})
