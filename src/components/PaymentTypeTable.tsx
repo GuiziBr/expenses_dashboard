@@ -5,6 +5,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { ConfirmDeleteModal } from "@/components/ConfirmDeleteModal"
 import { PaymentTypeEditModal } from "@/components/PaymentTypeEditModal"
+import { SortableHeader, type SortIndicator } from "@/components/SortableHeader"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -20,9 +21,15 @@ import type { FormattedPaymentType } from "@/types/expenses"
 
 interface PaymentTypeTableProps {
 	paymentTypes: FormattedPaymentType[]
+	onSort: (column: string) => void
+	getSortIndicator: (column: string) => SortIndicator
 }
 
-export function PaymentTypeTable({ paymentTypes }: PaymentTypeTableProps) {
+export function PaymentTypeTable({
+	paymentTypes,
+	onSort,
+	getSortIndicator
+}: PaymentTypeTableProps) {
 	const [editingPT, setEditingPT] = useState<FormattedPaymentType | null>(null)
 	const [deletingPT, setDeletingPT] = useState<FormattedPaymentType | null>(
 		null
@@ -73,15 +80,27 @@ export function PaymentTypeTable({ paymentTypes }: PaymentTypeTableProps) {
 			<table className="w-full table-fixed">
 				<thead className="bg-card lg:sticky lg:top-0 lg:z-10">
 					<tr>
-						<th className="bg-background/60 px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 w-[40%] md:w-[30%]">
-							{translations.management.paymentTypeColumn}
-						</th>
-						<th className="bg-background/60 px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 w-[20%] md:w-[15%]">
-							{translations.management.hasStatementColumn}
-						</th>
-						<th className="bg-background/60 px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 w-[35%] md:w-[25%]">
-							{translations.management.createdColumn}
-						</th>
+						<SortableHeader
+							column="description"
+							label={translations.management.paymentTypeColumn}
+							indicator={getSortIndicator("description")}
+							onSort={onSort}
+							className="w-[40%] md:w-[30%]"
+						/>
+						<SortableHeader
+							column="has_statement"
+							label={translations.management.hasStatementColumn}
+							indicator={getSortIndicator("has_statement")}
+							onSort={onSort}
+							className="w-[20%] md:w-[15%]"
+						/>
+						<SortableHeader
+							column="created_at"
+							label={translations.management.createdColumn}
+							indicator={getSortIndicator("created_at")}
+							onSort={onSort}
+							className="w-[35%] md:w-[25%]"
+						/>
 						<th className="bg-background/60 px-3 py-3 text-left text-[13px] font-semibold text-muted-foreground md:px-4 hidden md:table-cell md:w-[25%]">
 							{translations.management.updatedColumn}
 						</th>

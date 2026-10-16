@@ -11,8 +11,17 @@ import { usePaymentTypes } from "@/hooks/use-payment-types"
 const DEFAULT_LIMIT = 8
 
 export default function PaymentTypesManagementPage() {
-	const { data, isLoading, error, pages, totalPages, currentPage, setPage } =
-		usePagedList(usePaymentTypes, DEFAULT_LIMIT)
+	const {
+		data,
+		isLoading,
+		error,
+		pages,
+		totalPages,
+		currentPage,
+		setPage,
+		toggleSort,
+		getSortIndicator
+	} = usePagedList(usePaymentTypes, DEFAULT_LIMIT)
 
 	return (
 		<main className="mx-auto flex max-w-[1120px] flex-col gap-3 px-5 lg:h-full">
@@ -39,7 +48,11 @@ export default function PaymentTypesManagementPage() {
 				<div className="flex flex-col gap-4 animate-in fade-in duration-500 lg:min-h-[12rem]">
 					{data.paymentTypes.length > 0 ? (
 						<>
-							<PaymentTypeTable paymentTypes={data.paymentTypes} />
+							<PaymentTypeTable
+								paymentTypes={data.paymentTypes}
+								onSort={toggleSort}
+								getSortIndicator={getSortIndicator}
+							/>
 							{totalPages > 1 && (
 								<Pagination
 									currentPage={currentPage}
