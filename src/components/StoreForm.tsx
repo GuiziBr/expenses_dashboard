@@ -39,12 +39,12 @@ export function StoreForm() {
 				placeholder={translations.management.storePlaceholder}
 				value={name}
 				onChange={(e) => setName(e.target.value)}
-				className="w-full md:flex-1"
+				className="w-full md:w-1/2 md:flex-none"
 			/>
 			<Button
 				type="submit"
 				disabled={!name.trim() || isPending}
-				className="h-10 w-full font-semibold md:w-32"
+				className="h-10 w-full font-semibold md:ml-auto md:w-32"
 			>
 				{isPending ? (
 					<Loader2 className="h-5 w-5 animate-spin" />
