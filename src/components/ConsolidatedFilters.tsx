@@ -111,7 +111,7 @@ export function ConsolidatedFilters({
 					type="submit"
 					disabled={isLoading}
 					variant="outline"
-					className="col-span-2 h-10 w-full font-semibold md:col-span-1 md:w-[5.5rem]"
+					className="col-span-2 h-10 w-full font-semibold md:col-span-1 md:w-[calc(50%-0.25rem)] md:justify-self-end"
 				>
 					{isLoading ? (
 						<Loader2 className="h-4 w-4 animate-spin" />
