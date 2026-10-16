@@ -1,6 +1,6 @@
 "use client"
 import { ArrowDownLeft, ArrowUpRight, Wallet } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { toast } from "sonner"
 import { BalanceCard } from "@/components/BalanceCard"
 import { ExpenseTable } from "@/components/ExpenseTable"
@@ -8,54 +8,24 @@ import { FilterForm } from "@/components/FilterForm"
 import { Pagination } from "@/components/Pagination"
 import { Loader } from "@/components/ui/loader"
 import { translations } from "@/constants/translations"
-import { useCustomRangeIndicator } from "@/contexts/page-toolbar-context"
 import { useBalance } from "@/hooks/use-balance"
+import { useExpenseFilters } from "@/hooks/use-expense-filters"
 import { useExpenses } from "@/hooks/use-expenses"
-import { useSelectedMonth } from "@/hooks/use-selected-month"
-import { useSortParams } from "@/hooks/use-sort-params"
-import { formatMonthParam } from "@/lib/balance-breakdown-params"
-import { FILTER_VALUE_MAPPING } from "@/lib/constants"
-import { getMonthRange, isFullMonthRange } from "@/lib/date-utils"
 import { formatCurrency } from "@/lib/format-currency"
 import { getErrorMessage } from "@/lib/get-error-message"
-import type {
-	BalanceFilterKey,
-	ExpenseFilters,
-	ExpenseQueryParams
-} from "@/types/expenses"
-
-const DEFAULT_LIMIT = 10
+import type { BalanceFilterKey } from "@/types/expenses"
 
 export default function SharedDashboard() {
-	const { orderBy, orderType, toggleSort, getSortIndicator } = useSortParams()
-
-	const { month } = useSelectedMonth()
-
-	const [params, setParams] = useState<ExpenseQueryParams>({
-		offset: 0,
-		limit: DEFAULT_LIMIT,
-		...getMonthRange(month)
-	})
-
-	// The month picked in the top bar resets the range and the page
-	const monthKey = formatMonthParam(month)
-	useEffect(() => {
-		setParams((prev) => ({ ...prev, ...getMonthRange(month), offset: 0 }))
-	}, [monthKey])
-
-	useCustomRangeIndicator(
-		!isFullMonthRange(params.startDate, params.endDate, month)
-	)
-
-	// React to sort changes
-	useEffect(() => {
-		setParams((prev) => ({
-			...prev,
-			orderBy,
-			orderType,
-			offset: 0 // Reset to first page on sort
-		}))
-	}, [orderBy, orderType])
+	const {
+		params,
+		filters,
+		currentPage,
+		onSearch,
+		toggleSort,
+		getSortIndicator,
+		setPage,
+		getPages
+	} = useExpenseFilters()
 
 	const { data, isLoading, error } = useExpenses("shared", params)
 	const { data: balance, error: balanceError } = useBalance({
@@ -77,27 +47,7 @@ export default function SharedDashboard() {
 	const payed = formatCurrency(balance?.sharedBalance?.payed ?? 0)
 	const total = formatCurrency(balance?.sharedBalance?.total ?? 0)
 
-	const handleSearch = (filters: ExpenseFilters) => {
-		setParams((prev) => ({
-			...prev,
-			...filters,
-			filterBy: filters.filterBy
-				? FILTER_VALUE_MAPPING[filters.filterBy]
-				: undefined,
-			offset: 0
-		}))
-	}
-
-	const handlePageChange = (page: number) => {
-		setParams((prev) => ({
-			...prev,
-			offset: (page - 1) * prev.limit
-		}))
-	}
-
-	const totalPages = data ? Math.ceil(data.totalCount / params.limit) : 0
-	const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
-	const currentPage = Math.floor(params.offset / params.limit) + 1
+	const pages = getPages(data?.totalCount ?? 0)
 
 	return (
 		<main className="mx-auto flex max-w-[1120px] flex-col gap-3 px-5 lg:h-full">
@@ -123,7 +73,7 @@ export default function SharedDashboard() {
 				/>
 			</section>
 
-			<FilterForm onSubmit={handleSearch} initialFilters={params} />
+			<FilterForm onSubmit={onSearch} initialFilters={filters} />
 
 			{isLoading && !data && (
 				<div className="flex items-center justify-center min-h-[400px]">
@@ -147,7 +97,7 @@ export default function SharedDashboard() {
 
 					<Pagination
 						currentPage={currentPage}
-						setCurrentPage={handlePageChange}
+						setCurrentPage={setPage}
 						pages={pages}
 					/>
 				</div>

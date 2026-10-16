@@ -40,6 +40,33 @@ const triggers = () => screen.getAllByRole("combobox")
 
 beforeEach(() => vi.clearAllMocks())
 
+describe("FilterForm initial filters", () => {
+	it("seeds Filter by and Filter value, and re-syncs when they change", async () => {
+		vi.mocked(useFilterValues).mockImplementation(
+			(filterBy) =>
+				({
+					data: VALUES[filterBy ?? ""] ?? [],
+					isLoading: false
+				}) as ReturnType<typeof useFilterValues>
+		)
+		const props = { onSubmit: vi.fn() }
+		const { rerender } = render(
+			<FilterForm
+				{...props}
+				initialFilters={{ filterBy: "categories", filterValue: "cat-1" }}
+			/>
+		)
+
+		expect(triggers()[0]).toHaveTextContent("Category")
+		expect(triggers()[1]).toHaveTextContent("Food")
+
+		rerender(<FilterForm {...props} initialFilters={{}} />)
+
+		expect(triggers()[1]).toBeDisabled()
+		expect(triggers()[0]).not.toHaveTextContent("Category")
+	})
+})
+
 describe("FilterForm selects", () => {
 	it("keeps Filter value disabled until a Filter by is chosen", async () => {
 		const { user } = setup()
