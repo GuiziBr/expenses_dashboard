@@ -4,6 +4,8 @@ This document is the source of truth for the visual design of this application. 
 
 The tokens live in `src/app/globals.css`. When this document and that file disagree, the file wins. The history of the navigation, theming and restyle work is in [docs/ui/ui-overhaul.md](docs/ui/ui-overhaul.md).
 
+A Pencil version of this system, with the tokens as variables, reusable components, templates and mapping tables, is in `design_V3.pen`. It uses generic names for the app's components: Stat Card is `BalanceCard`, Data Table is `ExpenseTable`, Select is `SelectMenu`, Chart set is `BreakdownChart` and `BreakdownLegend`. Section 15 lists the components that exist only there.
+
 ---
 
 ## 1. Design Philosophy
@@ -318,6 +320,10 @@ Use the defaults of `ui/dialog.tsx` (background, border, radius). Do not overrid
 
 The scrim is `bg-black/50`. Confirm-delete dialogs show the resource name in `font-medium italic text-foreground`.
 
+### Sheet
+
+The default `ui/sheet.tsx` is `bg-background`. The bottom **More** sheet in `BottomTabBar` overrides it with `bg-card rounded-t-2xl max-h-[85vh]` so it reads as one surface with the tab bar. Its rows are `h-12 rounded-lg px-3 text-base font-medium` with a `size-5` icon; the current page is `bg-primary-soft font-semibold text-primary-text`. Section labels use the sidebar label style.
+
 ### Checkbox group
 
 A bordered `bg-card` row using the Input wrapper classes. The box is `size-5 rounded border-2`: checked `bg-primary border-primary` with a `text-primary-foreground` tick; unchecked `border-muted-foreground`.
@@ -325,6 +331,25 @@ A bordered `bg-card` row using the Input wrapper classes. The box is `size-5 rou
 ### Badge / chip
 
 `rounded-full bg-background px-2.5 py-0.5 text-xs font-medium text-muted-foreground`. State chips use the `*-soft` fills.
+
+### Month picker (`MonthPicker`)
+
+Previous and next buttons (`size-10 rounded-lg border border-input bg-card hover:bg-accent`) around a `h-10` field (`md:w-[190px]`, `border-input bg-card`, `focus-within:ring-2 focus-within:ring-ring`). The field shows a `Calendar` icon and the month label (or "Custom range"); a transparent native `type="month"` input sits over it. On phones the field fills the row.
+
+### Filter form (`FilterForm`)
+
+From `md`, `grid grid-cols-3 gap-5`: a pair of selects, a pair of date inputs, and a **Search** outline button (`h-10 font-semibold`, half width, right aligned). Below `md` the groups stack with `gap-3` and the button is full width.
+
+### Chart set (`BreakdownChart`, `BreakdownLegend`)
+
+- **Donut:** a 280 viewBox ring with an inner ratio of 0.72, a 2px `--card` stroke between slices, and the total in the centre. The selected slice grows 8px; the other slices drop to 30% opacity.
+- **Legend row:** `h-12 rounded-lg border border-border bg-card hover:bg-accent/40`: a 10px dot (`--chart-*`), the label (14px, 15px from `md`, truncates), a share chip (`h-[22px] rounded-full bg-background px-2 text-[0.6875rem] text-muted-foreground`), the amount (`min-w-[110px]`, right aligned) and a drill chevron. The selected row gets `ring-2 ring-primary`; the others drop to 55% opacity.
+- **Other:** a small header row (`text-xs`, dot, "OTHER", count) above the first grouped row, and a `h-11` **Show all N** button when there are more than ten rows.
+- **Insight:** a `bg-background rounded-md` line with a `Sparkles` icon on desktop, and a `Pointer` hint on phones.
+
+### Avatar (`UserAvatar`)
+
+`size-[34px] rounded-full bg-primary-soft text-xs font-bold text-primary-text`. It shows the picture, or the initials when there is none or it fails to load.
 
 ### Empty, loading and error
 
@@ -334,7 +359,7 @@ A bordered `bg-card` row using the Input wrapper classes. The box is `size-5 rou
 
 ### Toasts
 
-Sonner with `richColors`, position `top-center`. Use `toast.success()` and `toast.error()`. The Toaster passes the active theme, so toasts follow it. Do not hard-code a toast theme.
+Sonner with `richColors`, position `top-center`. Use `toast.success()` and `toast.error()`. The Toaster passes the active theme, so toasts follow it. Do not hard-code a toast theme. The design file draws toasts with tokens instead (`bg-card`, `--success` and `--danger` icons); the app still uses `richColors`.
 
 ---
 
@@ -402,3 +427,29 @@ const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof
 - **Do not put the header back in each page.** The shell comes from the `(app)` layout.
 - **Do not change the fonts** without updating the typography table and checking every table's column widths.
 - **Do not skip the focus ring** on interactive elements.
+
+---
+
+## 15. Components in the design file only
+
+These are defined in `design_V3.pen` so a new project has them. None of them exists in this app yet; add each with the shadcn component named on the file's **shadcn mapping** page and style it with the tokens.
+
+| Component | Spec |
+|---|---|
+| Textarea | Same box as the Input (`border-input bg-card rounded-lg shadow-xs`), 96px high, `px-3 py-2`. |
+| Switch | 36x20 pill. Off `bg-input`, on `bg-primary`, thumb 16px `bg-background`. |
+| Radio | 16px circle, `border-primary`, 8px `bg-primary` dot. |
+| Slider | 6px track `bg-secondary`, range `bg-primary`, 16px thumb with a `border-primary` edge on `bg-background`. |
+| Tabs | List `bg-muted rounded-lg p-1` (36px). Active trigger `bg-background shadow` with `text-foreground`; inactive `text-muted-foreground`. |
+| Breadcrumb, Separator | Items 14px `text-muted-foreground`, current page `font-medium text-foreground`, 14px chevron separators. Separator is 1px `bg-border`. |
+| Accordion | Rows with a `border-b border-border`, 14px medium trigger with a chevron, 14px `text-muted-foreground` content. |
+| Popover | `w-72 p-4 bg-popover rounded-lg border shadow-md`. |
+| Command, Combobox | `bg-popover rounded-lg border shadow-md`; a 44px search row with a bottom border; items `rounded-md px-2 py-2`, highlighted `bg-accent`. Combobox is a Select trigger that opens a Command. |
+| Card | `bg-card rounded-xl border`, no shadow, `p-6`, title `text-lg font-semibold`, description `text-sm text-muted-foreground`. |
+| Calendar, Date picker | 36px day cells, `rounded-md`. Today `bg-accent`, selected `bg-primary text-primary-foreground`, range `bg-accent`, outside days 50%. The picker is an Input that opens the calendar in a Popover. |
+| Progress | 8px track `bg-secondary rounded-full`, indicator `bg-primary`. |
+| Skeleton, Scroll area | Skeleton `bg-muted` with a pulse; scrollbar thumb `bg-border rounded-full`. |
+| Alert | Default `bg-card border`; destructive `bg-danger-soft border-danger text-danger`; success `bg-success-soft border-success text-success`. `rounded-lg p-4`, 16px icon. |
+| Avatar group | Avatars overlapped by 8px with a 2px ring of the surface colour. |
+| Tooltip (error chip) | `bg-destructive text-destructive-foreground rounded-lg px-3 py-1.5 text-xs`, the chip used above invalid fields. |
+
