@@ -117,9 +117,8 @@ const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: [
 
 ### Not token-driven
 
-- **Chart palette.** The Balance Breakdown donut and legend use legacy variables (`--orange`, `--blue-sky`, `--green`, `--pink`, `--light-blue`, `--light-gray`) that are the same in both themes. They are data colours, not the accent.
+- **Chart palette.** `--chart-1` to `--chart-5` (orange, blue, green, pink, purple) and `--chart-other` (grey, for the grouped remainder) colour the Balance Breakdown donut and legend. They are data colours, not the accent, and have the same value in both themes. Slices take them in order (`SLICE_COLORS` in `src/lib/balance-breakdown.ts`).
 - **Toast colours.** With `richColors`, Sonner uses its own light and dark palettes for success and error toasts. The Toaster follows the app theme.
-- The other legacy variables in `globals.css` (`--iron-gray`, `--blue-wood`, `--red`, …) are unused by components and kept only for the chart.
 
 ### Contrast
 

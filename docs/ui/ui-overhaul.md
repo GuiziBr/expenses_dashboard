@@ -150,7 +150,7 @@ The design tokens are CSS variables in `src/app/globals.css`: light values in `:
 **Still different from the mock.**
 
 - The font stays Roboto and Roboto Slab (open question 2). Inter is not loaded yet.
-- The Balance Breakdown chart keeps its categorical slice colours (`--orange`, `--blue-sky`, `--green`, `--pink`, `--light-blue`, `--light-gray`). They are data colours, not the accent, and they are the same in both themes. The purple slice (`--light-blue`) has low contrast on the dark card, see §12.
+- The Balance Breakdown chart keeps its categorical slice colours (`--chart-1` to `--chart-5` and `--chart-other`). They are data colours, not the accent, and they are the same in both themes. The purple slice (`--chart-5`) has low contrast on the dark card, see §12.
 - The chart palette and the Sonner toast colours are not token-driven. Toasts use Sonner's own light and dark "rich" colours and are legible in both themes.
 
 ### Theme switching
@@ -274,12 +274,12 @@ The switch is live (see §6). The steps that were pending are done:
 
 Still open, none of it blocks the switch:
 
-1. **Chart palette.** The slice colours (`--orange`, `--blue-sky`, `--green`, `--pink`, `--light-blue`, `--light-gray`) are the same in both themes. The purple slice is about 2.2:1 on the dark card and orange about 2.4:1 on the light card. Move to theme-aware `--chart-*` tokens.
+1. **Chart palette.** The slice colours (`--chart-1` to `--chart-5`, `--chart-other`) are the same in both themes. The purple slice is about 2.2:1 on the dark card and orange about 2.4:1 on the light card. Still open: give the `--chart-*` tokens theme-specific values.
 2. **Login photo.** The same bright photo is used in both themes. A themed overlay would settle it.
 3. **`global-error.tsx`** renders its own `<html className="dark">` without the init script, so a light user who hits a root error sees dark.
 4. **Overlays.** The dialog and sheet scrims use a literal `bg-black/50`. A token would be cleaner.
 5. **Cross-tab sync.** Changing the theme in one tab does not update other open tabs until they reload.
-6. **Dead variables.** The legacy colour variables and `@theme` aliases in `globals.css` that no component uses can be deleted.
+6. **Dead variables.** Done: the legacy colour variables and `@theme` aliases were removed from `globals.css`.
 7. **"Follow the system theme".** Not planned. It would add a third choice and a `prefers-color-scheme` listener.
 8. **Muted text on hover.** `text-muted-foreground` on `accent` hover states in light is about 4.4:1.
 

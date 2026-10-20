@@ -61,12 +61,12 @@ describe("BreakdownLegend – rows", () => {
 			(dot) => (dot as HTMLElement).style.backgroundColor
 		)
 		expect(colors).toEqual([
-			"var(--orange)",
-			"var(--blue-sky)",
-			"var(--green)",
-			"var(--pink)",
-			"var(--light-blue)",
-			"var(--light-gray)"
+			"var(--chart-1)",
+			"var(--chart-2)",
+			"var(--chart-3)",
+			"var(--chart-4)",
+			"var(--chart-5)",
+			"var(--chart-other)"
 		])
 	})
 })
