@@ -13,7 +13,7 @@ A professional, data-dense interface for financial dashboards, in **light and da
 - **Tokens, not colours.** Every colour in a component comes from a semantic token (`bg-card`, `text-muted-foreground`, `border-input`, `bg-primary`). Components never use raw hex values, Tailwind palette colours (`text-white`, `bg-slate-200`) or `dark:` variants. The theme changes by redefining the tokens under `.dark`.
 - **One accent.** Purple (`--primary`) is the only action colour: primary buttons, the current page number, the active nav item, focus rings, the total card.
 - **Layered surfaces.** A page background (`--background`), cards and inputs on `--card`, subtle borders (`--border`), and tinted fills for state (`*-soft`).
-- **Legibility first.** The target is WCAG contrast (4.5:1 for text, 3:1 for control boundaries) in both themes, and nearly everything meets it. Two known exceptions: muted text on hover fills in light mode (about 4.4:1) and input borders in dark mode (about 1.5:1, a deliberately subtle look). Section 5 has the measurements.
+- **Legibility first.** The target is WCAG contrast (4.5:1 for text, 3:1 for control boundaries) in both themes, and every token pair meets it. The one open item is the chart palette, which does not change with the theme. Section 5 has the measurements.
 
 ---
 
@@ -83,7 +83,7 @@ const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: [
 ### Rules for components
 
 1. Use semantic tokens only. Need a new colour? Add a token to both `:root` and `.dark` and bridge it in `@theme`.
-2. **Input-like controls** (inputs, selects, date fields, checkbox groups, the month picker) use `border-input`, not `border-border`. `--input` is the border colour that meets 3:1 on both backgrounds in light.
+2. **Input-like controls** (inputs, selects, date fields, checkbox groups, the month picker) use `border-input`, not `border-border`. `--input` is the border colour that meets 3:1 on `--card` in both themes. On `--background` it meets 3:1 in light (3.1:1) but not in dark (2.6:1), so keep input-like controls on `--card`.
 3. **`primary` vs `primary-text`.** `bg-primary` is a fill that carries white text. For purple *text or icons* on a page or tinted surface use `text-primary-text`.
 4. **`destructive` vs `danger`.** `bg-destructive` is a fill with `text-destructive-foreground`. For red *text, icons or borders* use `text-danger` / `border-danger`; it stays readable on dark cards.
 5. State fills use the `*-soft` tokens (`bg-success-soft`, `bg-danger-soft`, `bg-primary-soft`) with the matching strong colour for text.
@@ -97,12 +97,12 @@ const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: [
 
 | Token | Tailwind | Light | Dark | Use |
 |---|---|---|---|---|
-| `--background` | `bg-background` | `#f6f6fa` | `#312e38` | Page background, table header tint |
-| `--card` | `bg-card` | `#ffffff` | `#232129` | Cards, inputs, dialogs, the sidebar surface |
+| `--background` | `bg-background` | `#f6f6fa` | `#312e38` | Page background, table header tint, dialogs and sheets |
+| `--card` | `bg-card` | `#ffffff` | `#232129` | Cards, inputs, the sidebar surface |
 | `--foreground` | `text-foreground` | `#15152b` | `#f4ede8` | Primary text |
-| `--muted-foreground` | `text-muted-foreground` | `#6b6b82` | `#969cb3` | Secondary text, labels, inactive icons |
+| `--muted-foreground` | `text-muted-foreground` | `#656579` | `#a3a9bf` | Secondary text, labels, inactive icons |
 | `--border` | `border-border` | `#e6e6ef` | `#3e3b47` | Card edges, dividers |
-| `--input` | `border-input` | `#8a8aa3` | `#3e3b47` | Border of input-like controls |
+| `--input` | `border-input` | `#8a8aa3` | `#6e6a80` | Border of input-like controls |
 | `--primary` | `bg-primary` | `#5636d3` | `#6c4cf0` | The accent: primary buttons, current page, total card |
 | `--primary-foreground` | `text-primary-foreground` | `#ffffff` | `#ffffff` | Text on `--primary` |
 | `--primary-text` | `text-primary-text` | `#5636d3` | `#b9abff` | Purple text and icons (active nav, avatar initials) |
@@ -110,8 +110,8 @@ const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: [
 | `--accent` | `bg-accent` | `#eeeafc` | `#3e3b47` | Hover fills |
 | `--secondary` / `--muted` | `bg-secondary` / `bg-muted` | `#ececf3` | `#3e3b47` | Subtle buttons, skeletons |
 | `--destructive` | `bg-destructive` | `#d23b3b` | `#d4344f` | Delete buttons and tooltip chips (white text) |
-| `--success` / `--success-soft` | `text-success` / `bg-success-soft` | `#12875a` / `#e3f5ec` | `#3dd68c` / `#173a2b` | Incomes, positive amounts |
-| `--danger` / `--danger-soft` | `text-danger` / `bg-danger-soft` | `#d23b3b` / `#fce9e9` | `#ff7d7d` / `#4a2226` | Outcomes, negative amounts, error text |
+| `--success` / `--success-soft` | `text-success` / `bg-success-soft` | `#107a52` / `#e3f5ec` | `#3dd68c` / `#173a2b` | Incomes, positive amounts |
+| `--danger` / `--danger-soft` | `text-danger` / `bg-danger-soft` | `#c43232` / `#fce9e9` | `#ff7d7d` / `#4a2226` | Outcomes, negative amounts, error text |
 | `--ring` | `ring-ring` | `#5636d3` | `#b9abff` | Focus rings |
 | `--sidebar*` | `bg-sidebar`, … | white surface | `#28262e` | Sidebar surface and its accent states |
 
@@ -122,11 +122,12 @@ const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: [
 
 ### Contrast
 
-Measured when the switch went live (WCAG 2.x):
+Measured with the current token values (WCAG 2.x):
 
-- Text: every body and secondary text pair is at or above 4.5:1 in both themes, except muted text on hover fills in light (about 4.4:1).
-- Control boundaries: input borders are about 3.4:1 on white in light. In dark they are intentionally subtle (about 1.5:1).
-- Focus ring: 6.5:1 in dark, 6.8:1 in light.
+- Text: every body and secondary text pair is at or above 4.5:1 in both themes. The tightest are `--danger` on `--danger-soft` in light (4.7:1), `--success` on `--success-soft` in light (4.7:1) and muted text on hover fills (4.7:1 in dark, 4.8:1 in light).
+- Control boundaries: input borders are 3.4:1 on `--card` in light and 3.1:1 in dark.
+- Focus ring: 7.8:1 in dark, 7.3:1 in light, on `--card`.
+- Charts: `--chart-*` are the same in both themes. Purple is 2.2:1 on the dark card and orange is 2.4:1 on the light card, so slices are also separated by position and the legend, not colour alone. This is accepted as is.
 
 ---
 
@@ -169,7 +170,7 @@ Base radius `--radius: 0.625rem` (10px).
 
 | Class | Use |
 |---|---|
-| `rounded-lg` | Inputs, selects, buttons, nav items, icon chips |
+| `rounded-lg` | Inputs, selects, buttons, nav items, icon chips, dropdown menus, tooltips, toasts |
 | `rounded-xl` | Cards, table cards, dialog-like panels, the pagination bar |
 | `rounded-full` | Avatars, badges, the floating action button |
 
@@ -342,7 +343,7 @@ Sonner with `richColors`, position `top-center`. Use `toast.success()` and `toas
 | State | Pattern |
 |---|---|
 | Focus (inputs) | `focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30` on the wrapper |
-| Focus (buttons, links, tabs) | `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring` (the base `Button` uses `ring-1`) |
+| Focus (buttons, links, tabs) | `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring` |
 | Hover | `hover:bg-accent` or `hover:bg-accent/40` on rows and ghost controls |
 | Disabled | `disabled:pointer-events-none disabled:opacity-50` |
 
