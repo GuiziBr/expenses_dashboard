@@ -80,12 +80,12 @@ describe("BreakdownChart", () => {
 		expect(
 			slicePaths(container).map((path) => path.getAttribute("fill"))
 		).toEqual([
-			"var(--orange)",
-			"var(--blue-sky)",
-			"var(--green)",
-			"var(--pink)",
-			"var(--light-blue)",
-			"var(--light-gray)"
+			"var(--chart-1)",
+			"var(--chart-2)",
+			"var(--chart-3)",
+			"var(--chart-4)",
+			"var(--chart-5)",
+			"var(--chart-other)"
 		])
 	})
 
@@ -93,7 +93,7 @@ describe("BreakdownChart", () => {
 		const { container } = renderChart([1234])
 		const paths = slicePaths(container)
 		expect(paths).toHaveLength(1)
-		expect(paths[0]).toHaveAttribute("fill", "var(--orange)")
+		expect(paths[0]).toHaveAttribute("fill", "var(--chart-1)")
 	})
 })
 
