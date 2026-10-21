@@ -4,7 +4,7 @@ This document is the source of truth for the visual design of this application. 
 
 The tokens live in `src/app/globals.css`. When this document and that file disagree, the file wins. The history of the navigation, theming and restyle work is in [docs/ui/ui-overhaul.md](docs/ui/ui-overhaul.md).
 
-A Pencil version of this system, with the tokens as variables, reusable components, templates and mapping tables, is in `design_V3.pen`. It uses generic names for the app's components: Stat Card is `BalanceCard`, Data Table is `ExpenseTable`, Select is `SelectMenu`, Chart set is `BreakdownChart` and `BreakdownLegend`. Section 15 lists the components that exist only there.
+A Pencil version of this system, with the tokens as variables, reusable components, templates and mapping tables, is in `design.pen`. It uses generic names for the app's components: Stat Card is `BalanceCard`, Data Table is `ExpenseTable`, Select is `SelectMenu`, Chart set is `BreakdownChart` and `BreakdownLegend`. Section 15 lists the components that exist only there.
 
 ---
 
@@ -432,7 +432,7 @@ const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof
 
 ## 15. Components in the design file only
 
-These are defined in `design_V3.pen` so a new project has them. None of them exists in this app yet; add each with the shadcn component named on the file's **shadcn mapping** page and style it with the tokens.
+These are defined in `design.pen` so a new project has them. None of them exists in this app yet; add each with the shadcn component named on the file's **shadcn mapping** page and style it with the tokens.
 
 | Component | Spec |
 |---|---|
