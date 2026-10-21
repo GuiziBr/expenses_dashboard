@@ -4,6 +4,8 @@ This document is the source of truth for the visual design of this application. 
 
 The tokens live in `src/app/globals.css`. When this document and that file disagree, the file wins. The history of the navigation, theming and restyle work is in [docs/ui/ui-overhaul.md](docs/ui/ui-overhaul.md).
 
+A Pencil version of this system, with the tokens as variables, reusable components, templates and mapping tables, is in `design_V3.pen`. It uses generic names for the app's components: Stat Card is `BalanceCard`, Data Table is `ExpenseTable`, Select is `SelectMenu`, Chart set is `BreakdownChart` and `BreakdownLegend`. Section 15 lists the components that exist only there.
+
 ---
 
 ## 1. Design Philosophy
@@ -13,7 +15,7 @@ A professional, data-dense interface for financial dashboards, in **light and da
 - **Tokens, not colours.** Every colour in a component comes from a semantic token (`bg-card`, `text-muted-foreground`, `border-input`, `bg-primary`). Components never use raw hex values, Tailwind palette colours (`text-white`, `bg-slate-200`) or `dark:` variants. The theme changes by redefining the tokens under `.dark`.
 - **One accent.** Purple (`--primary`) is the only action colour: primary buttons, the current page number, the active nav item, focus rings, the total card.
 - **Layered surfaces.** A page background (`--background`), cards and inputs on `--card`, subtle borders (`--border`), and tinted fills for state (`*-soft`).
-- **Legibility first.** The target is WCAG contrast (4.5:1 for text, 3:1 for control boundaries) in both themes, and nearly everything meets it. Two known exceptions: muted text on hover fills in light mode (about 4.4:1) and input borders in dark mode (about 1.5:1, a deliberately subtle look). Section 5 has the measurements.
+- **Legibility first.** The target is WCAG contrast (4.5:1 for text, 3:1 for control boundaries) in both themes, and every permitted component pairing meets it. There are two exceptions. The chart palette does not change with the theme. And `--input` on `--background` in dark is 2.6:1, so input-like controls and outline buttons sit on `--card`, never on `--background`. Section 5 has the measurements.
 
 ---
 
@@ -83,7 +85,7 @@ const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: [
 ### Rules for components
 
 1. Use semantic tokens only. Need a new colour? Add a token to both `:root` and `.dark` and bridge it in `@theme`.
-2. **Input-like controls** (inputs, selects, date fields, checkbox groups, the month picker) use `border-input`, not `border-border`. `--input` is the border colour that meets 3:1 on both backgrounds in light.
+2. **Input-like controls** (inputs, selects, date fields, checkbox groups, the month picker) use `border-input`, not `border-border`. `--input` is the border colour that meets 3:1 on `--card` in both themes. On `--background` it meets 3:1 in light (3.1:1) but not in dark (2.6:1), so keep input-like controls on `--card`.
 3. **`primary` vs `primary-text`.** `bg-primary` is a fill that carries white text. For purple *text or icons* on a page or tinted surface use `text-primary-text`.
 4. **`destructive` vs `danger`.** `bg-destructive` is a fill with `text-destructive-foreground`. For red *text, icons or borders* use `text-danger` / `border-danger`; it stays readable on dark cards.
 5. State fills use the `*-soft` tokens (`bg-success-soft`, `bg-danger-soft`, `bg-primary-soft`) with the matching strong colour for text.
@@ -97,12 +99,12 @@ const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: [
 
 | Token | Tailwind | Light | Dark | Use |
 |---|---|---|---|---|
-| `--background` | `bg-background` | `#f6f6fa` | `#312e38` | Page background, table header tint |
-| `--card` | `bg-card` | `#ffffff` | `#232129` | Cards, inputs, dialogs, the sidebar surface |
+| `--background` | `bg-background` | `#f6f6fa` | `#312e38` | Page background, table header tint, dialogs and sheets |
+| `--card` | `bg-card` | `#ffffff` | `#232129` | Cards, inputs, the sidebar surface |
 | `--foreground` | `text-foreground` | `#15152b` | `#f4ede8` | Primary text |
-| `--muted-foreground` | `text-muted-foreground` | `#6b6b82` | `#969cb3` | Secondary text, labels, inactive icons |
+| `--muted-foreground` | `text-muted-foreground` | `#656579` | `#a3a9bf` | Secondary text, labels, inactive icons |
 | `--border` | `border-border` | `#e6e6ef` | `#3e3b47` | Card edges, dividers |
-| `--input` | `border-input` | `#8a8aa3` | `#3e3b47` | Border of input-like controls |
+| `--input` | `border-input` | `#8a8aa3` | `#6e6a80` | Border of input-like controls |
 | `--primary` | `bg-primary` | `#5636d3` | `#6c4cf0` | The accent: primary buttons, current page, total card |
 | `--primary-foreground` | `text-primary-foreground` | `#ffffff` | `#ffffff` | Text on `--primary` |
 | `--primary-text` | `text-primary-text` | `#5636d3` | `#b9abff` | Purple text and icons (active nav, avatar initials) |
@@ -110,24 +112,24 @@ const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: [
 | `--accent` | `bg-accent` | `#eeeafc` | `#3e3b47` | Hover fills |
 | `--secondary` / `--muted` | `bg-secondary` / `bg-muted` | `#ececf3` | `#3e3b47` | Subtle buttons, skeletons |
 | `--destructive` | `bg-destructive` | `#d23b3b` | `#d4344f` | Delete buttons and tooltip chips (white text) |
-| `--success` / `--success-soft` | `text-success` / `bg-success-soft` | `#12875a` / `#e3f5ec` | `#3dd68c` / `#173a2b` | Incomes, positive amounts |
-| `--danger` / `--danger-soft` | `text-danger` / `bg-danger-soft` | `#d23b3b` / `#fce9e9` | `#ff7d7d` / `#4a2226` | Outcomes, negative amounts, error text |
+| `--success` / `--success-soft` | `text-success` / `bg-success-soft` | `#107a52` / `#e3f5ec` | `#3dd68c` / `#173a2b` | Incomes, positive amounts |
+| `--danger` / `--danger-soft` | `text-danger` / `bg-danger-soft` | `#c43232` / `#fce9e9` | `#ff7d7d` / `#4a2226` | Outcomes, negative amounts, error text |
 | `--ring` | `ring-ring` | `#5636d3` | `#b9abff` | Focus rings |
 | `--sidebar*` | `bg-sidebar`, … | white surface | `#28262e` | Sidebar surface and its accent states |
 
 ### Not token-driven
 
-- **Chart palette.** The Balance Breakdown donut and legend use legacy variables (`--orange`, `--blue-sky`, `--green`, `--pink`, `--light-blue`, `--light-gray`) that are the same in both themes. They are data colours, not the accent.
+- **Chart palette.** `--chart-1` to `--chart-5` (orange, blue, green, pink, purple) and `--chart-other` (grey, for the grouped remainder) colour the Balance Breakdown donut and legend. They are data colours, not the accent, and have the same value in both themes. Slices take them in order (`SLICE_COLORS` in `src/lib/balance-breakdown.ts`).
 - **Toast colours.** With `richColors`, Sonner uses its own light and dark palettes for success and error toasts. The Toaster follows the app theme.
-- The other legacy variables in `globals.css` (`--iron-gray`, `--blue-wood`, `--red`, …) are unused by components and kept only for the chart.
 
 ### Contrast
 
-Measured when the switch went live (WCAG 2.x):
+Measured with the current token values (WCAG 2.x):
 
-- Text: every body and secondary text pair is at or above 4.5:1 in both themes, except muted text on hover fills in light (about 4.4:1).
-- Control boundaries: input borders are about 3.4:1 on white in light. In dark they are intentionally subtle (about 1.5:1).
-- Focus ring: 6.5:1 in dark, 6.8:1 in light.
+- Text: every body and secondary text pair is at or above 4.5:1 in both themes. The tightest are `--danger` on `--danger-soft` in light (4.7:1), `--success` on `--success-soft` in light (4.7:1) and muted text on hover fills (4.7:1 in dark, 4.8:1 in light).
+- Control boundaries: input borders are 3.4:1 on `--card` in light and 3.1:1 in dark. On `--background` they are 3.1:1 in light but 2.6:1 in dark, so inputs, selects and outline buttons use `bg-card`.
+- Focus ring: 7.8:1 in dark, 7.3:1 in light, on `--card`.
+- Charts: `--chart-*` are the same in both themes. Purple is 2.2:1 on the dark card and orange is 2.4:1 on the light card, so slices are also separated by position and the legend, not colour alone. This is accepted as is.
 
 ---
 
@@ -170,7 +172,7 @@ Base radius `--radius: 0.625rem` (10px).
 
 | Class | Use |
 |---|---|
-| `rounded-lg` | Inputs, selects, buttons, nav items, icon chips |
+| `rounded-lg` | Inputs, selects, buttons, nav items, icon chips, dropdown menus, tooltips, toasts |
 | `rounded-xl` | Cards, table cards, dialog-like panels, the pagination bar |
 | `rounded-full` | Avatars, badges, the floating action button |
 
@@ -221,7 +223,7 @@ Use the variants. Do not recolour buttons per screen.
 
 ```tsx
 <Button>Save</Button>                          {/* default: bg-primary */}
-<Button variant="outline">Search</Button>      {/* border-input, bg-background */}
+<Button variant="outline">Search</Button>      {/* border-input, bg-card */}
 <Button variant="destructive">Delete</Button>  {/* bg-destructive, white text */}
 <Button variant="ghost" size="icon" aria-label="…"><Icon /></Button>
 ```
@@ -318,6 +320,10 @@ Use the defaults of `ui/dialog.tsx` (background, border, radius). Do not overrid
 
 The scrim is `bg-black/50`. Confirm-delete dialogs show the resource name in `font-medium italic text-foreground`.
 
+### Sheet
+
+The default `ui/sheet.tsx` is `bg-background`. The bottom **More** sheet in `BottomTabBar` overrides it with `bg-card rounded-t-2xl max-h-[85vh]` so it reads as one surface with the tab bar. Its rows are `h-12 rounded-lg px-3 text-base font-medium` with a `size-5` icon; the current page is `bg-primary-soft font-semibold text-primary-text`. Section labels use the sidebar label style.
+
 ### Checkbox group
 
 A bordered `bg-card` row using the Input wrapper classes. The box is `size-5 rounded border-2`: checked `bg-primary border-primary` with a `text-primary-foreground` tick; unchecked `border-muted-foreground`.
@@ -325,6 +331,25 @@ A bordered `bg-card` row using the Input wrapper classes. The box is `size-5 rou
 ### Badge / chip
 
 `rounded-full bg-background px-2.5 py-0.5 text-xs font-medium text-muted-foreground`. State chips use the `*-soft` fills.
+
+### Month picker (`MonthPicker`)
+
+Previous and next buttons (`size-10 rounded-lg border border-input bg-card hover:bg-accent`) around a `h-10` field (`md:w-[190px]`, `border-input bg-card`, `focus-within:ring-2 focus-within:ring-ring`). The field shows a `Calendar` icon and the month label (or "Custom range"); a transparent native `type="month"` input sits over it. On phones the field fills the row.
+
+### Filter form (`FilterForm`)
+
+From `md`, `grid grid-cols-3 gap-5`: a pair of selects, a pair of date inputs, and a **Search** outline button (`h-10 font-semibold`, half width, right aligned). Below `md` the groups stack with `gap-3` and the button is full width.
+
+### Chart set (`BreakdownChart`, `BreakdownLegend`)
+
+- **Donut:** a 280 viewBox ring with an inner ratio of 0.72, a 2px `--card` stroke between slices, and the total in the centre. The selected slice grows 8px; the other slices drop to 30% opacity.
+- **Legend row:** `h-12 rounded-lg border border-border bg-card hover:bg-accent/40`: a 10px dot (`--chart-*`), the label (14px, 15px from `md`, truncates), a share chip (`h-[22px] rounded-full bg-background px-2 text-[0.6875rem] text-muted-foreground`), the amount (`min-w-[110px]`, right aligned) and a drill chevron. The selected row gets `ring-2 ring-primary`; the others drop to 55% opacity.
+- **Other:** a small header row (`text-xs`, dot, "OTHER", count) above the first grouped row, and a `h-11` **Show all N** button when there are more than ten rows.
+- **Insight:** a `bg-background rounded-md` line with a `Sparkles` icon on desktop, and a `Pointer` hint on phones.
+
+### Avatar (`UserAvatar`)
+
+`size-[34px] rounded-full bg-primary-soft text-xs font-bold text-primary-text`. It shows the picture, or the initials when there is none or it fails to load.
 
 ### Empty, loading and error
 
@@ -334,7 +359,7 @@ A bordered `bg-card` row using the Input wrapper classes. The box is `size-5 rou
 
 ### Toasts
 
-Sonner with `richColors`, position `top-center`. Use `toast.success()` and `toast.error()`. The Toaster passes the active theme, so toasts follow it. Do not hard-code a toast theme.
+Sonner with `richColors`, position `top-center`. Use `toast.success()` and `toast.error()`. The Toaster passes the active theme, so toasts follow it. Do not hard-code a toast theme. The design file draws toasts with tokens instead (`bg-card`, `--success` and `--danger` icons); the app still uses `richColors`.
 
 ---
 
@@ -343,7 +368,7 @@ Sonner with `richColors`, position `top-center`. Use `toast.success()` and `toas
 | State | Pattern |
 |---|---|
 | Focus (inputs) | `focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30` on the wrapper |
-| Focus (buttons, links, tabs) | `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring` (the base `Button` uses `ring-1`) |
+| Focus (buttons, links, tabs) | `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring` |
 | Hover | `hover:bg-accent` or `hover:bg-accent/40` on rows and ghost controls |
 | Disabled | `disabled:pointer-events-none disabled:opacity-50` |
 
@@ -402,3 +427,29 @@ const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof
 - **Do not put the header back in each page.** The shell comes from the `(app)` layout.
 - **Do not change the fonts** without updating the typography table and checking every table's column widths.
 - **Do not skip the focus ring** on interactive elements.
+
+---
+
+## 15. Components in the design file only
+
+These are defined in `design_V3.pen` so a new project has them. None of them exists in this app yet; add each with the shadcn component named on the file's **shadcn mapping** page and style it with the tokens.
+
+| Component | Spec |
+|---|---|
+| Textarea | Same box as the Input (`border-input bg-card rounded-lg shadow-xs`), 96px high, `px-3 py-2`. |
+| Switch | 36x20 pill. Off `bg-input`, on `bg-primary`, thumb 16px `bg-background`. |
+| Radio | 16px circle, `border-primary`, 8px `bg-primary` dot. |
+| Slider | 6px track `bg-secondary`, range `bg-primary`, 16px thumb with a `border-primary` edge on `bg-background`. |
+| Tabs | List `bg-muted rounded-lg p-1` (36px). Active trigger `bg-background shadow` with `text-foreground`; inactive `text-muted-foreground`. |
+| Breadcrumb, Separator | Items 14px `text-muted-foreground`, current page `font-medium text-foreground`, 14px chevron separators. Separator is 1px `bg-border`. |
+| Accordion | Rows with a `border-b border-border`, 14px medium trigger with a chevron, 14px `text-muted-foreground` content. |
+| Popover | `w-72 p-4 bg-popover rounded-lg border shadow-md`. |
+| Command, Combobox | `bg-popover rounded-lg border shadow-md`; a 44px search row with a bottom border; items `rounded-md px-2 py-2`, highlighted `bg-accent`. Combobox is a Select trigger that opens a Command. |
+| Card | `bg-card rounded-xl border`, no shadow, `p-6`, title `text-lg font-semibold`, description `text-sm text-muted-foreground`. |
+| Calendar, Date picker | 36px day cells, `rounded-md`. Today `bg-accent`, selected `bg-primary text-primary-foreground`, range `bg-accent`, outside days 50%. The picker is an Input that opens the calendar in a Popover. |
+| Progress | 8px track `bg-secondary rounded-full`, indicator `bg-primary`. |
+| Skeleton, Scroll area | Skeleton `bg-muted` with a pulse; scrollbar thumb `bg-border rounded-full`. |
+| Alert | Default `bg-card border`; destructive `bg-danger-soft border-danger text-danger`; success `bg-success-soft border-success text-success`. `rounded-lg p-4`, 16px icon. |
+| Avatar group | Avatars overlapped by 8px with a 2px ring of the surface colour. |
+| Tooltip (error chip) | `bg-destructive text-destructive-foreground rounded-lg px-3 py-1.5 text-xs`, the chip used above invalid fields. |
+

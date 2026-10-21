@@ -6,27 +6,8 @@
 	color-scheme: light;
 	--radius: 0.625rem;
 
-	--light-orange: #ff9000;
-	--iron-gray: #666360;
-	--red: #c53030;
-	--white: #ffffff;
-	--light-blue: #5636d3;
-	--orange: #ff872c;
-	--very-light-blue: #ebf8ff;
-	--blue-sky: #3172b7;
-	--cleared-blue: #e6fffa;
-
-	--green-blue: #2e656a;
-	--light-pink: #fddede;
-	--light-gray: #969cb3;
-	--blue-wood: #363f5f;
-	--green: #12a454;
-	--pink: #e83f5b;
-
 	/* Light theme */
 	--background: #f6f6fa;
-	--container-background: #ffffff;
-	--input-text: #15152b;
 	--foreground: #15152b;
 	--card: #ffffff;
 	--card-foreground: #15152b;
@@ -37,7 +18,7 @@
 	--secondary: #ececf3;
 	--secondary-foreground: #15152b;
 	--muted: #ececf3;
-	--muted-foreground: #6b6b82;
+	--muted-foreground: #656579;
 	--accent: #eeeafc;
 	--accent-foreground: #15152b;
 	--destructive: #d23b3b;
@@ -45,11 +26,12 @@
 	--border: #e6e6ef;
 	--input: #8a8aa3;
 	--ring: #5636d3;
-	--chart-1: oklch(0.646 0.222 41.116);
-	--chart-2: oklch(0.6 0.118 184.704);
-	--chart-3: oklch(0.398 0.07 227.392);
-	--chart-4: oklch(0.828 0.189 84.429);
-	--chart-5: oklch(0.769 0.188 70.08);
+	--chart-1: #ff872c;
+	--chart-2: #3172b7;
+	--chart-3: #12a454;
+	--chart-4: #e83f5b;
+	--chart-5: #5636d3;
+	--chart-other: #969cb3;
 	--sidebar: #ffffff;
 	--sidebar-foreground: #15152b;
 	--sidebar-primary: #5636d3;
@@ -62,9 +44,9 @@
 	/* Navigation overhaul tokens (see docs/ui/ui-overhaul.md) */
 	--primary-text: #5636d3;
 	--primary-soft: #eeeafc;
-	--success: #12875a;
+	--success: #107a52;
 	--success-soft: #e3f5ec;
-	--danger: #d23b3b;
+	--danger: #c43232;
 	--danger-soft: #fce9e9;
 }
 
@@ -72,8 +54,6 @@
 .dark {
 	color-scheme: dark;
 	--background: #312e38;
-	--container-background: #232129;
-	--input-text: #f4ede8;
 	--foreground: #f4ede8;
 	--card: #232129;
 	--card-foreground: #f4ede8;
@@ -84,13 +64,13 @@
 	--secondary: #3e3b47;
 	--secondary-foreground: #f4ede8;
 	--muted: #3e3b47;
-	--muted-foreground: #969cb3;
+	--muted-foreground: #a3a9bf;
 	--accent: #3e3b47;
 	--accent-foreground: #f4ede8;
 	--destructive: #d4344f;
 	--destructive-foreground: #ffffff;
 	--border: #3e3b47;
-	--input: #3e3b47;
+	--input: #6e6a80;
 	--ring: #b9abff;
 	--sidebar: #28262e;
 	--sidebar-foreground: #f4ede8;
@@ -121,6 +101,7 @@
 	--color-sidebar-primary: var(--sidebar-primary);
 	--color-sidebar-foreground: var(--sidebar-foreground);
 	--color-sidebar: var(--sidebar);
+	--color-chart-other: var(--chart-other);
 	--color-chart-5: var(--chart-5);
 	--color-chart-4: var(--chart-4);
 	--color-chart-3: var(--chart-3);
@@ -157,24 +138,6 @@
 	--radius-2xl: calc(var(--radius) + 8px);
 	--radius-3xl: calc(var(--radius) + 12px);
 	--radius-4xl: calc(var(--radius) + 16px);
-
-	/* Custom Project Colors - Using variables as source of truth */
-	--color-orange: var(--orange);
-	--color-light-orange: var(--light-orange);
-	--color-light-blue: var(--light-blue);
-	--color-very-light-blue: var(--very-light-blue);
-	--color-container-background: var(--container-background);
-	--color-input-text: var(--input-text);
-	--color-iron-gray: var(--iron-gray);
-	--color-red: var(--red);
-	--color-blue-sky: var(--blue-sky);
-	--color-cleared-blue: var(--cleared-blue);
-	--color-green-blue: var(--green-blue);
-	--color-light-pink: var(--light-pink);
-	--color-light-gray: var(--light-gray);
-	--color-blue-wood: var(--blue-wood);
-	--color-green: var(--green);
-	--color-pink: var(--pink);
 }
 
 @layer base {
@@ -192,8 +155,8 @@
 	input:-webkit-autofill:focus,
 	input:-webkit-autofill:active {
 		-webkit-background-clip: text;
-		-webkit-text-fill-color: var(--input-text);
+		-webkit-text-fill-color: var(--foreground);
 		transition: background-color 5000s ease-in-out 0s;
-		box-shadow: inset 0 0 20px 20px var(--container-background);
+		box-shadow: inset 0 0 20px 20px var(--card);
 	}
 }

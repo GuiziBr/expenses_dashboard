@@ -15,13 +15,13 @@ export const SMALL_SHARE_THRESHOLD = 4 // percent of the month
 const INSIGHT_MIN_ITEMS = 4
 
 export const SLICE_COLORS = [
-	"--orange",
-	"--blue-sky",
-	"--green",
-	"--pink",
-	"--light-blue"
+	"--chart-1",
+	"--chart-2",
+	"--chart-3",
+	"--chart-4",
+	"--chart-5"
 ] as const
-export const OTHER_COLOR = "--light-gray"
+export const OTHER_COLOR = "--chart-other"
 
 // ── Helpers ─────────────────────────────────────────────────────────
 

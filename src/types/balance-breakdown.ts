@@ -28,7 +28,7 @@ export interface BreakdownItem {
 export interface BreakdownRow extends BreakdownItem {
 	rank: number // 1-based position in the API response
 	share: number // 0–100, unrounded
-	color: string // design token, e.g. "--orange"
+	color: string // design token, e.g. "--chart-1"
 	inOther: boolean // true when merged into the Other group
 }
 
