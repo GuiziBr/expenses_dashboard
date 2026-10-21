@@ -15,7 +15,7 @@ A professional, data-dense interface for financial dashboards, in **light and da
 - **Tokens, not colours.** Every colour in a component comes from a semantic token (`bg-card`, `text-muted-foreground`, `border-input`, `bg-primary`). Components never use raw hex values, Tailwind palette colours (`text-white`, `bg-slate-200`) or `dark:` variants. The theme changes by redefining the tokens under `.dark`.
 - **One accent.** Purple (`--primary`) is the only action colour: primary buttons, the current page number, the active nav item, focus rings, the total card.
 - **Layered surfaces.** A page background (`--background`), cards and inputs on `--card`, subtle borders (`--border`), and tinted fills for state (`*-soft`).
-- **Legibility first.** The target is WCAG contrast (4.5:1 for text, 3:1 for control boundaries) in both themes, and every token pair meets it. The one open item is the chart palette, which does not change with the theme. Section 5 has the measurements.
+- **Legibility first.** The target is WCAG contrast (4.5:1 for text, 3:1 for control boundaries) in both themes, and every permitted component pairing meets it. There are two exceptions. The chart palette does not change with the theme. And `--input` on `--background` in dark is 2.6:1, so input-like controls and outline buttons sit on `--card`, never on `--background`. Section 5 has the measurements.
 
 ---
 
@@ -127,7 +127,7 @@ const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: [
 Measured with the current token values (WCAG 2.x):
 
 - Text: every body and secondary text pair is at or above 4.5:1 in both themes. The tightest are `--danger` on `--danger-soft` in light (4.7:1), `--success` on `--success-soft` in light (4.7:1) and muted text on hover fills (4.7:1 in dark, 4.8:1 in light).
-- Control boundaries: input borders are 3.4:1 on `--card` in light and 3.1:1 in dark.
+- Control boundaries: input borders are 3.4:1 on `--card` in light and 3.1:1 in dark. On `--background` they are 3.1:1 in light but 2.6:1 in dark, so inputs, selects and outline buttons use `bg-card`.
 - Focus ring: 7.8:1 in dark, 7.3:1 in light, on `--card`.
 - Charts: `--chart-*` are the same in both themes. Purple is 2.2:1 on the dark card and orange is 2.4:1 on the light card, so slices are also separated by position and the legend, not colour alone. This is accepted as is.
 
@@ -223,7 +223,7 @@ Use the variants. Do not recolour buttons per screen.
 
 ```tsx
 <Button>Save</Button>                          {/* default: bg-primary */}
-<Button variant="outline">Search</Button>      {/* border-input, bg-background */}
+<Button variant="outline">Search</Button>      {/* border-input, bg-card */}
 <Button variant="destructive">Delete</Button>  {/* bg-destructive, white text */}
 <Button variant="ghost" size="icon" aria-label="…"><Icon /></Button>
 ```
