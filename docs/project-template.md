@@ -178,7 +178,7 @@ Copy these unchanged unless noted.
 | `components.json` | Yes | shadcn: New York, RSC, neutral base, CSS variables, lucide icons, aliases to `@/components`, `@/lib`, `@/hooks` |
 | `vitest.config.ts` | Adapt | See section 5 |
 | `.gitignore` | Yes | Ignores `.env*`, `.next`, `coverage`, `*.tsbuildinfo`, `next-env.d.ts` |
-| `.env.example` | Adapt | `NEXT_PUBLIC_API_URL=http://localhost:3000` |
+| `.env.example` | Adapt | `NEXT_PUBLIC_API_URL=http://localhost:<api-port>`. Replace it with the backend's origin. Do not use port 3000, which is also where `next dev` listens, so requests would go to the frontend instead of the API |
 | `.vscode/settings.json` | Yes | Biome as formatter, fix and organize imports on save, Tailwind language support for CSS |
 | `.github/workflows/ci.yml` | Adapt | Set `node-version: 26`. Build, check, test with coverage on PRs to `development`. Change branch names if different |
 | `.github/dependabot.yml` | Adapt | Daily npm and Actions updates, React packages grouped. Drop the `ignore` entries for plugin-react 6 and TypeScript 7 |
@@ -227,6 +227,8 @@ These files are domain-agnostic and form the reusable foundation. Copy them, the
 
 Cookie-based and isomorphic. See [README.md](../README.md#authentication-architecture) for the flow.
 
+> **Security exception: review before copying.** In this repo the login response's JWT is written to a cookie by client-side code (`js-cookie`), so the cookie cannot be `HttpOnly` and any XSS can read the token and send it elsewhere. That was acceptable for this app, but it should not be the default for a new project. Prefer a server-set `HttpOnly`, `Secure`, `SameSite` session cookie (see section 9). Only copy the client-side flow below if the project accepts this risk after a review.
+
 | File | Adapt |
 |---|---|
 | `src/lib/auth-helpers.ts` | Reads and writes the token and user cookie on client and server. Copy as-is |
@@ -244,17 +246,22 @@ If the new project does not need auth, leave out `proxy.ts`, `auth-context.tsx`,
 
 ## 7. Documentation to Carry Over
 
-The `docs/` folder structure is part of the template:
+Root-level files, next to `package.json`:
 
 | Path | Purpose | For the new project |
 |---|---|---|
 | `README.md` | Overview, stack, structure, scripts, auth | Rewrite for the new product |
 | `DESIGN_SYSTEM.md` | Visual source of truth for UI work (and for AI assistants) | Keep, update tokens and brand |
+| `design.pen` | Pencil design file with tokens and components | Copy if you use Pencil, otherwise skip |
+
+Inside the `docs/` folder:
+
+| Path | Purpose | For the new project |
+|---|---|---|
 | `docs/specs/` | Feature specs and business rules | Start empty, add per feature |
 | `docs/plans/` | Implementation plans | Start empty |
 | `docs/APIs/` | One file per backend resource | Start empty, mirror the new API |
 | `docs/ui/` | UI change history | Start empty |
-| `design.pen` | Pencil design file with tokens and components | Copy and rename if you use Pencil, otherwise skip |
 
 ---
 
@@ -272,12 +279,12 @@ The `docs/` folder structure is part of the template:
 5. **Copy the infrastructure** from section 6: `globals.css`, `utils.ts`, providers, `api.ts`, `constants.ts`, auth files if needed, `src/test/`.
 6. **Create `src/app/layout.tsx` and a first `page.tsx`**, using this repo's root layout as the reference.
 7. **Add shadcn primitives** you need: `npx shadcn@latest add button input dialog sheet dropdown-menu tooltip sonner`.
-8. **Create `.env`** from `.env.example` and set `NEXT_PUBLIC_API_URL`.
+8. **Create `.env`** from `.env.example` and set `NEXT_PUBLIC_API_URL` to the backend's origin. It must not be the Next.js dev server (`http://localhost:3000`), or every `ApiClient` request goes to the frontend and fails.
 9. **Verify the toolchain** before writing features:
    ```bash
    npm run check      # Biome lint, format, import order
    npm run build      # Next build and type-check
-   npm run test:run   # Vitest
+   npm run test:cov   # Vitest with v8 coverage and thresholds, same as CI
    ```
 10. **Commit**, push, and confirm CI is green on the first PR.
 11. **Rewrite `README.md`** and trim `DESIGN_SYSTEM.md` to the new product.
@@ -289,7 +296,7 @@ The `docs/` folder structure is part of the template:
 | Decision | Default here | Revisit if |
 |---|---|---|
 | Backend | Separate REST API at `NEXT_PUBLIC_API_URL` | Using Next route handlers or server actions instead. `api.ts` and the auth flow need rework |
-| Auth | JWT in a cookie set from the client (not `httpOnly`) | You need `httpOnly` cookies. Move login to a route handler or server action that sets the cookie |
+| Auth | Server-set `HttpOnly` session cookie: login goes through a route handler or server action that sets the cookie, and the API client sends it with `credentials: "include"` or the server reads it. Needs changes to `auth-helpers.ts`, `auth-context.tsx`, `api.ts` and `proxy.ts` | Only if the project explicitly accepts the client-readable JWT cookie used in this repo (not `HttpOnly`, readable by XSS) after a security review |
 | i18n | Single `translations.ts` object, English only | You need multiple locales. Adopt a library such as `next-intl` |
 | Theme | Dark default, light switch | Brand requires one theme only |
 | Fonts | Roboto Slab and Roboto | New brand typography |
@@ -306,4 +313,4 @@ Worth fixing in the new project rather than inheriting:
 - The README lists `npm run lint` and `format` but not `check` and `fix`, which CI and local workflow actually use.
 - `tailwind.config.mjs` is only for editor tooling. Tailwind v4 reads its config from `globals.css`.
 - `next.config.ts` still contains the scaffold placeholder comment.
-- Some default fallbacks in `redirect.ts` (`/balance-breakdown`) and `constants.ts` (`http://localhost:3000`, the same port Next uses in dev) are specific to this app. Change both.
+- Some default fallbacks in `redirect.ts` (`/balance-breakdown`) and `constants.ts` (`http://localhost:3000` fallback for `API_BASE_URL`, the same port Next uses in dev) are specific to this app. Change both, and make the `constants.ts` fallback point at the API, not at Next.
