@@ -226,7 +226,7 @@ The old header switched at `md`. The shell switches at `lg` instead, so tablets 
 
 ## 9. Accessibility
 
-- Text and icon contrast of at least 4.5:1 (3:1 for large text and UI borders). Check `muted` on `bg` and the white-on-`primary` balance card in both themes. The contrast of both themes was measured against these targets when the switch went live, and the fixes are listed in §6. Known exceptions: dark input borders (about 1.5:1), the chart palette, and muted text on `accent` hover states in light (about 4.4:1).
+- Text and icon contrast of at least 4.5:1 (3:1 for large text and UI borders). Check `muted` on `bg` and the white-on-`primary` balance card in both themes. The contrast of both themes was measured against these targets when the switch went live, and the fixes are listed in §6. The remaining exception is the chart palette. Dark input borders, muted text on hover fills and the soft state chips were fixed in the design-system contrast pass.
 - Wrap navigation in `<nav aria-label="Main">` and mark the current page with `aria-current="page"`. Today the active link has no programmatic marker.
 - Visible focus ring on all nav items, tabs and buttons.
 - Keyboard: tab through items in order, Enter or Space opens the user menu and the More sheet, Esc closes them.
@@ -274,14 +274,18 @@ The switch is live (see §6). The steps that were pending are done:
 
 Still open, none of it blocks the switch:
 
-1. **Chart palette.** The slice colours (`--chart-1` to `--chart-5`, `--chart-other`) are the same in both themes. The purple slice is about 2.2:1 on the dark card and orange about 2.4:1 on the light card. Still open: give the `--chart-*` tokens theme-specific values.
-2. **Login photo.** The same bright photo is used in both themes. A themed overlay would settle it.
-3. **`global-error.tsx`** renders its own `<html className="dark">` without the init script, so a light user who hits a root error sees dark.
-4. **Overlays.** The dialog and sheet scrims use a literal `bg-black/50`. A token would be cleaner.
-5. **Cross-tab sync.** Changing the theme in one tab does not update other open tabs until they reload.
-6. **Dead variables.** Done: the legacy colour variables and `@theme` aliases were removed from `globals.css`.
-7. **"Follow the system theme".** Not planned. It would add a third choice and a `prefers-color-scheme` listener.
-8. **Muted text on hover.** `text-muted-foreground` on `accent` hover states in light is about 4.4:1.
+1. **Login photo.** The same bright photo is used in both themes. A themed overlay would settle it.
+2. **`global-error.tsx`** renders its own `<html className="dark">` without the init script, so a light user who hits a root error sees dark.
+3. **Overlays.** The dialog and sheet scrims use a literal `bg-black/50`. A token would be cleaner.
+4. **Cross-tab sync.** Changing the theme in one tab does not update other open tabs until they reload.
+
+Resolved or decided since the switch:
+
+- **Chart palette.** The slice colours (`--chart-1` to `--chart-5`, `--chart-other`) are the same in both themes. The purple slice is about 2.2:1 on the dark card and orange about 2.4:1 on the light card. Decided to keep one value per token for both themes.
+- **Dead variables.** Done: the legacy colour variables and `@theme` aliases were removed from `globals.css`.
+- **Muted text on hover.** Done: `--muted-foreground` is now `#656579` (light) and `#a3a9bf` (dark), at least 4.6:1 on `accent`.
+- **Outline button surface.** Done: the outline `Button` is `bg-card`, because dark `--input` is 2.6:1 on `--background` and 3.1:1 on `--card`.
+- **"Follow the system theme".** Not planned. It would add a third choice and a `prefers-color-scheme` listener.
 
 ### Other pending items
 
