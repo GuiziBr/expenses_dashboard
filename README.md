@@ -15,18 +15,18 @@ A modern expense management portal for tracking personal and shared expenses, bu
 
 ## Tech Stack
 
-| Category | Technology |
-|---|---|
-| Framework | [Next.js 16](https://nextjs.org/) (App Router) |
-| Library | [React 19](https://react.dev/) |
-| Styling | [Tailwind CSS v4](https://tailwindcss.com/) |
-| Data Fetching | [TanStack Query v5](https://tanstack.com/query/latest) |
-| UI Components | [shadcn/ui](https://ui.shadcn.com/) (Radix UI) |
-| Forms | [react-hook-form](https://react-hook-form.com/) + [Zod](https://zod.dev/) |
-| Icons | [lucide-react](https://lucide.dev/) |
-| Notifications | [sonner](https://sonner.emilkowal.ski/) |
-| Linter / Formatter | [Biome](https://biomejs.dev/) |
-| Auth Cookies | [js-cookie](https://github.com/js-cookie/js-cookie) |
+| Category           | Technology                                                                |
+| ------------------ | ------------------------------------------------------------------------- |
+| Framework          | [Next.js 16](https://nextjs.org/) (App Router)                            |
+| Library            | [React 19](https://react.dev/)                                            |
+| Styling            | [Tailwind CSS v4](https://tailwindcss.com/)                               |
+| Data Fetching      | [TanStack Query v5](https://tanstack.com/query/latest)                    |
+| UI Components      | [shadcn/ui](https://ui.shadcn.com/) (Radix UI)                            |
+| Forms              | [react-hook-form](https://react-hook-form.com/) + [Zod](https://zod.dev/) |
+| Icons              | [lucide-react](https://lucide.dev/)                                       |
+| Notifications      | [sonner](https://sonner.emilkowal.ski/)                                   |
+| Linter / Formatter | [Biome](https://biomejs.dev/)                                             |
+| Auth Cookies       | [js-cookie](https://github.com/js-cookie/js-cookie)                       |
 
 ## Project Structure
 
@@ -45,16 +45,16 @@ src/
 
 ## Routes
 
-| Route | Description |
-|---|---|
-| `/` | Login |
-| `/personal-dashboard` | Personal expenses |
-| `/shared-dashboard` | Shared / split expenses |
-| `/consolidated-balance` | Monthly consolidated report |
-| `/management/banks` | Bank management |
-| `/management/categories` | Category management |
-| `/management/stores` | Store management |
-| `/management/payment-types` | Payment type management |
+| Route                       | Description                 |
+| --------------------------- | --------------------------- |
+| `/`                         | Login                       |
+| `/personal-dashboard`       | Personal expenses           |
+| `/shared-dashboard`         | Shared / split expenses     |
+| `/consolidated-balance`     | Monthly consolidated report |
+| `/management/banks`         | Bank management             |
+| `/management/categories`    | Category management         |
+| `/management/stores`        | Store management            |
+| `/management/payment-types` | Payment type management     |
 
 All routes except `/` are protected by `src/proxy.ts`.
 
@@ -69,29 +69,32 @@ All routes except `/` are protected by `src/proxy.ts`.
 
 1. Clone the repository
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 3. Create a `.env` file in the root directory:
+
    ```env
    NEXT_PUBLIC_API_URL=http://localhost:3000
    ```
 4. Run the development server:
+
    ```bash
    npm run dev
    ```
 
 ## Available Scripts
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm start` | Start production server |
-| `npm run lint` | Run Biome linter |
-| `npm run format` | Format code with Biome |
-| `npm test` | Run unit tests in watch mode |
-| `npm run test:run` | Run unit tests once |
+| Command            | Description                                           |
+| ------------------ | ----------------------------------------------------- |
+| `npm run dev`      | Start development server                              |
+| `npm run build`    | Build for production                                  |
+| `npm start`        | Start production server                               |
+| `npm run lint`     | Run Biome linter                                      |
+| `npm run format`   | Format code with Biome                                |
+| `npm test`         | Run unit tests in watch mode                          |
+| `npm run test:run` | Run unit tests once                                   |
 | `npm run test:cov` | Run unit tests with coverage (fails below thresholds) |
 
 ### Coverage
@@ -101,7 +104,6 @@ All routes except `/` are protected by `src/proxy.ts`.
 ## Authentication Architecture
 
 The project uses an isomorphic cookie-based approach:
-
 - **Client Side**: `AuthContext` manages the global user state and provides `signIn`/`signOut` methods.
 - **Server Side**: `src/proxy.ts` reads the `auth_token` cookie directly to handle redirects before the page renders. Unauthenticated requests are sent to `/?redirectTo=<original path and query>`, and the sign-in page returns the user there after login (only same-origin relative paths are accepted).
 - **Isomorphic Helpers**: `auth-helpers.ts` provides consistent access to the token and user data on both client and server.

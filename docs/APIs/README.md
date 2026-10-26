@@ -1,7 +1,6 @@
 # API Documentation
 
 Documentation for every HTTP API exposed by this service. Each file below covers one resource/controller.
-
 - [Auth](./auth.md) — `/sessions`
 - [Users](./users.md) — `/users`
 - [Banks](./banks.md) — `/banks`
@@ -38,9 +37,9 @@ Request bodies, query strings, and route params are validated with [Zod](https:/
 
 ```json
 {
-  "statusCode": 400,
-  "message": "email Invalid input: expected string, received undefined",
-  "error": "Bad Request"
+	"statusCode": 400,
+	"message": "email Invalid input: expected string, received undefined",
+	"error": "Bad Request"
 }
 ```
 
@@ -50,9 +49,9 @@ All errors follow Nest's default HTTP exception shape:
 
 ```json
 {
-  "statusCode": 404,
-  "message": "Bank not found",
-  "error": "Not Found"
+	"statusCode": 404,
+	"message": "Bank not found",
+	"error": "Not Found"
 }
 ```
 
