@@ -19,6 +19,13 @@ function Data() {
 	return <p>{data ?? "pending"}</p>
 }
 
+const capturedClients: unknown[] = []
+
+function Capture() {
+	capturedClients.push(useQueryClient())
+	return null
+}
+
 describe("QueryProvider", () => {
 	it("renders its children", () => {
 		render(
@@ -51,11 +58,7 @@ describe("QueryProvider", () => {
 	})
 
 	it("keeps the same client across re-renders", () => {
-		const clients: unknown[] = []
-		function Capture() {
-			clients.push(useQueryClient())
-			return null
-		}
+		capturedClients.length = 0
 		const { rerender } = render(
 			<QueryProvider>
 				<Capture />
@@ -68,6 +71,6 @@ describe("QueryProvider", () => {
 			</QueryProvider>
 		)
 
-		expect(new Set(clients).size).toBe(1)
+		expect(new Set(capturedClients).size).toBe(1)
 	})
 })
