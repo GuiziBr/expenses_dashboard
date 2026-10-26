@@ -16,6 +16,6 @@ true
 
 ### Errors
 
-| Status | Condition |
-|--------|-----------|
+| Status                    | Condition                                                      |
+| ------------------------- | -------------------------------------------------------------- |
 | `503 Service Unavailable` | The database (or another underlying dependency) is unreachable |

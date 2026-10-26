@@ -10,33 +10,33 @@ Lists banks, ordered by name ascending, excluding soft-deleted records.
 
 ### Query parameters
 
-| Field    | Type   | Default | Notes |
-|----------|--------|---------|-------|
-| `offset` | number | `0`     | Min `0` |
-| `limit`  | number | `20`    | Min `1`, max `20` |
-| `orderBy` | enum | `name` | One of `name`, `created_at` |
-| `orderType` | enum | `asc` | `asc` or `desc` |
+| Field       | Type   | Default | Notes                       |
+| ----------- | ------ | ------- | --------------------------- |
+| `offset`    | number | `0`     | Min `0`                     |
+| `limit`     | number | `20`    | Min `1`, max `20`           |
+| `orderBy`   | enum   | `name`  | One of `name`, `created_at` |
+| `orderType` | enum   | `asc`   | `asc` or `desc`             |
 
 ### Response `200 OK`
 
 ```json
 [
-  {
-    "id": "b3c1e2f0-...",
-    "name": "Chase",
-    "created_at": "2024-01-01T00:00:00.000Z",
-    "updated_at": null
-  }
+	{
+		"id": "b3c1e2f0-...",
+		"name": "Chase",
+		"created_at": "2024-01-01T00:00:00.000Z",
+		"updated_at": null
+	}
 ]
 ```
 
 ### Errors
 
-| Status | Condition |
-|--------|-----------|
-| `400 Bad Request` | Query fails schema validation |
-| `401 Unauthorized` | Missing/invalid token |
-| `500 Internal Server Error` | Unexpected database error |
+| Status                      | Condition                     |
+| --------------------------- | ----------------------------- |
+| `400 Bad Request`           | Query fails schema validation |
+| `401 Unauthorized`          | Missing/invalid token         |
+| `500 Internal Server Error` | Unexpected database error     |
 
 ---
 
@@ -48,21 +48,21 @@ Retrieves a single bank by id.
 
 ```json
 {
-  "id": "b3c1e2f0-...",
-  "name": "Chase",
-  "created_at": "2024-01-01T00:00:00.000Z",
-  "updated_at": null
+	"id": "b3c1e2f0-...",
+	"name": "Chase",
+	"created_at": "2024-01-01T00:00:00.000Z",
+	"updated_at": null
 }
 ```
 
 ### Errors
 
-| Status | Condition |
-|--------|-----------|
-| `400 Bad Request` | `id` is not a valid UUID |
-| `401 Unauthorized` | Missing/invalid token |
-| `404 Not Found` | No bank exists with the given id (or it is soft-deleted) |
-| `500 Internal Server Error` | Unexpected database error |
+| Status                      | Condition                                                |
+| --------------------------- | -------------------------------------------------------- |
+| `400 Bad Request`           | `id` is not a valid UUID                                 |
+| `401 Unauthorized`          | Missing/invalid token                                    |
+| `404 Not Found`             | No bank exists with the given id (or it is soft-deleted) |
+| `500 Internal Server Error` | Unexpected database error                                |
 
 ---
 
@@ -72,8 +72,8 @@ Creates a new bank. If a soft-deleted bank already has the given name, it is rea
 
 ### Request body
 
-| Field  | Type   | Required | Notes |
-|--------|--------|----------|-------|
+| Field  | Type   | Required | Notes              |
+| ------ | ------ | -------- | ------------------ |
 | `name` | string | yes      | Trimmed, non-empty |
 
 ### Response `201 Created`
@@ -82,11 +82,11 @@ Same shape as `GET /banks/:id`.
 
 ### Errors
 
-| Status | Condition |
-|--------|-----------|
-| `400 Bad Request` | Body fails schema validation |
-| `401 Unauthorized` | Missing/invalid token |
-| `500 Internal Server Error` | Unexpected database error |
+| Status                      | Condition                    |
+| --------------------------- | ---------------------------- |
+| `400 Bad Request`           | Body fails schema validation |
+| `401 Unauthorized`          | Missing/invalid token        |
+| `500 Internal Server Error` | Unexpected database error    |
 
 ---
 
@@ -104,12 +104,12 @@ Same shape as `GET /banks/:id`.
 
 ### Errors
 
-| Status | Condition |
-|--------|-----------|
-| `400 Bad Request` | Body/params fail schema validation, or another active bank already uses the requested name (including a race caught as a unique constraint violation) |
-| `401 Unauthorized` | Missing/invalid token |
-| `404 Not Found` | No bank exists with the given id |
-| `500 Internal Server Error` | Unexpected database error |
+| Status                      | Condition                                                                                                                                             |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `400 Bad Request`           | Body/params fail schema validation, or another active bank already uses the requested name (including a race caught as a unique constraint violation) |
+| `401 Unauthorized`          | Missing/invalid token                                                                                                                                 |
+| `404 Not Found`             | No bank exists with the given id                                                                                                                      |
+| `500 Internal Server Error` | Unexpected database error                                                                                                                             |
 
 ---
 
@@ -123,8 +123,8 @@ No body.
 
 ### Errors
 
-| Status | Condition |
-|--------|-----------|
-| `400 Bad Request` | `id` is not a valid UUID |
-| `401 Unauthorized` | Missing/invalid token |
+| Status                      | Condition                                                                                 |
+| --------------------------- | ----------------------------------------------------------------------------------------- |
+| `400 Bad Request`           | `id` is not a valid UUID                                                                  |
+| `401 Unauthorized`          | Missing/invalid token                                                                     |
 | `500 Internal Server Error` | Unexpected database error (other than the record already being deleted, which is a no-op) |

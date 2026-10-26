@@ -10,13 +10,13 @@ Updates the avatar URL of the currently authenticated user (resolved from the JW
 
 ### Request body
 
-| Field    | Type   | Required | Notes |
-|----------|--------|----------|-------|
+| Field    | Type   | Required | Notes               |
+| -------- | ------ | -------- | ------------------- |
 | `avatar` | string | yes      | Must be a valid URL |
 
 ```json
 {
-  "avatar": "https://example.com/new-avatar.png"
+	"avatar": "https://example.com/new-avatar.png"
 }
 ```
 
@@ -26,9 +26,9 @@ No body.
 
 ### Errors
 
-| Status | Condition |
-|--------|-----------|
-| `400 Bad Request` | Body fails schema validation |
-| `401 Unauthorized` | Missing/invalid token |
-| `404 Not Found` | The user resolved from the token no longer exists |
-| `500 Internal Server Error` | Unexpected database error |
+| Status                      | Condition                                         |
+| --------------------------- | ------------------------------------------------- |
+| `400 Bad Request`           | Body fails schema validation                      |
+| `401 Unauthorized`          | Missing/invalid token                             |
+| `404 Not Found`             | The user resolved from the token no longer exists |
+| `500 Internal Server Error` | Unexpected database error                         |

@@ -10,25 +10,25 @@ For the visual design side, see [DESIGN_SYSTEM.md](../DESIGN_SYSTEM.md).
 
 ## 1. Technology Stack
 
-| Concern | Technology | Version in this repo |
-|---|---|---|
-| Runtime | Node.js | 26 (`.nvmrc`, `.node-version`, `engines: >=26`). This repo is still on 24 |
-| Package manager | npm (`package-lock.json`, CI uses `npm ci`) | |
-| Framework | Next.js, App Router, `src/` directory | 16.4.2 (pinned) |
-| UI library | React | 19.3.1 (pinned) |
-| Language | TypeScript, `strict` | 7.0.2 (pinned) |
-| Styling | Tailwind CSS v4, CSS-first config (`@theme` in `globals.css`) | ^4 |
-| Components | shadcn/ui (New York style, Radix UI primitives) | `radix-ui` ^1.8.1 |
-| Variants | class-variance-authority, clsx, tailwind-merge | |
-| Icons | lucide-react | |
-| Toasts | sonner | |
-| Server state | TanStack Query | ^5 |
-| Forms | react-hook-form + Zod + `@hookform/resolvers` | zod ^4 |
-| Auth storage | js-cookie | |
-| Lint and format | Biome | 2.6.2 (pinned) |
-| Tests | Vitest + Testing Library + jsdom, v8 coverage | vitest ^5 |
-| CI | GitHub Actions, Dependabot | |
-| Design file | Pencil (`design.pen`) | optional |
+| Concern         | Technology                                                    | Version in this repo                                                      |
+| --------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Runtime         | Node.js                                                       | 26 (`.nvmrc`, `.node-version`, `engines: >=26`). This repo is still on 24 |
+| Package manager | npm (`package-lock.json`, CI uses `npm ci`)                   |                                                                           |
+| Framework       | Next.js, App Router, `src/` directory                         | 16.4.2 (pinned)                                                           |
+| UI library      | React                                                         | 19.3.1 (pinned)                                                           |
+| Language        | TypeScript, `strict`                                          | 7.0.2 (pinned)                                                            |
+| Styling         | Tailwind CSS v4, CSS-first config (`@theme` in `globals.css`) | ^4                                                                        |
+| Components      | shadcn/ui (New York style, Radix UI primitives)               | `radix-ui` ^1.8.1                                                         |
+| Variants        | class-variance-authority, clsx, tailwind-merge                |                                                                           |
+| Icons           | lucide-react                                                  |                                                                           |
+| Toasts          | sonner                                                        |                                                                           |
+| Server state    | TanStack Query                                                | ^5                                                                        |
+| Forms           | react-hook-form + Zod + `@hookform/resolvers`                 | zod ^4                                                                    |
+| Auth storage    | js-cookie                                                     |                                                                           |
+| Lint and format | Biome                                                         | 2.6.2 (pinned)                                                            |
+| Tests           | Vitest + Testing Library + jsdom, v8 coverage                 | vitest ^5                                                                 |
+| CI              | GitHub Actions, Dependabot                                    |                                                                           |
+| Design file     | Pencil (`design.pen`)                                         | optional                                                                  |
 
 Pinned versions (Next, React, TypeScript, Biome) have no `^`, so upgrades are deliberate. Keep that convention.
 
@@ -94,7 +94,6 @@ Copy these blocks into the new `package.json`, then change `name`. Run `npm inst
 ```
 
 Notes:
-
 - `tailwindcss` itself is not listed. It comes in through `@tailwindcss/postcss`. Keep it that way.
 - Drop `js-cookie` and `@types/js-cookie` if the new project has no cookie auth. `react-icons` is deliberately left out: lucide-react is the only icon library. Here react-icons is used only by `NewExpenseModal.tsx`, so replace those icons with lucide equivalents if you copy that component.
 - **Versions are the latest as of 2026-10-21**, checked with `npm view`. The existing repo is behind on a few. In a scratch copy of this repo, this exact set passed `tsc`, `next build`, and all unit tests with coverage above the thresholds. Re-run `npm view <pkg> version` when you start, and keep the rule: latest, unless it breaks a peer dependency.
@@ -152,7 +151,6 @@ Notes:
 ```
 
 Conventions that hold across the codebase:
-
 - **Tests live next to the code** as `name.test.ts(x)`. Shared helpers are in `src/test/`.
 - **One hook file per API entity** (`use-banks.ts`) with `useX` for lists, and `useCreateX`, `useUpdateX`, `useDeleteX` mutations that invalidate the entity's query key.
 - **Pure logic goes in `src/lib/`**, with a high coverage bar (see section 5).
@@ -167,21 +165,21 @@ Conventions that hold across the codebase:
 
 Copy these unchanged unless noted.
 
-| File | Copy as-is? | What it does |
-|---|---|---|
-| `.nvmrc`, `.node-version` | Change to `26` | Node version for nvm, fnm, Vercel and similar |
-| `biome.json` | Yes | Tabs, no semicolons, no trailing commas, recommended rules, organize imports, `src/components/ui/**` excluded. Update the `$schema` version if you change Biome's version |
-| `tsconfig.json` | Yes | `strict`, bundler resolution, `@/*` alias, Next plugin |
-| `next.config.ts` | Yes | Empty config; add options as needed |
-| `postcss.config.mjs` | Yes | Only `@tailwindcss/postcss` |
-| `tailwind.config.mjs` | Yes | Content glob for the editor extension only; Tailwind v4 does not read it for builds |
-| `components.json` | Yes | shadcn: New York, RSC, neutral base, CSS variables, lucide icons, aliases to `@/components`, `@/lib`, `@/hooks` |
-| `vitest.config.ts` | Adapt | See section 5 |
-| `.gitignore` | Yes | Ignores `.env*`, `.next`, `coverage`, `*.tsbuildinfo`, `next-env.d.ts` |
-| `.env.example` | Adapt | `NEXT_PUBLIC_API_URL=http://localhost:<api-port>`. Replace it with the backend's origin. Do not use port 3000, which is also where `next dev` listens, so requests would go to the frontend instead of the API |
-| `.vscode/settings.json` | Yes | Biome as formatter, fix and organize imports on save, Tailwind language support for CSS |
-| `.github/workflows/ci.yml` | Adapt | Set `node-version: 26`. Build, check, test with coverage on PRs to `development`. Change branch names if different |
-| `.github/dependabot.yml` | Adapt | Daily npm and Actions updates, React packages grouped. Drop the `ignore` entries for plugin-react 6 and TypeScript 7 |
+| File                       | Copy as-is?    | What it does                                                                                                                                                                                                   |
+| -------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.nvmrc`, `.node-version`  | Change to `26` | Node version for nvm, fnm, Vercel and similar                                                                                                                                                                  |
+| `biome.json`               | Yes            | Tabs, no semicolons, no trailing commas, recommended rules, organize imports, `src/components/ui/**` excluded. Update the `$schema` version if you change Biome's version                                      |
+| `tsconfig.json`            | Yes            | `strict`, bundler resolution, `@/*` alias, Next plugin                                                                                                                                                         |
+| `next.config.ts`           | Yes            | Empty config; add options as needed                                                                                                                                                                            |
+| `postcss.config.mjs`       | Yes            | Only `@tailwindcss/postcss`                                                                                                                                                                                    |
+| `tailwind.config.mjs`      | Yes            | Content glob for the editor extension only; Tailwind v4 does not read it for builds                                                                                                                            |
+| `components.json`          | Yes            | shadcn: New York, RSC, neutral base, CSS variables, lucide icons, aliases to `@/components`, `@/lib`, `@/hooks`                                                                                                |
+| `vitest.config.ts`         | Adapt          | See section 5                                                                                                                                                                                                  |
+| `.gitignore`               | Yes            | Ignores `.env*`, `.next`, `coverage`, `*.tsbuildinfo`, `next-env.d.ts`                                                                                                                                         |
+| `.env.example`             | Adapt          | `NEXT_PUBLIC_API_URL=http://localhost:<api-port>`. Replace it with the backend's origin. Do not use port 3000, which is also where `next dev` listens, so requests would go to the frontend instead of the API |
+| `.vscode/settings.json`    | Yes            | Biome as formatter, fix and organize imports on save, Tailwind language support for CSS                                                                                                                        |
+| `.github/workflows/ci.yml` | Adapt          | Set `node-version: 26`. Build, check, test with coverage on PRs to `development`. Change branch names if different                                                                                             |
+| `.github/dependabot.yml`   | Adapt          | Daily npm and Actions updates, React packages grouped. Drop the `ignore` entries for plugin-react 6 and TypeScript 7                                                                                           |
 
 Not to copy: `.env` (local secrets), `.next/`, `coverage/`, `node_modules/`, `tsconfig.tsbuildinfo`, `next-env.d.ts` (all generated), and `.mcp.json` (local Pencil app path, machine-specific).
 
@@ -205,23 +203,23 @@ These files are domain-agnostic and form the reusable foundation. Copy them, the
 
 ### Styling and design tokens
 
-| File | Adapt |
-|---|---|
-| `src/app/globals.css` | Tokens (light in `:root`, dark in `.dark`), radius scale, `@theme` bridge. Change colour values for the new brand and keep the token names. Components rely on the names, never on raw colours |
-| `src/lib/utils.ts` | `cn()` helper (clsx + tailwind-merge). Copy as-is |
-| `src/providers/theme-provider.tsx`, `src/lib/theme.ts` | Light/dark switch, dark by default, `THEME_INIT_SCRIPT` prevents a flash on first paint. Copy as-is |
-| `src/components/ui/*` | shadcn primitives. Prefer re-generating with `npx shadcn@latest add <component>` over copying. Then check the local edits listed in DESIGN_SYSTEM.md |
-| `src/app/layout.tsx` | Replace the `metadata` title and description. Fonts are Roboto Slab and Roboto via `next/font/google`. Change them if the brand differs |
+| File                                                   | Adapt                                                                                                                                                                                          |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/globals.css`                                  | Tokens (light in `:root`, dark in `.dark`), radius scale, `@theme` bridge. Change colour values for the new brand and keep the token names. Components rely on the names, never on raw colours |
+| `src/lib/utils.ts`                                     | `cn()` helper (clsx + tailwind-merge). Copy as-is                                                                                                                                              |
+| `src/providers/theme-provider.tsx`, `src/lib/theme.ts` | Light/dark switch, dark by default, `THEME_INIT_SCRIPT` prevents a flash on first paint. Copy as-is                                                                                            |
+| `src/components/ui/*`                                  | shadcn primitives. Prefer re-generating with `npx shadcn@latest add <component>` over copying. Then check the local edits listed in DESIGN_SYSTEM.md                                           |
+| `src/app/layout.tsx`                                   | Replace the `metadata` title and description. Fonts are Roboto Slab and Roboto via `next/font/google`. Change them if the brand differs                                                        |
 
 ### Data layer
 
-| File | Adapt |
-|---|---|
-| `src/lib/api.ts` | Fetch-based `ApiClient` with `get`, `getWithHeaders` (reads `x-total-count`), `post`, `put`, `patch`, `delete`. Adds the bearer token, throws a typed `ApiError`, handles 204, and calls a registered unauthorized handler on a 401 of an authenticated session. Copy as-is. It expects a REST API with JSON bodies and an `x-total-count` header on paginated lists |
-| `src/lib/constants.ts` | Keep `COOKIE_NAME`, `API_BASE_URL`, `AUTH_COOKIE_OPTIONS`. Delete the expense-specific constants |
-| `src/providers/query-provider.tsx` | `staleTime` 30 s, refetch on window focus. Copy as-is |
-| `src/hooks/use-banks.ts` | Use as the **pattern** for every entity hook (query key per entity, `keepPreviousData`, mutations that invalidate). Do not copy the entity itself |
-| `src/hooks/use-paged-list.ts` | Generic pagination and sort state for list pages. Check whether it is free of domain types, then copy |
+| File                               | Adapt                                                                                                                                                                                                                                                                                                                                                                |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/api.ts`                   | Fetch-based `ApiClient` with `get`, `getWithHeaders` (reads `x-total-count`), `post`, `put`, `patch`, `delete`. Adds the bearer token, throws a typed `ApiError`, handles 204, and calls a registered unauthorized handler on a 401 of an authenticated session. Copy as-is. It expects a REST API with JSON bodies and an `x-total-count` header on paginated lists |
+| `src/lib/constants.ts`             | Keep `COOKIE_NAME`, `API_BASE_URL`, `AUTH_COOKIE_OPTIONS`. Delete the expense-specific constants                                                                                                                                                                                                                                                                     |
+| `src/providers/query-provider.tsx` | `staleTime` 30 s, refetch on window focus. Copy as-is                                                                                                                                                                                                                                                                                                                |
+| `src/hooks/use-banks.ts`           | Use as the **pattern** for every entity hook (query key per entity, `keepPreviousData`, mutations that invalidate). Do not copy the entity itself                                                                                                                                                                                                                    |
+| `src/hooks/use-paged-list.ts`      | Generic pagination and sort state for list pages. Check whether it is free of domain types, then copy                                                                                                                                                                                                                                                                |
 
 ### Authentication
 
@@ -229,12 +227,12 @@ Cookie-based and isomorphic. See [README.md](../README.md#authentication-archite
 
 > **Security exception: review before copying.** In this repo the login response's JWT is written to a cookie by client-side code (`js-cookie`), so the cookie cannot be `HttpOnly` and any XSS can read the token and send it elsewhere. That was acceptable for this app, but it should not be the default for a new project. Prefer a server-set `HttpOnly`, `Secure`, `SameSite` session cookie (see section 9). Only copy the client-side flow below if the project accepts this risk after a review.
 
-| File | Adapt |
-|---|---|
-| `src/lib/auth-helpers.ts` | Reads and writes the token and user cookie on client and server. Copy as-is |
-| `src/contexts/auth-context.tsx` | `signIn` and `signOut`, user state. Adapt the `POST /sessions` call and user shape to the new API |
-| `src/proxy.ts` | Redirects unauthenticated users to `/?redirectTo=...` and authenticated users away from `/`. Adapt `isPublicRoute` if there are more public pages. It decodes the JWT `exp` claim without verifying the signature, so it is a UX gate, not a security boundary. The API must enforce auth |
-| `src/lib/redirect.ts` | Open-redirect-safe `redirectTo` handling. Change `DEFAULT_AUTHENTICATED_PATH` to the new landing route |
+| File                            | Adapt                                                                                                                                                                                                                                                                                     |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/auth-helpers.ts`       | Reads and writes the token and user cookie on client and server. Copy as-is                                                                                                                                                                                                               |
+| `src/contexts/auth-context.tsx` | `signIn` and `signOut`, user state. Adapt the `POST /sessions` call and user shape to the new API                                                                                                                                                                                         |
+| `src/proxy.ts`                  | Redirects unauthenticated users to `/?redirectTo=...` and authenticated users away from `/`. Adapt `isPublicRoute` if there are more public pages. It decodes the JWT `exp` claim without verifying the signature, so it is a UX gate, not a security boundary. The API must enforce auth |
+| `src/lib/redirect.ts`           | Open-redirect-safe `redirectTo` handling. Change `DEFAULT_AUTHENTICATED_PATH` to the new landing route                                                                                                                                                                                    |
 
 If the new project does not need auth, leave out `proxy.ts`, `auth-context.tsx`, `auth-helpers.ts`, `redirect.ts`, `js-cookie`, and the unauthorized-handler code in `api.ts`.
 
@@ -248,26 +246,27 @@ If the new project does not need auth, leave out `proxy.ts`, `auth-context.tsx`,
 
 Root-level files, next to `package.json`:
 
-| Path | Purpose | For the new project |
-|---|---|---|
-| `README.md` | Overview, stack, structure, scripts, auth | Rewrite for the new product |
-| `DESIGN_SYSTEM.md` | Visual source of truth for UI work (and for AI assistants) | Keep, update tokens and brand |
-| `design.pen` | Pencil design file with tokens and components | Copy if you use Pencil, otherwise skip |
+| Path               | Purpose                                                    | For the new project                    |
+| ------------------ | ---------------------------------------------------------- | -------------------------------------- |
+| `README.md`        | Overview, stack, structure, scripts, auth                  | Rewrite for the new product            |
+| `DESIGN_SYSTEM.md` | Visual source of truth for UI work (and for AI assistants) | Keep, update tokens and brand          |
+| `design.pen`       | Pencil design file with tokens and components              | Copy if you use Pencil, otherwise skip |
 
 Inside the `docs/` folder:
 
-| Path | Purpose | For the new project |
-|---|---|---|
-| `docs/specs/` | Feature specs and business rules | Start empty, add per feature |
-| `docs/plans/` | Implementation plans | Start empty |
-| `docs/APIs/` | One file per backend resource | Start empty, mirror the new API |
-| `docs/ui/` | UI change history | Start empty |
+| Path          | Purpose                          | For the new project             |
+| ------------- | -------------------------------- | ------------------------------- |
+| `docs/specs/` | Feature specs and business rules | Start empty, add per feature    |
+| `docs/plans/` | Implementation plans             | Start empty                     |
+| `docs/APIs/`  | One file per backend resource    | Start empty, mirror the new API |
+| `docs/ui/`    | UI change history                | Start empty                     |
 
 ---
 
 ## 8. Step-by-Step
 
 1. **Create the repo**
+
    ```bash
    mkdir <new-project> && cd <new-project>
    git init
@@ -281,6 +280,7 @@ Inside the `docs/` folder:
 7. **Add shadcn primitives** you need: `npx shadcn@latest add button input dialog sheet dropdown-menu tooltip sonner`.
 8. **Create `.env`** from `.env.example` and set `NEXT_PUBLIC_API_URL` to the backend's origin. It must not be the Next.js dev server (`http://localhost:3000`), or every `ApiClient` request goes to the frontend and fails.
 9. **Verify the toolchain** before writing features:
+
    ```bash
    npm run check      # Biome lint, format, import order
    npm run build      # Next build and type-check
@@ -293,22 +293,21 @@ Inside the `docs/` folder:
 
 ## 9. Things to Decide Per Project
 
-| Decision | Default here | Revisit if |
-|---|---|---|
-| Backend | Separate REST API at `NEXT_PUBLIC_API_URL` | Using Next route handlers or server actions instead. `api.ts` and the auth flow need rework |
-| Auth | Server-set `HttpOnly` session cookie: login goes through a route handler or server action that sets the cookie, and the API client sends it with `credentials: "include"` or the server reads it. Needs changes to `auth-helpers.ts`, `auth-context.tsx`, `api.ts` and `proxy.ts` | Only if the project explicitly accepts the client-readable JWT cookie used in this repo (not `HttpOnly`, readable by XSS) after a security review |
-| i18n | Single `translations.ts` object, English only | You need multiple locales. Adopt a library such as `next-intl` |
-| Theme | Dark default, light switch | Brand requires one theme only |
-| Fonts | Roboto Slab and Roboto | New brand typography |
-| Default branch | `development` (CI triggers on it) | Different branching model. Update `ci.yml` and `dependabot.yml` |
-| Linter | Biome only, no ESLint or Prettier | Team standard differs |
+| Decision       | Default here                                                                                                                                                                                                                                                                      | Revisit if                                                                                                                                        |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend        | Separate REST API at `NEXT_PUBLIC_API_URL`                                                                                                                                                                                                                                        | Using Next route handlers or server actions instead. `api.ts` and the auth flow need rework                                                       |
+| Auth           | Server-set `HttpOnly` session cookie: login goes through a route handler or server action that sets the cookie, and the API client sends it with `credentials: "include"` or the server reads it. Needs changes to `auth-helpers.ts`, `auth-context.tsx`, `api.ts` and `proxy.ts` | Only if the project explicitly accepts the client-readable JWT cookie used in this repo (not `HttpOnly`, readable by XSS) after a security review |
+| i18n           | Single `translations.ts` object, English only                                                                                                                                                                                                                                     | You need multiple locales. Adopt a library such as `next-intl`                                                                                    |
+| Theme          | Dark default, light switch                                                                                                                                                                                                                                                        | Brand requires one theme only                                                                                                                     |
+| Fonts          | Roboto Slab and Roboto                                                                                                                                                                                                                                                            | New brand typography                                                                                                                              |
+| Default branch | `development` (CI triggers on it)                                                                                                                                                                                                                                                 | Different branching model. Update `ci.yml` and `dependabot.yml`                                                                                   |
+| Linter         | Biome only, no ESLint or Prettier                                                                                                                                                                                                                                                 | Team standard differs                                                                                                                             |
 
 ---
 
 ## 10. Known Quirks in the Template
 
 Worth fixing in the new project rather than inheriting:
-
 - `npm run format` runs `biome lint --write .`, which only applies lint fixes. Use `npm run fix` (`biome check --write`) for formatting and import ordering, or point `format` at `biome format --write .`.
 - The README lists `npm run lint` and `format` but not `check` and `fix`, which CI and local workflow actually use.
 - `tailwind.config.mjs` is only for editor tooling. Tailwind v4 reads its config from `globals.css`.
