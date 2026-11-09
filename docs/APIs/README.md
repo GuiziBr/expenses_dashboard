@@ -1,6 +1,7 @@
 # API Documentation
 
 Documentation for every HTTP API exposed by this service. Each file below covers one resource/controller.
+
 - [Auth](./auth.md) — `/sessions`
 - [Users](./users.md) — `/users`
 - [Banks](./banks.md) — `/banks`

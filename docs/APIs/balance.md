@@ -7,6 +7,7 @@ All routes require authentication (`Authorization: Bearer <token>`). The current
 ## GET /balance
 
 Retrieves the personal and shared balance for the currently authenticated user over a date range.
+
 - **Personal balance**: sum of the user's personal expenses.
 - **Shared balance**: net of what the user is paying versus what they're owed, across shared expenses.
 

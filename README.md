@@ -104,6 +104,7 @@ All routes except `/` are protected by `src/proxy.ts`.
 ## Authentication Architecture
 
 The project uses an isomorphic cookie-based approach:
+
 - **Client Side**: `AuthContext` manages the global user state and provides `signIn`/`signOut` methods.
 - **Server Side**: `src/proxy.ts` reads the `auth_token` cookie directly to handle redirects before the page renders. Unauthenticated requests are sent to `/?redirectTo=<original path and query>`, and the sign-in page returns the user there after login (only same-origin relative paths are accepted).
 - **Isomorphic Helpers**: `auth-helpers.ts` provides consistent access to the token and user data on both client and server.

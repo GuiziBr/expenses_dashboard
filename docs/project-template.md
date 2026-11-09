@@ -94,6 +94,7 @@ Copy these blocks into the new `package.json`, then change `name`. Run `npm inst
 ```
 
 Notes:
+
 - `tailwindcss` itself is not listed. It comes in through `@tailwindcss/postcss`. Keep it that way.
 - Drop `js-cookie` and `@types/js-cookie` if the new project has no cookie auth. `react-icons` is deliberately left out: lucide-react is the only icon library. Here react-icons is used only by `NewExpenseModal.tsx`, so replace those icons with lucide equivalents if you copy that component.
 - **Versions are the latest as of 2026-10-21**, checked with `npm view`. The existing repo is behind on a few. In a scratch copy of this repo, this exact set passed `tsc`, `next build`, and all unit tests with coverage above the thresholds. Re-run `npm view <pkg> version` when you start, and keep the rule: latest, unless it breaks a peer dependency.
@@ -151,6 +152,7 @@ Notes:
 ```
 
 Conventions that hold across the codebase:
+
 - **Tests live next to the code** as `name.test.ts(x)`. Shared helpers are in `src/test/`.
 - **One hook file per API entity** (`use-banks.ts`) with `useX` for lists, and `useCreateX`, `useUpdateX`, `useDeleteX` mutations that invalidate the entity's query key.
 - **Pure logic goes in `src/lib/`**, with a high coverage bar (see section 5).
@@ -308,6 +310,7 @@ Inside the `docs/` folder:
 ## 10. Known Quirks in the Template
 
 Worth fixing in the new project rather than inheriting:
+
 - `npm run format` runs `biome lint --write .`, which only applies lint fixes. Use `npm run fix` (`biome check --write`) for formatting and import ordering, or point `format` at `biome format --write .`.
 - The README lists `npm run lint` and `format` but not `check` and `fix`, which CI and local workflow actually use.
 - `tailwind.config.mjs` is only for editor tooling. Tailwind v4 reads its config from `globals.css`.
