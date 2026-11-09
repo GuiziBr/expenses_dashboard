@@ -13,6 +13,7 @@
 ## 1. Overview
 
 The Balance Breakdown page shows how the current user's **personal** spending for one month is split across a single grouping: **category**, **payment type**, **bank** or **store**. The page has three parts:
+
 - summary cards
 - a donut chart showing each item's share of the month
 - a ranked legend with every item's amount and percentage
@@ -51,6 +52,7 @@ Today the user can see a personal total (`GET /balance`) or filter the Personal 
 ## 3. Page Anatomy
 
 Listed top to bottom:
+
 1. **Header**: the standard app header. The _Balance Breakdown_ nav link is active (orange).
 2. **Summary cards**: _Top {item}_ · _{Items} count_ · _Total spent_ (orange).
 3. **Controls**: grouping tabs (left) and month picker (right). On mobile they are stacked.
@@ -275,37 +277,43 @@ Note: the loading, empty and error states are specified here but not yet drawn i
 ## 11. Acceptance Criteria
 
 **AC-01: Default view**
+
 - **Given** I am logged in
 - **When** I open _Balance Breakdown_
 - **Then** the _Category_ tab is active, the month is the current month, and the page shows my personal spending by category.
 
 **AC-02: Switching grouping**
+
 - **Given** I am on the _Category_ tab
 - **When** I select _Bank_
 - **Then** the data is fetched with `filterBy=bank` without pressing any button, and the labels read _Top bank_ and _Banks_.
 
 **AC-03: Month navigation**
+
 - **Given** the selected month is _January 2027_
 - **When** I press ◀
 - **Then** the month becomes _December 2026_ and the data for `2026/12` is loaded.
 
 **AC-04: Other grouping**
+
 - **Given** the response has 12 items and ranks 1–5 each have ≥ 4% share
 - **When** the page renders
 - **Then** the donut shows 5 coloured slices plus one light-gray _Other_ slice, and the legend shows an _OTHER · 7 {items}_ subheader.
 
 **AC-05: Small-share rule**
+
 - **Given** the rank-4 item has a 3.2% share
 - **When** the page renders
 - **Then**, if at least two items remain from rank 4 onward, rank 4 and all later ranks are grouped into _Other_. If rank 4 is the only leftover item, it gets its own light-gray slice with its real name.
 
-
 **AC-06: Single leftover**
+
 - **Given** 6 items are returned, all with share ≥ 4%
 - **When** the page renders
 - **Then** the 6th item gets its own light-gray slice with its real name, and there is no _Other_ group.
 
 **AC-07: Selecting a slice**
+
 - **Given** no selection
 - **When** I tap the _Restaurants_ slice
 - **Then** the centre shows _Restaurants_, its amount and _16.8% of the month · #2_, the other slices fade, and the _Restaurants_ legend row is outlined.
@@ -313,11 +321,13 @@ Note: the loading, empty and error states are specified here but not yet drawn i
 - **Then** the centre goes back to _Total spent_.
 
 **AC-08: Selecting Other from a row**
+
 - **Given** _Pets_ is inside the Other group
 - **When** I tap the _Pets_ row
 - **Then** _Other_ is selected and every row in the Other group is highlighted.
 
 **AC-09: Long list**
+
 - **Given** 14 items are returned
 - **When** the page renders
 - **Then** 10 rows are visible, followed by _Show all 14 categories_.
@@ -325,16 +335,19 @@ Note: the loading, empty and error states are specified here but not yet drawn i
 - **Then** all 14 rows are shown and the button reads _Show less_.
 
 **AC-10: Null bank**
+
 - **Given** the _Bank_ tab and a response entry with `id: null`
 - **When** the page renders
 - **Then** that row reads _No bank_ in italic gray, in its ranked position.
 
 **AC-11: Cache refresh**
+
 - **Given** I create an expense due this month
 - **When** I come back to _Balance Breakdown_
 - **Then** the totals include the new expense.
 
 **AC-12: Empty month**
+
 - **Given** the API returns `[]`
 - **When** the page renders
 - **Then** I see _"No personal expenses for {Month YYYY}."_ and no chart.
