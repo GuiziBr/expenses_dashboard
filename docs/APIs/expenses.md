@@ -5,6 +5,7 @@ Base path: `/expenses`
 All routes require authentication (`Authorization: Bearer <token>`). The current user is resolved from the JWT token via `CurrentUserInterceptor`.
 
 An expense's `due_date` is computed server-side from its `date`, `payment_type_id`, and (for payment types with a billing statement) `bank_id`:
+
 - If the payment type has no statement, the due date is the end of the following month (or the current month, if `current_month: true`).
 - If the payment type has a statement, the due date is derived from the user's/bank's configured statement period.
 

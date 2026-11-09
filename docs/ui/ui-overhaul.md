@@ -13,6 +13,7 @@
 ## 1. Overview
 
 Replace the full-width purple top bar with an app shell:
+
 - **Desktop:** a left sidebar for navigation, plus a slim top bar inside the content area for the page title and page-level actions.
 - **Mobile:** a bottom tab bar for the main destinations, plus the same top bar with the page title and, on month pages, the month picker.
 
@@ -35,6 +36,7 @@ Findings from reviewing `design.pen` and `Header.tsx`:
 ## 3. Goals and non-goals
 
 **Goals**
+
 - Make navigation scale when more pages are added.
 - Show the current page clearly, with accessible contrast.
 - Give the shell an identity (logo, user) and a safe place for Logout.
@@ -42,6 +44,7 @@ Findings from reviewing `design.pen` and `Header.tsx`:
 - Render the shell once in a layout, not once per page.
 
 **Non-goals**
+
 - Changing data fetching, forms, tables or the Balance Breakdown chart.
 - Adding new pages.
 - A full visual rebrand beyond the tokens in §6.
@@ -95,12 +98,14 @@ Before the overhaul the dashboards had no month concept: they held a `startDate`
 | Consolidated Balance, Management     | No           | Consolidated Balance keeps its own required month field and _Search_ button.                                                                                      |
 
 How it works:
+
 - **The URL is the source of truth.** The month lives in `?month=YYYY-MM`, read and written by `useSelectedMonth()`. It survives a refresh and back/forward (each change is a history push), and other query params such as `groupBy` are kept. A missing or invalid value means the current month.
 - **The month is shared between pages.** The sidebar, the tab bar and the More sheet use `MonthAwareLink`. A link to Shared, Personal or Balance Breakdown keeps the current `?month=`, so the month stays the same when you switch between those pages.
 - **Custom ranges still work.** If the user applies dates in the filter row that are not one whole calendar month, the picker shows **Custom range** instead of a month name. Picking another month (arrows or the month input) goes back to a whole month.
 - **The page owns the range.** The dashboard keeps its `startDate` and `endDate` state and resets it when the month changes. It tells the top bar when the range is custom through `useCustomRangeIndicator`.
 
 Known limits:
+
 - The month is not remembered across Consolidated Balance or Management, because those pages do not use `?month=`. Coming back to a dashboard from them starts at the current month.
 - Picking the same month that is already selected while a custom range is showing does nothing. Use an arrow to reset it.
 
@@ -143,6 +148,7 @@ The design tokens are CSS variables in `src/app/globals.css`: light values in `:
 **Applied with the dashboard restyle (task 7).** Dark `--primary` and `--ring` are now the mock's purple (`#6c4cf0`), so both themes share one accent. The restyled components use the semantic tokens (`bg-card`, `border-border`, `text-muted-foreground`, `bg-primary`, and so on) instead of fixed colours.
 
 **Still different from the mock.**
+
 - The font stays Roboto and Roboto Slab (open question 2). Inter is not loaded yet.
 - The Balance Breakdown chart keeps its categorical slice colours (`--chart-1` to `--chart-5` and `--chart-other`). They are data colours, not the accent, and they are the same in both themes. The purple slice (`--chart-5`) has low contrast on the dark card, see §12.
 - The chart palette and the Sonner toast colours are not token-driven. Toasts use Sonner's own light and dark "rich" colours and are legible in both themes.
@@ -150,6 +156,7 @@ The design tokens are CSS variables in `src/app/globals.css`: light values in `:
 ### Theme switching
 
 The switch is live. Users choose Light or Dark and the choice is remembered.
+
 - `src/lib/theme.ts` holds the theme helpers and the inline script that sets the `dark` class before first paint, so a stored light choice does not flash dark.
 - `src/providers/theme-provider.tsx` exposes `useTheme()` (`theme`, `setTheme`, `toggleTheme`). The first render always uses the default (dark), so it matches the server. A layout effect then reads the stored choice before the browser paints, so the toggle icon and the toast theme are right on the first frame.
 - From `lg` the switch is a **Theme** item in the sidebar user menu, above Log out. Below `lg` it is a **Theme** row in the More sheet, above Log out. Both stay open when used, so the change is visible straight away. It is in the same place on every page; the top bar no longer has a toggle, because its contents change per page.
@@ -157,6 +164,7 @@ The switch is live. Users choose Light or Dark and the choice is remembered.
 - Default is dark. The choice is stored in `localStorage` under `theme`. There is no "follow the system" option.
 
 Contrast fixes made when the switch went live:
+
 - Light `--input` is a mid grey (`#8a8aa3`, 3.4:1 on white) and every input-like control uses `border-input`. Dark `--input` is the old dark border colour, so dark looks the same.
 - Dark `--ring` is the light purple (`#b9abff`, 6.5:1). Dark `--destructive` is slightly darker (`#d4344f`, white text 4.8:1), and error text, icons and the Log out row use the `danger` token, which reads well on both themes.
 - The total-card label is at 90% opacity. The login logo is inverted in dark.
@@ -258,18 +266,21 @@ Existing tools: Tailwind v4, shadcn/ui with Radix, `lucide-react`, and `sheet.ts
 ### Theme switching (done) and what is left
 
 The switch is live (see §6). The steps that were pending are done:
+
 - Light mode was checked visually on the dashboards, Consolidated Balance, Balance Breakdown, the management pages, the dialogs, toasts and the login page.
 - Contrast was measured and the fixes are in §6.
 - The switch is in the sidebar user menu (desktop) and the More sheet (below 1024px), and the disabled state and "Coming soon" tooltip are gone.
 - `DESIGN_SYSTEM.md` was updated.
 
 Still open, none of it blocks the switch:
+
 1. **Login photo.** The same bright photo is used in both themes. A themed overlay would settle it.
 2. **`global-error.tsx`** renders its own `<html className="dark">` without the init script, so a light user who hits a root error sees dark.
 3. **Overlays.** The dialog and sheet scrims use a literal `bg-black/50`. A token would be cleaner.
 4. **Cross-tab sync.** Changing the theme in one tab does not update other open tabs until they reload.
 
 Resolved or decided since the switch:
+
 - **Chart palette.** The slice colours (`--chart-1` to `--chart-5`, `--chart-other`) are the same in both themes. The purple slice is about 2.2:1 on the dark card and orange about 2.4:1 on the light card. Decided to keep one value per token for both themes.
 - **Dead variables.** Done: the legacy colour variables and `@theme` aliases were removed from `globals.css`.
 - **Muted text on hover.** Done: `--muted-foreground` is now `#656579` (light) and `#a3a9bf` (dark), at least 4.6:1 on `accent`.
