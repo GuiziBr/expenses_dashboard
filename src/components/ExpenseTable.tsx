@@ -110,6 +110,13 @@ export function ExpenseTable({
 	currentUserId
 }: ExpenseTableProps) {
 	const hasActions = !!(onDelete || onEdit)
+	const isOwner = (expense: FormattedExpense) =>
+		currentUserId === expense.ownerId
+	const canEdit = (expense: FormattedExpense) => !!onEdit && isOwner(expense)
+	// Expenses that are neither split nor personal are owned by another user
+	// but may still be deleted from the personal dashboard.
+	const canDelete = (expense: FormattedExpense) =>
+		!!onDelete && (isOwner(expense) || (!expense.split && !expense.personal))
 
 	return (
 		<div className="w-full overflow-hidden rounded-xl border border-border bg-card lg:overflow-y-auto">
@@ -209,7 +216,7 @@ export function ExpenseTable({
 							</td>
 							{hasActions && (
 								<td className="px-0.5 py-2 text-right md:px-2">
-									{currentUserId === expense.ownerId && (
+									{(canEdit(expense) || canDelete(expense)) && (
 										<DropdownMenu>
 											<DropdownMenuTrigger
 												aria-label={translations.management.expenseActions}
@@ -218,7 +225,7 @@ export function ExpenseTable({
 												<MoreVertical className="size-5" />
 											</DropdownMenuTrigger>
 											<DropdownMenuContent align="end">
-												{onEdit && (
+												{canEdit(expense) && onEdit && (
 													<DropdownMenuItem
 														onClick={() => onEdit(expense)}
 														className="cursor-pointer"
@@ -227,7 +234,7 @@ export function ExpenseTable({
 														{translations.management.edit}
 													</DropdownMenuItem>
 												)}
-												{onDelete && (
+												{canDelete(expense) && onDelete && (
 													<DropdownMenuItem
 														variant="destructive"
 														onClick={() => onDelete(expense)}
