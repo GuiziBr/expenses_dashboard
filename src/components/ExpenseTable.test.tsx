@@ -9,6 +9,8 @@ const expense = (overrides: Partial<FormattedExpense> = {}): FormattedExpense =>
 	({
 		id: "1",
 		ownerId: "me",
+		split: true,
+		personal: false,
 		description: "Netflix Subscription",
 		category: "Entertainment",
 		amount: 1599,
@@ -111,6 +113,54 @@ describe("ExpenseTable", () => {
 		expect(
 			within(rows[1]).queryByRole("button", { name: "Expense actions" })
 		).not.toBeInTheDocument()
+	})
+
+	it("offers only Delete on another user's non-split, non-personal expense", async () => {
+		render(
+			<ExpenseTable
+				expenses={[
+					expense({ id: "3", ownerId: "other", split: false, personal: false })
+				]}
+				onSort={vi.fn()}
+				getSortIndicator={() => ""}
+				onEdit={vi.fn()}
+				onDelete={vi.fn()}
+				currentUserId="me"
+			/>
+		)
+
+		await userEvent.click(
+			screen.getByRole("button", { name: "Expense actions" })
+		)
+		expect(
+			await screen.findByRole("menuitem", { name: /delete/i })
+		).toBeInTheDocument()
+		expect(
+			screen.queryByRole("menuitem", { name: /edit/i })
+		).not.toBeInTheDocument()
+	})
+
+	it("offers Edit and Delete on the current user's own expense", async () => {
+		render(
+			<ExpenseTable
+				expenses={[expense()]}
+				onSort={vi.fn()}
+				getSortIndicator={() => ""}
+				onEdit={vi.fn()}
+				onDelete={vi.fn()}
+				currentUserId="me"
+			/>
+		)
+
+		await userEvent.click(
+			screen.getByRole("button", { name: "Expense actions" })
+		)
+		expect(
+			await screen.findByRole("menuitem", { name: /edit/i })
+		).toBeInTheDocument()
+		expect(
+			screen.getByRole("menuitem", { name: /delete/i })
+		).toBeInTheDocument()
 	})
 
 	it("has no actions column without handlers", () => {
