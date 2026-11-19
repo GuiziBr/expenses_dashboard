@@ -164,7 +164,7 @@ Same shape as `POST /expenses`.
 
 ## DELETE /expenses/:id
 
-Soft-deletes an expense by setting its `deletedAt` timestamp. Only the owning user may delete it.
+Soft-deletes an expense by setting its `deletedAt` timestamp. The owning user may delete it, and any user may delete an expense that is neither split nor personal.
 
 ### Response `204 No Content`
 
@@ -175,6 +175,6 @@ No body.
 | Status                      | Condition                                                                                 |
 | --------------------------- | ----------------------------------------------------------------------------------------- |
 | `401 Unauthorized`          | Missing/invalid token                                                                     |
-| `403 Forbidden`             | The current user is not the expense's owner                                               |
+| `403 Forbidden`             | The current user is not the owner and the expense is split or personal                    |
 | `404 Not Found`             | The expense does not exist, or the user resolved from the token no longer exists          |
 | `500 Internal Server Error` | Unexpected database error (other than the record already being deleted, which is a no-op) |
